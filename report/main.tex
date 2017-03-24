@@ -1,0 +1,29 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+
+\usepackage{todonotes}
+
+\usepackage{rsfso} %Add the fancy L used in lagrange
+\usepackage{siunitx}
+
+\newcommand{\thomas}[1]{\todo[inline,color=black!30]{Thomas: #1}}
+\newcommand{\mikkel}[1]{\todo[inline,linecolor=green!100,backgroundcolor=red!70, bordercolor=green]{Mikkel: #1}}
+
+%Information to be included in the title page:
+\title{Real-Time Systems}
+\author{Thomas S. Christensen, Mikkel Skaarup Jaedicke}
+\date{Jan, 2017}
+
+\begin{document}
+\input{sections/test_bed.tex}
+\newpage
+\input{sections/model_development.tex}
+\newpage
+\input{bib}
+\end{document}

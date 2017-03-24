@@ -25,4 +25,4 @@ class plot_pendulum(object):
 		plot([self.len*sin(angle),0],[self.len*cos(angle),0],'-')
 
 		draw()
-		show(block=False)
+		show()
