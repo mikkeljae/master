@@ -1,0 +1,34 @@
+%!TEX root = ../main.tex
+\section{Preliminary Testing} % (fold)
+\label{sec:preliminary_testing}
+In an effort to split the development into smaller, more managable parts, it was decided to initially develop the system such that it fulfills the following requirements:
+
+\begin{itemize}
+	\item The cart should be able to move with known position.
+	\item Endstops on the platform should stop movement.
+	\item Emergency button should stop movent.
+\end{itemize}
+
+Clearly, making the cart move is crucial in the development of system and forms the basis for any later developments.
+The latter two requirements are related to the safe operation of the platform.
+It is expected that at least during development, an error may occur that causes the cart to move uncontrollably.
+In such a situation the programmer should be able to completely shut off power to the motor.
+The endstops will ensure that a minimum of mechanical or electrical damage is incurred on the platform in case of a cart crash.
+The following paragraphs will explore what is required in order to fulfill the above requirements.
+\\~\\
+Safety first.
+A safety system should, whenever possible, be isolated from the remaining system.
+That is, it should depend on non of the remaining circuitry or programming.
+Usually, if it can at all be avoided, no programming should be involved in determining a safety condition.
+With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
+In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
+\\~\\
+The first requirement requires a few tasks to be solved.
+Firstly it is necessary to device some form of driving circuitry for the motor driving the timing belt.
+The motor should be able to move in either direction.
+As the Maxon 148867 DC Motor is a brushed DC motor the standard circuit for achieving this behaviour is an H-bridge.
+Initially an H-bridge will be designed along with the required driving circuitry for that bridge.
+In addition to the above, it is required that the position of the cart is known.
+The Maxon motor is equipped with a relative encoder with 500 counts per revolution.
+A method for determining the absolute position will have to be created.
+% section preliminary_testing (end)
