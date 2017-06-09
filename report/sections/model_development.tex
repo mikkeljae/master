@@ -22,6 +22,8 @@ For convenience the two pendulums will be referred to as $p_1$ and $p_2$ where $
 	\label{fig:doublependulum}
 \end{figure}
 
+\mikkel{Maybe the illustration needs to be changed in order properly show the positive direction of $\theta_2$ }
+
 Equations should be developed such that, given an initial state, the position and subsequent movement can be derived from them.
 This can be achieved using the Euler-Lagrange differential equations.
 These will be found for this system throughout the remainder of this section.
@@ -49,6 +51,7 @@ In order to calculate the Euler-Lagrange diff. eq. it is necessary to first dete
 \end{equation}
 Where $E_k$ is the kinetic energy of the system and $E_p$, the potential energy.
 The derivation of $E_p$:
+\mikkel{g being the standard acceleration due to gravity}
 \begin{align}
 	E_p &= m_1 g y_1 + m_2 g y_2\\
 		&= -m_1 g l_1 \cos{\theta_1} - m_2 g l_1 \cos{\theta_1} - m_2 g l_2 \cos{\theta_2}\\
@@ -64,7 +67,7 @@ As movement is present along both axes, the total velocity of either pendulum ca
 \begin{align}
 	v_1^2 &= \dot{x}_1^2+\dot{y}_1^2\\
 		&= l_1^2\dot{\theta}_1^2\cos{\theta}_1^2+l_1^2\dot{\theta}_1^2\sin{\theta_1}^2\\
-		&= (\cos{\theta_1}^2+\sin(\theta_1)^2)l_1^2\dot{\theta}_1
+		&= (\cos{\theta_1}^2+\sin{\theta_1}^2)l_1^2\dot{\theta}_1
 \end{align}
 Using the Pythagorean identity:
 \begin{equation}
@@ -81,6 +84,7 @@ Similarly:
 	\end{split}
 \end{align}
 Isolating cosine and sine from the terms pairwise, 1 and 4, 2 and 5, 3 and 6, yields:
+\mikkel{from equation 20? add in text}
 \begin{align}
 	\begin{split}
 		v_2^2&=(\cos{\theta_1}^2+\sin{\theta_1}^2)l_1^2\dot\theta_1^2+(\cos{\theta_2}^2+\sin{\theta_2}^2)l_2^2\dot\theta_2^2\\
@@ -90,7 +94,7 @@ Isolating cosine and sine from the terms pairwise, 1 and 4, 2 and 5, 3 and 6, yi
 By applying the trigonimetric identities:
 \begin{align}
 	1&=\sin{\alpha^2}+\cos{\beta^2}\\
-	\cos{(\alpha\pm\beta)}&=\cos\alpha\cos\beta\pm\sin\alpha\sin\beta
+	\cos{(\alpha\pm\beta)}&=\cos\alpha\cos\beta\mp\sin\alpha\sin\beta
 \end{align}
 The result is found:
 \begin{equation}
@@ -100,24 +104,28 @@ The result is found:
 Using equations \ref{eq:ep}, \ref{eq:ek}, \ref{eq:v1} and \ref{eq:v2} the lagrangian can be constructed:
 \begin{align}
 	\begin{split}
-		\mathcal{L}&=\frac{1}{2}m_1l_1\dot\theta_1^2+\frac{1}{2}m_2\left(l_1^2\dot\theta_1^2+l_2^2\dot\theta_2^2+2l_1l_2\dot\theta_1^2\dot\theta_2^2\cos{(\theta_1-\theta_2)}\right)\\
+		\mathcal{L}&=\frac{1}{2}m_1l_1^2\dot\theta_1^2+\frac{1}{2}m_2\left(l_1^2\dot\theta_1^2+l_2^2\dot\theta_2^2+2l_1l_2\dot\theta_1^2\dot\theta_2^2\cos{(\theta_1-\theta_2)}\right)\\
 		&\qquad+(m_1+m_2)l_1g\cos{\theta_1}+m_2l_2g\cos{\theta_2}
 	\end{split}\\
 	\begin{split}
-		&=\frac{m_1l_1^2\dot\theta_1^2}{2}+\frac{m_2l_1^2\dot\theta_1^2}{2}+\frac{m_2l_2^2\dot\theta_2^2}{2}+l_1l_2\dot\theta_1^2\dot\theta_2^2\cos{(\theta_1-\theta_2)}\\
+		&=\frac{m_1l_1^2\dot\theta_1^2}{2}+\frac{m_2l_1^2\dot\theta_1^2}{2}+\frac{m_2l_2^2\dot\theta_2^2}{2}+l_1l_2\dot\theta_1\dot\theta_2\cos{(\theta_1-\theta_2)}\\
 		&\qquad+(m_1+m_2)l_1g\cos{\theta_1}+m_2l_2g\cos{\theta_2}
 	\end{split}
 \end{align}
 Which simplifies to:
 \begin{equation}
 	\label{eq:lagrangian}
-	\mathcal{L}=\frac{(m_1+m_2)l_1^2\dot\theta_1^2}{2}+\frac{m_2l_2^2\dot\theta_2}{2}+(m_1+m_2)l_1g\cos{\theta_1}+m_2l_2g\cos{\theta_2}\\
+	\begin{split}
+		\mathcal{L}=\frac{(m_1+m_2)l_1^2\dot\theta_1^2}{2}+\frac{m_2l_2^2\dot\theta_2}{2}+l_1l_2\dot\theta_1\dot\theta_2\cos{(\theta_1-\theta_2)}\\
+		+(m_1+m_2)l_1g\cos{\theta_1}+m_2l_2g\cos{\theta_2}\\
+	\end{split}
 \end{equation}
 The Euler-Lagrange diff. eq. are defined as:
 \begin{equation}
 	\frac{d}{dt}\left(\frac{\partial \mathcal{L}}{\partial \dot\theta}\right)-\frac{\partial \mathcal{L}}{\partial \theta} = 0
 \end{equation}
-The three terms $\frac{\partial \mathcal{L}}{\partial \dot\theta}$,$\frac{d}{dt}\left(\frac{\partial \mathcal{L}}{\partial \dot\theta}\right)$ and $\frac{\partial l}{\partial \theta}$ are calculated next for each of the pendulums. For $p_1$:
+The three terms $\frac{\partial \mathcal{L}}{\partial \dot\theta}$,$\frac{d}{dt}\left(\frac{\partial \mathcal{L}}{\partial \dot\theta}\right)$ and $\frac{\partial l}{\partial \theta}$ are calculated next for each of the pendulums. 
+\\For $p_1$:
 \begin{align}
 	\frac{\partial \mathcal{L}}{\partial \dot\theta_1}&=(m_1+m_2)l_1^2\dot\theta_1+m_2l_1l_2\dot\theta_2\cos{(\theta_1-\theta_2)}\\
 	\begin{split}
@@ -125,6 +133,9 @@ The three terms $\frac{\partial \mathcal{L}}{\partial \dot\theta}$,$\frac{d}{dt}
 		&\qquad-m_2l_1l_2\dot\theta_2\sin{(\theta_1-\theta_2)(\dot\theta_1-\dot\theta_2)}
 	\end{split}\\
 	\frac{\partial \mathcal{L}}{\partial \theta_1} &= -m_2l_1l_2\dot\theta_1\dot\theta_2\sin(\theta_1-\theta_2)-(m_1+m_2)l_1g\sin{\theta_1}\\
+\end{align}
+\mikkel{Entering the x,x,x equations yields the first the Euler-Lagrange diff bla bla.}
+\begin{align}
 	\begin{split}
 		0&=(m_1+m_2)l_1\ddot\theta_1+m_2l_2\ddot\theta_2\cos{(\theta_1-\theta_2)}\\
 		&\qquad+m_2l_2\dot\theta_2^2\sin{(\theta_1-\theta_2)}+(m_1+m_2)g\sin{\theta_1}
@@ -140,6 +151,9 @@ And $p_2$:
 	\end{split}\\
 	\frac{\partial \mathcal{L}}{\partial \theta_2} &=m_2l_1l_2\dot\theta_1\dot\theta_2\sin{(\theta_1-\theta_2)}-m_2l_2g\sin{\theta_2}\\
 	\label{eq:part}
+\end{align}
+\mikkel{Entering the x,x,x equations yields the second the Euler-Lagrange diff bla bla.}
+\begin{align}
 	\begin{split}
 		0&=m_2l_2\ddot\theta_2+m_2l_1\ddot\theta_1\cos{(\theta_1-\theta_2)}\\
 		&\qquad-m_2l_1\dot\theta_1^2\sin{(\theta_1-\theta_2)}+m_2g\sin{\theta_2}
