@@ -1,0 +1,29 @@
+Driver:	HIP4081AIBZ :http://dk.rs-online.com/web/p/mosfet-power-drivere/2163484/
+FET:	IBP045N10N3	:http://dk.rs-online.com/web/p/mosfet-transistorer/7528378/
+Diode:	US1M		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/7103917/
+Cap:	100nF
+Res:	1-4 Ohm		
+Relay:	DG85D		:http://dk.rs-online.com/web/p/relaeer-arreterende/9156672/
+
+Bootstrap capapitor notes: 
+	http://www.infineon.com/dgdl/Infineon-Using+Monolithci+Voltage+Gate+Drivers-UM-v01_00-EN.pdf?fileId=5546d462584d1d4a01585242c11947b1
+
+	https://www.fairchildsemi.com/application-notes/AN/AN-6076.pdf
+
+Procedure:
+	-Find mosfet with sufficient current rating (80A).
+	-Find full-bridge driver capable of driving the mosfets.
+		-Find switch-on time with given gate charge and gate drive current
+		-Should have dead-time and shoot-through protection.
+		-Output voltage significantly higher than mosfet gate threshold.
+	-Calculate bootstrap circuit component parameters.
+		-Calculate minimum required capacitance.
+			-Choose suitable diode.
+		-Find possible values close to but higher than the calculated.
+		-Evaluate which capacitance yields the most acceptable transient respons. (Higher values require longer charge times).
+		-Calculate value of current limiting resistor, Rboot. (limit should be below diode rated current)
+			-Include maximum surge current argument
+		-Verify that the calculated values are still legitimate after adding the voltage drop across the resistor.
+	-Find relay capable of switching the power rail (80A)
+		-Has to be actively closed (breaks on power loss).
+		-Design driving circuit
