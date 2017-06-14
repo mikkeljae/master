@@ -80,12 +80,39 @@ Designing the safety circuit in this manner ensures that the system cannot be st
 it is necessary to device some form of driving circuitry for the motor driving the timing belt.
 On the platform is a Maxon 148867 Brushed DC Motor.
 This is a 150W motor with a nominal current of 6A and a stall current of 80A.
-Clearly, the system should under normal use not come anywhere close to stalling the motor but considering the use case, which is experimentation with control from students, it may be beneficial to design the circuitry such that it can withstand being stalled, for at least a short period of time.
+Clearly, the system should under normal use not come anywhere close to stalling the motor but considering the use case, experimentation with control from students, it may be beneficial to design the circuitry such that it can withstand being stalled, for at least a short period of time.
 In order to reach this goal, it is necessary to size the components for at least some amount above 80A continuous.
 The \texttt{IPP045N10N3} MOSFET \cite{mosfet} is a 100V/100A MOSFET.
 It is made in the standard TO-220 housing.
 This housing allows for easy mounting of a heatsink and due to its wide application, there are many shapes and sizes to choose from.
+Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
+
+\begin{table}[tb]
+	\centering
+	\begin{tabular}{|r|c|c|c|}
+	\hline
+		\textbf{Parameter} & \textbf{Min} & \textbf{Typ} & \textbf{Max} \\
+	\hline
+		$V_{\text{th}}$ [V] & 2 & 2.7 & 3.5 \\
+	\hline
+		$R_{\text{ds(on)}}$ [m$\Omega$]& - & 3.6 & 4.2 \\
+	\hline
+		$Q_\text{g}$ [nC] & - & 88 & 117 \\
+	\hline
+		$I_\text{d}$ [A] & - & 100 & - \\
+	\hline
+		$V_{\text{ds}}$ [V] & 100 & - & - \\
+	\hline
+	\end{tabular}
+	\caption{Relevant parameters of the IPP045N10N3 MOSFET \cite{mosfet} chosen for the full-bridge.
+	Here, \vth is the gate threshold voltage, \ron is the drain-source on resistance, \qg is the total gate charge, \id is the maximum continuous drain current and \vds is the minimum guaranteed drain-source breakdown voltage.}
+	\label{tab:mosfetparameters}
+\end{table}
+
+The motor should be able to move in both directions so an h-bridge, or full-bridge is required.
+By properly switching the MOSFETs in the circuit on and off the average voltage across the motor can be controlled and therefore also the speed and direction of the motor, see \ref{sec:hbridge} for more details.
 \\~\\
+\thomas{Insert reference to note on full-bridge drive}
 Having chosen a MOSFET for the full-bridge, some form of driver must be designed for the full-bridge.
 For this task, ready-made full-bridge drivers exist on the market that incorporate all of the electronics required to generate the driving signals, requiring only a PWM signal from the designer.
 In order to choose one, a few parameters must be fulfilled.
@@ -93,8 +120,38 @@ In order to choose one, a few parameters must be fulfilled.
 \begin{itemize}
 	\item \textbf{Output Current:} The amount of current necessary to properly drive the MOSFET.
 	This value depends on the switching frequency of the application, the gate-to-source voltage ($V_{gs}$) and the total gate charge of the MOSFET.
-	\item \textbf{Driving Voltage:} In order to ensure that the MOSFET is turned on quickly and fully the driver should be able to supply a voltage well above the gate threshold of the MOSFET. 
+	\item \textbf{Driving Voltage:} In order to ensure that the MOSFET is turned on quickly and fully the driver should be able to supply a voltage well above the gate threshold of the MOSFET.
+	\item \textbf{High-Side Drive Capabilities:} The high side MOSFET of the full-bridge is referenced not to ground, but to $V_{\text{cc}}$.
+	This means that in order to switch on this MOSFET $V_{\text{gs}}$ must be at least $V_{\text{cc}}+V_{\text{th}}$ where $V_{\text{th}}$ is the gate threshold voltage of the MOSFET.
+	This is bootstrapping and is explained in more detail in section \ref{sec:bootstrap}.
+	\item \textbf{Shoot-Through Protection and Deadtime:} Due to the structure of the full-bridge it is important that two MOSFETs on the same half-bridge are never on at the same time as this would result in a short from $V_{\text{cc}}$ to ground.
+	This is resolved with a combination of deadtime (a delay where no MOSFET is on) and a logic table that ensures that an illegal switch combination can never happen.
 \end{itemize}
+
+The HIP4081AIBZ \cite{driver} full-bridge driver meets all of the above requirements.
+It can supply up to 2.5A on the output pins with a voltage approximately 1V below \vcc, well above the required \vth.
+Since the motor should, preferably, be driven outside the audible frequency range, it was chosen to set the switching frequency at 22kHz.
+This frequency was chosen over an even higher frequency because increasing the frequency also increases the switching losses.
+At this frequency there is $\frac{1}{22000}\approx45\mu$S per cycle. 
+Well within this time the gate should be fully opened.
+Since:
+
+\begin{equation}
+	I = C\frac{\text{dv}}{\text{dt}} \quad\Rightarrow\quad \text{dt} = C\frac{\text{dv}}{I}
+\end{equation}
+\thomas{Is this the correct way of calculating it?}
+
+Accounting for various voltage drops it is assumed that \vgs is 10V, a rough estimate of the time to open the gate completely can be found as:
+
+\begin{equation}
+	\text{dt} = 117\cdot10^{-9}\frac{10}{2.5}\approx0.47\mu\text{S}
+\end{equation}
+
+This time is approximately 100 times shorter than the allotted time frame.
+The component also has floating drive circuitry, meaning that by referencing the high-side driver to source of the high-side MOSFET, the driver can be made to output a voltage higher than \vcc.
+This does require a few external components for the bootstrapping.
+The choice of these components and a more in depth explanation of the procedure is given in section \ref{ssub:bootstrap_circuit}.
+Finally, the component has a user-programmable dead time and shoot-through protection. 
 
 HIP4081AIBZ - Full-bridge driver - (ISL83202)
 
