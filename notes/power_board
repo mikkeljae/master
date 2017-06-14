@@ -27,3 +27,9 @@ Procedure:
 	-Find relay capable of switching the power rail (80A)
 		-Has to be actively closed (breaks on power loss).
 		-Design driving circuit
+
+	To do: 
+
+	- Determine gate resistor size
+	- Determine supply capacitor size
+	- Determine inrush current circuit (could be mosfet and resistor parellel to relay)
