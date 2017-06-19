@@ -31,5 +31,10 @@ Procedure:
 	To do: 
 
 	- Determine gate resistor size
+		http://www.infineon.com/dgdl/Infineon-EiceDRIVER-Gate+resistor+for+power+devices-AN-v01_00-EN.pdf?fileId=5546d462518ffd8501523ee694b74f18
+		If designed with a maximum of 1.7A, then a 7ohms resistor could be used
 	- Determine supply capacitor size
+		http://www.st.com/content/ccc/resource/technical/document/application_note/a8/8c/73/84/dd/b2/44/75/CD00003790.pdf/files/CD00003790.pdf/jcr:content/translations/en.CD00003790.pdf
+		Can maybe be used???
 	- Determine inrush current circuit (could be mosfet and resistor parellel to relay)
+

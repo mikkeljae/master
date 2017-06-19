@@ -234,6 +234,8 @@ T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 0.5 \mu S
 \end{equation}
 Meaning that the diode can be exposed to a maximum of 12A for $0.5 \mu S $, which is well below the absolute maximum rating.
 It should also be noted that bootstrap capacitor needs at least $0.5 \mu S $ for the initial charging.
+\mikkel{In the application note they state that they include a 400ns bootstrap}
+
 
 Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
 The time it takes to charge the capacitor the energy that is used in each period is:
