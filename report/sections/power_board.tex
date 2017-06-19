@@ -68,8 +68,14 @@ In addition to the endstops, also an emergency button, preferably red, should be
 It may be that additional safety features are added later.
 In order to minimize the amount of circuitry, all safety features will trip the same circuit.
 \thomas{Add circuit showing the safety relay}
+On figure \ref{fig:relay_circuit} is shown the safety circuitry.
 A relay is mounted in series with the supply rail for the motor.
-The default state for this relay is \texttt{off} and in order to turn on the system the relay should be closed.
+The default state for this relay should be \texttt{off}.
+Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
+Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
+Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
+One relay that fulfills these requirements is the.
+\\~\\
 The driver circuit for the relay is activated only when all safety conditions are off.
 If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
 Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
@@ -108,6 +114,18 @@ Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
 	Here, \vth is the gate threshold voltage, \ron is the drain-source on resistance, \qg is the total gate charge, \id is the maximum continuous drain current and \vds is the minimum guaranteed drain-source breakdown voltage.}
 	\label{tab:mosfetparameters}
 \end{table}
+
+It should be noted that even though \vth is maximum 3.5V, this is not enough to fully open the MOSFET.
+Rather, this voltage is where the MOSFET will start to conduct.
+Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not fully conducting until \vgs $>4.5$V.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\linewidth]{graphics/mosfet_transfer_characteristic}
+	\caption{Transfer characteristic of the IPP045N10N3 as per the datasheet.
+	Inspecting the graph reveals that the maximum \id of 100A is reached at \vgs$\approx4.5\rightarrow4.75$V.}
+	\label{fig:mosfettransfercharacteristic}
+\end{figure}
 
 The motor should be able to move in both directions so an h-bridge, or full-bridge is required.
 By properly switching the MOSFETs in the circuit on and off the average voltage across the motor can be controlled and therefore also the speed and direction of the motor, see \ref{sec:hbridge} for more details.
