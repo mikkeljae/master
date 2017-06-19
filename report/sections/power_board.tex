@@ -83,7 +83,7 @@ Designing the safety circuit in this manner ensures that the system cannot be st
 % subsection safety_circuitry (end)
 \subsection{Power Board} % (fold)
 \label{sub:power_board}
-it is necessary to device some form of driving circuitry for the motor driving the timing belt.
+It is necessary to device some form of driving circuitry for the motor driving the timing belt.
 On the platform is a Maxon 148867 Brushed DC Motor.
 This is a 150W motor with a nominal current of 6A and a stall current of 80A.
 Clearly, the system should under normal use not come anywhere close to stalling the motor but considering the use case, experimentation with control from students, it may be beneficial to design the circuitry such that it can withstand being stalled, for at least a short period of time.
@@ -176,5 +176,91 @@ HIP4081AIBZ - Full-bridge driver - (ISL83202)
 IPP045N10N3 - Mosfet
 
 choice of VGS, 8V - show graph of transfer characteristics of mosfet, high due to uncertainty.
+
+
+
+
+
+\subsubsection{Bootstrap Circuit}
+\label{ssub:bootstrap_circuit}
+\missingfigure{Put in a bootstrap circuit and make a couple of references to it, when it makes sense.}
+The chosen gate driver has floating drive circuitry for the high side MOSFETS, but needs a bootstrap circuit for providing the higher voltage. 
+A standard bootstrap circuits consists of a diode, a capacitor and a resistor to limit initial charging current to the capacitor. 
+The advantage of using a bootstrap circuit to supply a high voltage for the floating drive is that it is very simple. 
+The disadvantage is that it sets a limit for the maximum and minimum duty cycle as the bootstrap capacitor needs to be charged fully in each period.
+The bootstrap circuitry for this project will be designed to have a maximum duty cycle for the higher MOSFETS of 95\%, thus meaning that the charging of the bootstrap capacitor should take no longer than 5\% of a period.  
+
+The bootstrap diode needs to have a fast recovery time, preferably below 100 ns \cite{bootstrap_infineon}, to minimize the energy fed back to the supply from the bootstrap capacitor.
+\texttt{US1M-E3} was chosen as it has a reverse recovery time of 75 ns and comes in SMD packaging. 
+It allows for a maximum average forward current of 1 A and a maximum forward voltage drop of 1.7 V.
+\mikkel{Kildehenvisning til datasheet?}
+Determining the values for the bootstrap capacitor was done using the calculations shown in \cite{bootstrap_ON}.
+The maximum allowed voltage drop across the bootstrap capacitor during \texttt{on} time needs to be determined: 
+\begin{equation}
+\Delta V_{boot} = V_{DD} - V_{F} - V_{GSMIN}
+\end{equation}
+Where $\Delta V_{boot}$ is the voltage drop across the bootstrap capacitor during \texttt{on} time, $V_{DD}$ is the supply voltage, $V_F$ is the forward voltage drop across the diode and $V_{GSMIN}$ is the minimum wanted \texttt{gate-source} voltage.
+$V_{GSMIN}$ was chosen to 8 V to to ensure a high enough gate voltage to turn on the MOSFETS. 
+The chosen MOSFETS have a maximum gate threshold voltage of 3.5 V. 
+Inserting the values yields the maximum allowed value of $\Delta V_{boot}$:
+\begin{equation}
+\Delta V_{boot} = 12 - 1.7 - 8 = 2.3 V	
+\end{equation}
+
+The total charge that needs to be supplied from the bootstrap capacitor is the gate charge of the MOSFET and quiescent and leakage currents in the \texttt{on} time:
+\begin{equation}
+	Q_{total} = Q_{gate} + Q_{ls} + (I_{lkgs} + I_{qbs} + I_{lk} + I_{lkdiode}) \cdot t_{on}
+	\label{eq:charge_total}
+\end{equation}
+Where $I_{lkgs}$ is the gate-source leakage current, $I_{qbs}$ is the gate driver quiescent current, $I_{lk}$ is the gate driver leakage current, $I_{lkdiode}$ is the diode leakage current, $ t_{on}$ is the \texttt{on} time and $Q_{ls}$ is the charge required by the internal level shifter in the gate driver.
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|}
+ \hline
+ $Q_{gate}$ 	& $Q_{ls}$ 	& $I_{lkgs}$ 	& $I_{qbs}$ 		& $I_{lk}$ 			& $I_{lkdiode}$ 	& $t_{on}$ 		\\ 	\hline
+ $117$ [nC]		& $3$ [nC]	& $100$ [nA]	&$-30$ [$\mu$A]		& $1$ [$\mu$A]		& $1$ [nA]			& $43$ [$\mu$S]	\\ 	\hline
+\end{tabular}
+\caption{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver data sheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET data sheet values and $I_{lkdiode}$  is a diode data sheet value. $t_{on}$ is calculated using 95\% dutycycle and 22kHz switching.}
+\label{tab:bootstrap_parameter}
+\end{table}
+$t_{on}$ can be calculated knowing that the worst case duty cycle for the high side MOSFET is 95\% and the switching frequency is 22 kHz.
+Inserting the values, shown in \ref{tab:bootstrap_parameter}, yields the minimum charge value of the capacitor:
+\begin{equation}
+	Q_{total} = 119 [nC]
+\end{equation}
+
+The minimum value of the bootstrap capacitor can now be calculated:
+\begin{equation}
+	C_{boot} = \frac{Q_{total}}{\Delta V_{boot}} = \frac{119}{2.3} = 51.6 [nC]
+\end{equation}
+A ceramic capacitor will be used as it has a negligible leakage current. 
+Looking for SMD ceramic capacitors it was found that in the range of the found minimum value is 56, 68, 82 and 100 [nF].
+56 [nF] is, in theory, a big enough capacitor for the circuit, but a bigger capacitor is an advantage as $\Delta V_{boot}$ will then decrease.
+When increasing the size of the capacitor it should be noted that the initial charge current will become larger.
+It was therefore chosen to use a 100 [nF] ceramic capacitor.
+
+The initial charge current to the capacitor needs to be limited in order not to exceed the maximum ratings of the diode.
+Therefore a resistor is put in series with the diode.
+The resistor value should not be too big as the voltage drop across it is subtracted from the bootstrap capacitor voltage.
+A 1 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 12 A.
+\mikkel{Do we have a 1 ohm resistor SMD?}
+This is clearly above the maximum average forward current of the diode, but the diode can withstand a 8.3 ms single half sine-wave of maximum 30 A \cite{diode_ds}.
+The charging of a capacitor is approximately finished after 5 time constants
+\mikkel{MANGLER KILDE!!! Denne er måske OK \url{http://www.electronics-tutorials.ws/rc/rc_1.html}}
+\begin{equation}
+T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 0.5 \mu S 
+\end{equation}
+Meaning that the diode can be exposed to a maximum of 12A for $0.5 \mu S $, which is well below the absolute maximum rating.
+It should also be noted that bootstrap capacitor needs at least $0.5 \mu S $ for the initial charging.
+\mikkel{In the application note they state that they include a 400ns bootstrap}
+
+
+Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
+The time it takes to charge the capacitor the energy that is used in each period is:
+\begin{equation}
+	T_{charge,period} = 5\cdot \tau = 5\cdot (R \cdot C_{boot}) = 5\cdot (1 \cdot  51.6 \cdot 10^{-9}) = 258 nS 
+\end{equation}
+The 258 nS are equivalent to 0.6\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 99.4\%.
+
 % subsection power_board (end)
 % section preliminary_testing (end)
