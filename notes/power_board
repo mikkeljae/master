@@ -38,3 +38,10 @@ Procedure:
 		Can maybe be used???
 	- Determine inrush current circuit (could be mosfet and resistor parellel to relay)
 
+
+
+	Notes for power supply
+		- Could be parallelized with batteries. Possibly 2 12 Volts batteries.
+
+		
+		https://www.embeddedrelated.com/showarticle/422.php#point1
