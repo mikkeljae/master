@@ -4,6 +4,7 @@ Diode:	US1M		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/
 Cap:	100nF
 Res:	1-4 Ohm		
 Relay:	DG85D		:http://dk.rs-online.com/web/p/relaeer-arreterende/9156672/
+AND: SN74LVC1G11	:http://dk.rs-online.com/web/p/standard-logiske-gates/6628720/
 
 Bootstrap capapitor notes: 
 	http://www.infineon.com/dgdl/Infineon-Using+Monolithci+Voltage+Gate+Drivers-UM-v01_00-EN.pdf?fileId=5546d462584d1d4a01585242c11947b1
@@ -27,6 +28,8 @@ Procedure:
 	-Find relay capable of switching the power rail (80A)
 		-Has to be actively closed (breaks on power loss).
 		-Design driving circuit
+	- Bootstrap capacitor:
+		http://dk.rs-online.com/web/p/keramiske-flerlags-kondensatorer/6480941/
 
 	To do: 
 
