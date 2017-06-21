@@ -46,7 +46,7 @@ tau = R*C_boot4;                       % time constant
 init_charge_time  = tau *5              %It is usually considered that five time constants are enough to charge a capacitor.
 
 
-tau_period = R * C_boot;
+tau_period = 1 * C_boot;
 period_charge_time = 5*tau_period
 
 period= 1/22000
