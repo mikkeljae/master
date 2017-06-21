@@ -1,9 +1,13 @@
-Driver:	HIP4081AIBZ :http://dk.rs-online.com/web/p/mosfet-power-drivere/2163484/
-FET:	IBP045N10N3	:http://dk.rs-online.com/web/p/mosfet-transistorer/7528378/
-Diode:	US1M		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/7103917/
-Cap:	100nF
-Res:	1-4 Ohm		
-Relay:	DG85D		:http://dk.rs-online.com/web/p/relaeer-arreterende/9156672/
+Driver:		HIP4081AIBZ :http://dk.rs-online.com/web/p/mosfet-power-drivere/2163484/
+FET:		IBP045N10N3	:http://dk.rs-online.com/web/p/mosfet-transistorer/7528378/
+Boot Diode:	US1M		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/7103917/
+Boot Cap:	100nF
+Boot Res:	1 Ohm		:http://dk.rs-online.com/web/p/overflademontering-faste-modstande/8094801/	
+Relay:		DG85D		:http://dk.rs-online.com/web/p/kontaktorer/0420401/
+Inrush R:	75 ohm 		:http://dk.rs-online.com/web/p/hulmontering-faste-modstande/8469898/
+Inru relay:	D3226		:http://dk.rs-online.com/web/p/relaeer/9098034/
+Diode til relays		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/6331322/
+2Mosfet for relays 		:http://dk.rs-online.com/web/p/mosfet-transistorer/3544890/
 
 Bootstrap capapitor notes: 
 	http://www.infineon.com/dgdl/Infineon-Using+Monolithci+Voltage+Gate+Drivers-UM-v01_00-EN.pdf?fileId=5546d462584d1d4a01585242c11947b1
@@ -36,11 +40,15 @@ Procedure:
 	- Determine supply capacitor size
 		http://www.st.com/content/ccc/resource/technical/document/application_note/a8/8c/73/84/dd/b2/44/75/CD00003790.pdf/files/CD00003790.pdf/jcr:content/translations/en.CD00003790.pdf
 		Can maybe be used???
-	- Determine inrush current circuit (could be mosfet and resistor parellel to relay)
+	- Determine inrush current circuit
 	- Final supply Capacitor choice - EEUFM1H681L:
 		http://dk.rs-online.com/web/p/aluminium-kondensatorer/5261733/
-
-
+		If 75 ohm is used: max current = 0.3A and charge time = 1 sek
+		R: http://dk.rs-online.com/web/p/hulmontering-faste-modstande/8469898/
+		Relay: http://dk.rs-online.com/web/p/relaeer/9098034/
+		Diode
+		Mosfet with max gate-soruce = 8V!: http://dk.rs-online.com/web/p/mosfet-transistorer/3544890/
+>>>>>>> a1c25d904f5d40f0895561ed332abf7f2001f54b
 
 Notes for power supply
 		- Could be parallelized with batteries. Possibly 2 12 Volts batteries.
