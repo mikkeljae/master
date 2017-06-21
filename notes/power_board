@@ -37,10 +37,12 @@ Procedure:
 		http://www.st.com/content/ccc/resource/technical/document/application_note/a8/8c/73/84/dd/b2/44/75/CD00003790.pdf/files/CD00003790.pdf/jcr:content/translations/en.CD00003790.pdf
 		Can maybe be used???
 	- Determine inrush current circuit (could be mosfet and resistor parellel to relay)
+	- Final supply Capacitor choice - EEUFM1H681L:
+		http://dk.rs-online.com/web/p/aluminium-kondensatorer/5261733/
 
 
 
-	Notes for power supply
+Notes for power supply
 		- Could be parallelized with batteries. Possibly 2 12 Volts batteries.
 
 		
