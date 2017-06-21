@@ -3,27 +3,21 @@ clear all; close all; clc;
 format long
 fs = 22000;
 T_on = 0.5* 1/fs;
-I = 6;
+V = 24;
+L = 0.082e-3;
+dI = V/L * T_on
 V_ripple = 1;
 
-C_min = I * T_on/V_ripple
+C_min = dI * T_on/V_ripple
 
-% T_on_ex = 0.5*1/10000;
-% C_min_ex = 3 * T_on_ex/ 0.08
-% 
-% 
-% 
-% C_p2 = 50 *25e-6/1
-% 
-% L = 82.3e-6;
-% I = 48/L *T_on
-
-C_chosen = 4* 680e-6;
+C_chosen = 4* 330e-6;
 R = 75;
 U = 24;
 inrush_current = U/R
 tau = C_chosen * R
 charge_time = 5*tau
+%From datasheet:
+ESL = 0.1/(2*pi*fs*330e-6)
 
 
 %%Freewheling diode:
