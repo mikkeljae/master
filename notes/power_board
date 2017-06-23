@@ -3,7 +3,7 @@ FET:		IBP045N10N3	:http://dk.rs-online.com/web/p/mosfet-transistorer/7528378/
 Boot Diode:	US1M		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/7103917/
 Boot Cap:	100nF
 Boot Res:	1 Ohm		:http://dk.rs-online.com/web/p/overflademontering-faste-modstande/8094801/	
-Relay:		DG85D		:http://dk.rs-online.com/web/p/kontaktorer/0420401/
+Relay:					:http://dk.rs-online.com/web/p/kontaktorer/0420401/
 Inrush R:	75 ohm 		:http://dk.rs-online.com/web/p/hulmontering-faste-modstande/8469898/
 Inru relay:	G6B			:http://dk.rs-online.com/web/p/relaeer-arreterende/0808387/
 Diode til relays		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/6331322/
