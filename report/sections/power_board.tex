@@ -263,4 +263,32 @@ The time it takes to charge the capacitor the energy that is used in each period
 The 258 nS are equivalent to 0.6\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 99.4\%.
 
 % subsection power_board (end)
+
+\subsubsection{Supply Capacitors}
+\label{ssub:sup_caps}
+Driving an inductive load, such as a motor, requires capacitors placed close to the MOSFETS in order to minimize the voltage spikes created by the load current and parasitic inductance in the wires from the supply.
+
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{graphics/plecs_schem.png}
+	\caption{....}
+	\label{fig:plecs_schem}
+\end{figure}
+
+
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/sim_currents.tex}
+	\caption{.....}
+	\label{fig:sim_currents}
+\end{figure}
+
+
 % section preliminary_testing (end)
+
+
+
