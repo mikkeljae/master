@@ -267,9 +267,9 @@ The 258 nS are equivalent to 0.6\% duty cycle and the maximum duty cycle for the
 \subsubsection{Supply Capacitors}
 \label{ssub:sup_caps}
 Driving an inductive load, such as a motor, requires capacitors placed close to the MOSFETS in order to minimize the voltage spikes created by the load current and parasitic inductance in the wires from the supply.
-Calculations and simulation in PLECS is used to determine the size and requirements of the load capacitors.
+This section will determine the size and requirements of the supply capacitors using calculations and simulation in PLECS.
 
-The ripple current across the motor inductor needs to be determined as this is the current the supply capacitors need to supply.
+First off, the ripple current across the motor inductor needs to be determined as this is the current the supply capacitors need to supply.
 Equations \ref{eq:inductor_gen} shows the general inductor equation and in \ref{eq:inductor_rip} it is re factored to calculate the ripple current.
 \begin{equation}
 	V(t) = L \cdot \frac{dI(t)}{dt}
@@ -288,19 +288,19 @@ The highest ripple current is found when the duty cycle is 50$\%$ and the full v
 	\label{eq:inductor_rip_size}
 \end{equation}
 
-The peak-to-peak ripple current of $6.7$A is also found when simulation the system using PLECS as shown in figure \ref{fig:sim_currents}.
+The peak-to-peak ripple current of $6.7$A is also found when simulating the system using PLECS as shown in figure \ref{fig:sim_currents}.
 The load current experienced by the supply is also shown in figure \ref{fig:sim_currents}, where abrupt changes in current are seen. 
 
 \begin{figure}[h]
 	\centering
     \input{graphics/sim_currents.tex}
-	\caption{.....}
+	\caption{Current in the motor and the total load when when simulating a full bridge in PLECS.}
 	\label{fig:sim_currents}
 \end{figure}
 
 This is clearly problematic and even if the supply wires have just a few nH in parasitic inductance it would correspond to a huge voltage ripple which is unwanted. 
 Therefore supply capacitors needs to be added to the circuit as close to the switching MOSFET as possibly.
-The minimum capacitor can be calculated by refactoring the general capacitor equation shown in \ref{eq:cap_gen} into equation 
+The minimum capacitance can be calculated by refactoring the general capacitor equation shown in \ref{eq:cap_gen} into equation \ref{eq:cap_min}.
 \begin{equation} 
 	I(t) = C \cdot \frac{dV(t)}{dt}
 	\label{eq:cap_gen}
@@ -310,7 +310,8 @@ The minimum capacitor can be calculated by refactoring the general capacitor equ
 	C = \Delta I \cdot \frac{\Delta t}{\Delta V}
 	\label{eq:cap_min}
 \end{equation}
-There is no specified requirements for the maximum allowable voltage ripple on such a board, but it is generally undesired and it was decided that the board should be designed should that it it less than 1V.
+There is no specified requirements for the maximum allowable voltage ripple on such a board, but it is generally undesired.
+It was decided to design the board to have a voltage ripple of less than 1V.
 Using the found ripple current and a maximum voltage ripple of 1 V, the minimum value can be found as in equation \ref{eq:cap_min_size}.
 
 \begin{equation} 
@@ -325,8 +326,8 @@ When inspecting capacitor data sheets the ripple current is given in RMS values.
 The RMS value of the load current is calculated to be 1.9A.
 It was chosen to use the \texttt{MAL215099911E3} capacitors and let them be connected in parallel. 
 The relevant parameters of this capacitor is shown in table \ref{tab:cap_parameters}.
-Connecting two of these capacitors in parallel would yield a total allowed ripple current of 2.6A, which would be enough.
-To allow for some headroom it was chosen to use four which yields a combined maximum ripple current of 5.3A. 
+Connecting two of these capacitors in parallel would yield a total allowed RMS ripple current of 2.6A, which would be enough.
+To allow for some headroom it was chosen to use four, which yields a combined maximum RMS ripple current of 5.3A. 
 Clearly the total capacitance of 1320$\mu$F is far above the minimum needed of 151$\mu$F, but this will just decrease the voltage ripple.
 
 \begin{table}[tb]
@@ -347,9 +348,9 @@ Clearly the total capacitance of 1320$\mu$F is far above the minimum needed of 1
 \end{table}
 
 The disadvantage of the electrolytic capacitors is that they are not usable for high frequency content.
-Therefore it was chosen to add ceramic capacitor as they perform much better at high frequencies. 
+Therefore it was chosen to add ceramic capacitors as they perform much better at high frequencies. 
 Calculating the needed size of these is very complicated as the high frequency content is determined by the switching speed of the MOSFETS, parasitics and the circuit board layout in general. 
-Based on previous experience it was decided, to use four 1$\mu$F ceramic capacitors in the \texttt{0805} housing as they can easily be changed if it turns more capacitance is needed.
+Based on previous experience it was decided, to use four 1$\mu$F ceramic capacitors in the \texttt{0805} housing as they can easily be changed if it turns out that more capacitance is needed.
 
 In order to be able to simulate the system, an estimate of the inductance of the supply wires is needed.
 According to \cite{partial_induc} the inductance of the wire can be estimated using equations \ref{eq:wire_induc1} to \ref{eq:wire_induc3}.
@@ -370,9 +371,9 @@ The wire length and radius is not known at this point, but it assumed that it wi
 Inserting the appropriate values yields a wire inductance of 575nH.
 
 The system was built in PLECS in order to simulate the currents and voltages and verify the designed system.
-The PLECS model is shown in figure \ref{fig:plecs_schem}
+The PLECS model is shown in figure \ref{fig:plecs_schem}.
 
-\begin{figure}[H]
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=1\linewidth]{graphics/plecs_schem.png}
 	\caption{Full bridge circuit with supply capacitors and wire inductance modelled using PLECS. The Motor box consists of an inductor and a resistor in series. All components apart from the MOSFETS have the same values as the chosen components.}
@@ -380,10 +381,29 @@ The PLECS model is shown in figure \ref{fig:plecs_schem}
 \end{figure}	
 
 Simulating the system at 50\% duty cycle yields a voltage ripple of approximately 24mV, which is definitely acceptable. 
-It can also be noted that an effect of the inductance in the supply wires and the supply capacitors is that the supply current is low pass filtered and is thereby protected against almost all of the current ripple and only needs to supply the DC component of the load current.
+
+It can also be noted that an effect of the inductance in the supply wires and the supply capacitors is that the supply current is low pass filtered and is thereby protected against the ripple current and only needs to supply the DC component of the load current.
+
+The current drawn from the capacitors is shown in figure \ref{fig:cap_currents}.
+Here it can be seen that the electrolytic capacitors supply the majority of the current, while the ceramic capacitors supply a small spike with high frequency content.
+It should be noted that in the simulations there are no difference between the two types of capacitors other than the ESR put in series with the electrolytic capacitors. 
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/cap_currents.tex}
+	\caption{Current drawn from the electrolytic and ceramic capacitors, when simulating in PLECS. }
+	\label{fig:cap_currents}
+\end{figure}
+
+Generally the designed features of the circuit was verified using the PLECS model.
 
 
-
+\subsubsection{Inrush Current}
+\label{ssub:inrush_current}
+When the system is initially turned on, the capacitors will begin to charge and they will draw a huge amount of current as there is only the ESR to limit the current. 
+A resistor should be added to limit this inrush current. 
+Adding it in the main current path would introduce considerable losses.
+blbalblablab
 
 % section preliminary_testing (end)
 
