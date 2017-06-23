@@ -22,4 +22,23 @@ xlabel('Time [S]')
 ylabel('Current [A]')
 xlim([2e-3 2.25e-3])
 
-matlab2tikz('sim_currents.tex')
+%matlab2tikz('sim_currents.tex')
+
+
+
+%% CAP PLOT
+
+M_cap = csvread('cap_current.csv');
+cap_time = M_cap(:,1);
+cap_cera_current = M_cap(:,2);
+cap_elec_current = M_cap(:,3);
+
+
+figure
+plot(cap_time,cap_cera_current,cap_time,cap_elec_current)
+title('Capacitors')
+xlabel('Time [S]')
+ylabel('Current [A]')
+xlim([4.999e-3 5.025e-3])
+legend('Ceramic Capacitors','Electrolytic Capacitors')
+matlab2tikz('cap_currents.tex')
