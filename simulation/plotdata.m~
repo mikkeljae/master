@@ -11,12 +11,31 @@ figure
 subplot(2,1,1)
 plot(motor_time,motor_current)
 title('Motor')
-xlabel('Time [S]')
+%xlabel('Time [S]')
 ylabel('Current [A]')
-xlim([2e-3 4e-3])
+xlim([2e-3 2.25e-3])
 
 subplot(2,1,2)
 plot(load_time,load_current)
+title('Total Load')
+xlabel('Time [S]')
+ylabel('Current [A]')
+xlim([2e-3 2.25e-3])
+
+%matlab2tikz('sim_currents.tex')
+
+
+
+%% CAP PLOT
+
+M_cap = csvread('cap_current.csv');
+cap_time = M_cap(:,1);
+cap_cera_current = M_cap(:,2);
+cap_elcec_current = M_cap(:,2);
+
+
+figure
+plot(cap_time,cap_cera_current)
 title('Total Load')
 xlabel('Time [S]')
 ylabel('Current [A]')
