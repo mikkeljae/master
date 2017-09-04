@@ -263,4 +263,149 @@ The time it takes to charge the capacitor the energy that is used in each period
 The 258 nS are equivalent to 0.6\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 99.4\%.
 
 % subsection power_board (end)
+
+\subsubsection{Supply Capacitors}
+\label{ssub:sup_caps}
+Driving an inductive load, such as a motor, requires capacitors placed close to the MOSFETS in order to minimize the voltage spikes created by the load current and parasitic inductance in the wires from the supply.
+This section will determine the size and requirements of the supply capacitors using calculations and simulation in PLECS.
+
+First off, the ripple current across the motor inductor needs to be determined as this is the current the supply capacitors need to supply.
+Equations \ref{eq:inductor_gen} shows the general inductor equation and in \ref{eq:inductor_rip} it is re factored to calculate the ripple current.
+\begin{equation}
+	V(t) = L \cdot \frac{dI(t)}{dt}
+	\label{eq:inductor_gen}
+\end{equation}
+
+\begin{equation}
+	\Delta I = \frac{\Delta V}{L} \Delta t
+	\label{eq:inductor_rip}
+\end{equation}
+
+The highest ripple current is found when the duty cycle is 50$\%$ and the full voltage of 24V is applied as calculated in equation \ref{eq:inductor_rip_size}.
+
+\begin{equation}
+	\Delta I = \frac{24}{82\cdot 10^{-6}} \cdot 0.5 \cdot \frac{1}{22000} = 6.7 [A] 
+	\label{eq:inductor_rip_size}
+\end{equation}
+
+The peak-to-peak ripple current of $6.7$A is also found when simulating the system using PLECS as shown in figure \ref{fig:sim_currents}.
+The load current experienced by the supply is also shown in figure \ref{fig:sim_currents}, where abrupt changes in current are seen. 
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/sim_currents.tex}
+	\caption{Current in the motor and the total load when when simulating a full bridge in PLECS.}
+	\label{fig:sim_currents}
+\end{figure}
+
+This is clearly problematic and even if the supply wires have just a few nH in parasitic inductance it would correspond to a huge voltage ripple which is unwanted. 
+Therefore supply capacitors needs to be added to the circuit as close to the switching MOSFET as possibly.
+The minimum capacitance can be calculated by refactoring the general capacitor equation shown in \ref{eq:cap_gen} into equation \ref{eq:cap_min}.
+\begin{equation} 
+	I(t) = C \cdot \frac{dV(t)}{dt}
+	\label{eq:cap_gen}
+\end{equation}
+
+\begin{equation} 
+	C = \Delta I \cdot \frac{\Delta t}{\Delta V}
+	\label{eq:cap_min}
+\end{equation}
+There is no specified requirements for the maximum allowable voltage ripple on such a board, but it is generally undesired.
+It was decided to design the board to have a voltage ripple of less than 1V.
+Using the found ripple current and a maximum voltage ripple of 1 V, the minimum value can be found as in equation \ref{eq:cap_min_size}.
+
+\begin{equation} 
+	C = 6.7 \cdot \frac{0.5 \cdot \frac{1}{22000}}{1 } = 151 [\mu F]
+	\label{eq:cap_min_size}
+\end{equation}
+
+It can now be decided which capacitors should be used.
+It was chosen to use electrolytic capacitors as they generally are cheaper, when in this range of capacitance. 
+Another reason to choose electrolytic capacitors is their equivalent series resistance, ESR, that will dampen the oscillations introduces by the LC circuit of the capacitors and the parasitic inductance of the wires.
+When inspecting capacitor data sheets the ripple current is given in RMS values. 
+The RMS value of the load current is calculated to be 1.9A.
+It was chosen to use the \texttt{MAL215099911E3} capacitors and let them be connected in parallel. 
+The relevant parameters of this capacitor is shown in table \ref{tab:cap_parameters}.
+Connecting two of these capacitors in parallel would yield a total allowed RMS ripple current of 2.6A, which would be enough.
+To allow for some headroom it was chosen to use four, which yields a combined maximum RMS ripple current of 5.3A. 
+Clearly the total capacitance of 1320$\mu$F is far above the minimum needed of 151$\mu$F, but this will just decrease the voltage ripple.
+
+\begin{table}[tb]
+	\centering
+	\begin{tabular}{|r|c|}
+	\hline
+		\textbf{Parameter} & \textbf{Value} \\
+	\hline
+		$U_r$ & 100 [V]  \\ \hline
+		$C_r$ & 330 [$\mu$F]  \\ \hline
+		$I_r$ RMS @ 100[kHz] & 1.4 [A]  \\ \hline
+		$I_r$ RMS @ 10[kHz] & 1.3 [A]  \\ \hline
+		
+	\end{tabular}
+	\caption{Relevant parameters of the \texttt{MAL215099911E3} capacitor \cite{sup_cap}.
+	Here $U_r$ is the rated voltage, $C_r$ is the rated capacitance and $I_r$ is the ripple current.}
+	\label{tab:cap_parameters}
+\end{table}
+
+The disadvantage of the electrolytic capacitors is that they are not usable for high frequency content.
+Therefore it was chosen to add ceramic capacitors as they perform much better at high frequencies. 
+Calculating the needed size of these is very complicated as the high frequency content is determined by the switching speed of the MOSFETS, parasitics and the circuit board layout in general. 
+Based on previous experience it was decided, to use four 1$\mu$F ceramic capacitors in the \texttt{0805} housing as they can easily be changed if it turns out that more capacitance is needed.
+
+In order to be able to simulate the system, an estimate of the inductance of the supply wires is needed.
+According to \cite{partial_induc} the inductance of the wire can be estimated using equations \ref{eq:wire_induc1} to \ref{eq:wire_induc3}.
+
+\begin{equation}
+	L_p = \frac{\mu_0}{2 \pi} \cdot L \cdot \big(ln(\frac{2L}{r}-1)\big)
+	\label{eq:wire_induc1}
+\end{equation}
+\begin{equation}
+	L_i = \frac{\mu_0}{8 \pi} \cdot L
+\end{equation}
+\begin{equation}
+	L_w = L_p + L_i
+	\label{eq:wire_induc3}
+\end{equation}
+Where $\mu_0$ is permeability of free air, L is the length of the wire, r is the radius of the wire copper, $L_p$ is the external self partial inductance, $L_i$ is the internal partial inductance of the wire and $L_w$ is the total self partial inductance.
+The wire length and radius is not known at this point, but it assumed that it will be approximately 0.5m long and with a radius of 2mm. 
+Inserting the appropriate values yields a wire inductance of 575nH.
+
+The system was built in PLECS in order to simulate the currents and voltages and verify the designed system.
+The PLECS model is shown in figure \ref{fig:plecs_schem}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\linewidth]{graphics/plecs_schem.png}
+	\caption{Full bridge circuit with supply capacitors and wire inductance modelled using PLECS. The Motor box consists of an inductor and a resistor in series. All components apart from the MOSFETS have the same values as the chosen components.}
+	\label{fig:plecs_schem}
+\end{figure}	
+
+Simulating the system at 50\% duty cycle yields a voltage ripple of approximately 24mV, which is definitely acceptable. 
+
+It can also be noted that an effect of the inductance in the supply wires and the supply capacitors is that the supply current is low pass filtered and is thereby protected against the ripple current and only needs to supply the DC component of the load current.
+
+The current drawn from the capacitors is shown in figure \ref{fig:cap_currents}.
+Here it can be seen that the electrolytic capacitors supply the majority of the current, while the ceramic capacitors supply a small spike with high frequency content.
+It should be noted that in the simulations there are no difference between the two types of capacitors other than the ESR put in series with the electrolytic capacitors. 
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/cap_currents.tex}
+	\caption{Current drawn from the electrolytic and ceramic capacitors, when simulating in PLECS. }
+	\label{fig:cap_currents}
+\end{figure}
+
+Generally the designed features of the circuit was verified using the PLECS model.
+
+
+\subsubsection{Inrush Current}
+\label{ssub:inrush_current}
+When the system is initially turned on, the capacitors will begin to charge and they will draw a huge amount of current as there is only the ESR to limit the current. 
+A resistor should be added to limit this inrush current. 
+Adding it in the main current path would introduce considerable losses.
+blbalblablab
+
 % section preliminary_testing (end)
+
+
+

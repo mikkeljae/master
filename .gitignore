@@ -18,6 +18,8 @@ main.pdf
 *.glsdefs
 *.ist
 *.lot
+*.pdf
+*.auxlock
 OD.tex
 
 #sublime
@@ -33,3 +35,7 @@ build/
 
 #Python
 *.pyc
+
+#ticks?
+*.dpth
+*.md5
