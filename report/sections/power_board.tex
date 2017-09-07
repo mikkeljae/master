@@ -192,8 +192,7 @@ The bootstrap circuitry for this project will be designed to have a maximum duty
 
 The bootstrap diode needs to have a fast recovery time, preferably below 100 ns \cite{bootstrap_infineon}, to minimize the energy fed back to the supply from the bootstrap capacitor.
 \texttt{US1M-E3} was chosen as it has a reverse recovery time of 75 ns and comes in SMD packaging. 
-It allows for a maximum average forward current of 1 A and a maximum forward voltage drop of 1.7 V.
-\mikkel{Kildehenvisning til datasheet?}
+It allows for a maximum average forward current of 1 A and a maximum forward voltage drop of 1.7 V \cite{diode_ds}.
 Determining the values for the bootstrap capacitor was done using the calculations shown in \cite{bootstrap_ON}.
 The maximum allowed voltage drop across the bootstrap capacitor during \texttt{on} time needs to be determined: 
 \begin{equation}
@@ -243,7 +242,6 @@ The initial charge current to the capacitor needs to be limited in order not to 
 Therefore a resistor is put in series with the diode.
 The resistor value should not be too big as the voltage drop across it is subtracted from the bootstrap capacitor voltage.
 A 1 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 12 A.
-\mikkel{Do we have a 1 ohm resistor SMD?}
 This is clearly above the maximum average forward current of the diode, but the diode can withstand a 8.3 ms single half sine-wave of maximum 30 A \cite{diode_ds}.
 The charging of a capacitor is approximately finished after 5 time constants
 \mikkel{MANGLER KILDE!!! Denne er måske OK \url{http://www.electronics-tutorials.ws/rc/rc_1.html}}
@@ -253,7 +251,6 @@ T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 0.5 \mu S
 Meaning that the diode can be exposed to a maximum of 12A for $0.5 \mu S $, which is well below the absolute maximum rating.
 It should also be noted that bootstrap capacitor needs at least $0.5 \mu S $ for the initial charging.
 \mikkel{In the application note they state that they include a 400ns bootstrap}
-
 
 Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
 The time it takes to charge the capacitor the energy that is used in each period is:
@@ -397,14 +394,13 @@ It should be noted that in the simulations there are no difference between the t
 
 Generally the designed features of the circuit was verified using the PLECS model.
 
-
 \subsubsection{Inrush Current}
 \label{ssub:inrush_current}
 When the system is initially turned on, the capacitors will begin to charge and they will draw a huge amount of current as there is only the ESR to limit the current. 
 A resistor should be added to limit this inrush current. 
-Adding it in the main current path would introduce considerable losses.
-blbalblablab
-
+Adding the resistor to the main current path would introduce considerable losses, which is why another current path is added to the circuit.
+It is done by adding the resistor and a relay in series with the main relay. 
+This relay should be switched \texttt{on} to charge the capacitors before switching \texttt{on} the main relay.
 % section preliminary_testing (end)
 
 
