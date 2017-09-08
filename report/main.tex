@@ -10,6 +10,7 @@
 \usepackage{rsfso} %Add the fancy L used in lagrange
 \usepackage{siunitx}
 \usepackage{pgfplots}
+\usepackage{letltxmacro}
 \usepackage{tikz}
 % Should force tikz to only run once on each included .tex file
 %\usetikzlibrary{external} 
@@ -18,6 +19,14 @@
 %"program": "pdflatex",
 %"command": ["latexmk", "-cd", "-e", "$pdflatex = '%E -shell-escape -interaction=nonstopmode -synctex=1 %S %O'", "-f", "-pdf"],
 
+
+% The next lines will make sure todo's and missingtables are not run externally. 
+% If they are not here, then todo's will not disappear when you remove them in the latex code.
+\LetLtxMacro{\oldtodo}{\todo}
+\renewcommand{\todo}[2][]{\tikzexternaldisable\oldtodo[#1]{#2}\tikzexternalenable}
+
+\LetLtxMacro{\oldmissingfigure}{\missingfigure}
+\renewcommand{\missingfigure}[2][]{\tikzexternaldisable\oldmissingfigure[{#1}]{#2}\tikzexternalenable}
 
 \usepackage[font=footnotesize,labelfont=bf]{caption}
 
@@ -46,5 +55,8 @@
 \input{sections/power_board}
 \clearpage
 \newpage
-\input{bib}
+%\input{bib}
+
+\bibliographystyle{plain}
+\bibliography{bibliography} 
 \end{document}
