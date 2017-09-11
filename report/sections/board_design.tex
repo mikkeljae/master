@@ -28,6 +28,34 @@ As a result a review of the circuitry around the 3.3V rail is necessary to ensur
 The MicroZed power delivery system, the encoders of the system, the endstops and part of the emergency circuitry are all driven from a 5V rail.
 The Motor Driver, the HIP4081 and the relay driving circuitry is driven from a 12V rail.
 Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.\\
+The current requirement for each of these rails are discussed in the following paragraphs
+
+\paragraph{3.3V:} % (fold)
+\label{par:3_3v}
+As mentioned, this rail is intended for powering the MicroZed IO banks.
+In the original design the LMR10510XMF DC/DC converter is used to provide the necessary power.
+This chip is capable of supplying up to 1A.
+Components exist in the same series which are pin compatible and are capable of supplying up to 2A.
+The RF Transceiver used in this project, however, \ref{} requires only up to 15mA when receiving data.
+Assuming that Avnet has already provided headroom for the IO bank supply and considering that this project makes little use of the IO on the Zynq-7000 chip, it is deemed unnecessary to upgrade this supply and the original design is used as is.
+% paragraph 3_3v_ (end)
+
+\paragraph{5V:} % (fold)
+\label{par:5v}
+This rail supplies, mainly, the MicroZed.
+The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
+In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
+There are two types of encoders, the HEDS-5540 \cite{heds5540}, which requires a maximum of 85mA and a Rolin magnetic encoder, which requires a maximum of 25mA.\\
+The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
+The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
+This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
+Another 10mA is added to that figure due to the collector current possible on the transistor side
+% paragraph 5 (end)
+
+\paragraph{12V:} % (fold)
+\label{par:12v}
+LEV: 461mA OMRON: 16.7mA
+% paragraph 12v_ (end)
 In summary, the rails used in this system are:
 \begin{itemize}
 	\item 3.3V
