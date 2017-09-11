@@ -26,8 +26,9 @@ This power delivery system provides, amongst other voltages, the 3.3V rail, orig
 In this system however, the RF tranceiver is also powered from this rail.
 As a result a review of the circuitry around the 3.3V rail is necessary to ensure that it can provide the required power.
 The MicroZed power delivery system, the encoders of the system, the endstops and part of the emergency circuitry are all driven from a 5V rail.
-The Motor Driver, the HIP4081 and the relay driving circuitry is driven from a 12V rail.
-Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.\\
+The Motor Driver, the HIP4081 \cite{driver} and the relay driving circuitry is driven from a 12V rail.
+Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.
+This rail is not crucial to the design of the board as it is provided by an external, mains connected power supply and will not be explored further in this section.\\
 The current requirement for each of these rails are discussed in the following paragraphs
 
 \paragraph{3.3V:} % (fold)
@@ -49,20 +50,72 @@ There are two types of encoders, the HEDS-5540 \cite{heds5540}, which requires a
 The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
 The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
 This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
-Another 10mA is added to that figure due to the collector current possible on the transistor side
+Another 10mA is added to that figure due to the collector current possible on the transistor side.\\
+Finally the emergency circuitry along with some other digital electronics are powered from the 5V rail.
+As these are all digital IC's that operate on nothing but signals, their individual powers are negligible but a very conservative 25mA power budget is provided for all of the digital electronics on the 5V rail. This brings the total power budget for the 5V rail to $\approx$2.1A.
+See table \ref{tab:5vpowerbudget} for a full overview.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r}
+		 Component & Current [mA]\\
+		 \hline
+		 MicroZed & 1850\\
+		 HEDS-5540 & 85\\
+		 Rolin Enc. & 25\\
+		 TCST2103 & 110\\
+		 Digital & 25\\
+		 \hline
+		 Total & 2095
+	\end{tabular}
+	\caption{Power budget for the 5V rail}
+	\label{tab:5vpowerbudget}
+\end{table}
+
+In \cite{isaswarm} the authors used a design in which the PTH08080 is used to generate a 5V rail.
+Reusing this module will save on design time as well as the budget available to the project and as such is desirable.
+This module however, is capable of supplying only 2A at 5V, slightly less than the value calculated in this section.
+By far the largest contributor to the power budget is the MicroZed.
+The calculation of the contribution from the MicroZed is done assuming 85\% utilisation of PL and a conservative 80\% efficiency of internal DC/DC converters.
+Considering this, it is safe to assume that the real power draw from the MicroZed is significantly smaller than the calculated value and as a result it is chosen to reuse the PTH08080 despite of apparent shortcomings of the module.
 % paragraph 5 (end)
 
 \paragraph{12V:} % (fold)
 \label{par:12v}
-LEV: 461mA OMRON: 16.7mA
+This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
+The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
+The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail.\\
+There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
+Both of these require power to stay in the closed position.
+The first, the G6B \cite{g6b}, requires 16.7mA while the former, the LEV100A4ANG \cite{lev100}, requires 461mA.\\
+The motor driver of the system, the HIP4081 requires only 10mA.
+As mentioned, the bootstrap circuitry is also powered from the 12V rail.
+Rather than a steady supply, this circuitry requires a large peak current for short periods while charging in between switching.
+For this reason the design choice here is to determine what is available and choose the component which yields the most headroom while still being economically feasible.
+Amongst all of the components the total power budget for the 12V rail is $\approx$1340mA.
+See table \ref{tab:12vpowerbudget} for a full overview.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r}
+		 Component & Current [mA]\\
+		 \hline
+		 PTH08080 & 850\\
+		 G6B & 16.7\\
+		 LEV100A4ANG & 461\\
+		 HIP4081 & 10\\
+		 \hline
+		 Total & 1337.7
+	\end{tabular}
+	\caption{Power budget for the 12V rail}
+	\label{tab:12vpowerbudget}
+\end{table}
+
+The PTN78020 delivers 6A at 12V and is part of the same series as the PTH08080 described earlier.
+This allows many of the same design procedures to be reused.
+In addition, the 6A current limit leaves sufficient room for the current spikes expected from the bootstrap circuitry.
+The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
 % paragraph 12v_ (end)
-In summary, the rails used in this system are:
-\begin{itemize}
-	\item 3.3V
-	\item 5V
-	\item 12V
-	\item 24V
-\end{itemize}
 
 % subsection voltage_rails (end)
 
