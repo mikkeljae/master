@@ -67,3 +67,17 @@ In summary, the rails used in this system are:
 % subsection voltage_rails (end)
 
 % section board_design (end)
+
+
+\mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
+\subsection{PTN78020H Circuit}
+The \texttt{PTN78020H} DC/DC converter is used to generate the 12V rail. 
+The component requires input and output capacitors in order to function properly and a resistor is needed to set the wanted output voltage. 
+According to the components datasheet \cite{PTN78020H}, a 1\% 383 k$\Omega$ is needed to generate an output voltage of 12V.
+The datasheet furthermore specifies that ceramic capacitance of 18.8 $\mu$F is needed at the input. 
+It was chosen to use two 0805 10 $\mu$F capacitors.
+In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
+The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator. 
+It was therefore decided to add two 330 $\mu$F in parallel. 
+Two 10 $\mu$F ceramic capacitors are placed at the output to further improve the transient response. 
+\mikkel{Figure?}
