@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-to_tikz = 1;
+to_tikz = 0;
 
 %data1 = load('C1hbridge00000.dat');
 %time = data1(:,1);
@@ -25,7 +25,7 @@ title('Motor Driver Signals')
 xlabel('Time [S]')
 ylabel('Voltage [V]')
 
-legend('LOW-side input signal','LOW-side gate signal','HIGH-side gate signal')
+legend('LOW-side input signal','HIGH-side gate signal','LOW-side gate signal')
 xlim([1.1*10^(-3) 2.8*10^(-3)])
 ylim([-2 35])
 if to_tikz == 1
