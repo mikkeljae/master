@@ -1,0 +1,41 @@
+%!TEX root = ../main.tex
+\section{Board Design} % (fold)
+\label{sec:board_design}
+Multiple electronics components are required to realise the double pendulum being developed throughout this report.
+This section explores the design of those components and the communication between them.
+Most of the circuitry is combined on a single PCB, the driver board, however some of the functionality is moved to smaller boards, local to the place where they are needed.\\
+
+The components of the system are listed here:
+\begin{itemize}
+	\item Motor Encoder
+	\item Joint Encoder
+	\item End Stops
+	\item Motor Driver
+	\item Emergency Circuitry
+	\item Relay Driver
+	\item RF Transceiver
+	\item MicroZed 
+\end{itemize}
+Many of these components require a number of subcomponents, which will be explored further in later sections.
+
+\subsection{Voltage Rails} % (fold)
+\label{sub:voltage_rails}
+In the design of the board it is necessary to determine which voltage rails are required for the system to function.
+The power delivery for the MicroZed was designed by the authors in an earlier project \cite{isaswarm} and will be reused with minor changes.
+This power delivery system provides, amongst other voltages, the 3.3V rail, originally intended for powering the MicroZed IO banks only.
+In this system however, the RF tranceiver is also powered from this rail.
+As a result a review of the circuitry around the 3.3V rail is necessary to ensure that it can provide the required power.
+The MicroZed power delivery system, the encoders of the system, the endstops and part of the emergency circuitry are all driven from a 5V rail.
+The Motor Driver, the HIP4081 and the relay driving circuitry is driven from a 12V rail.
+Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.\\
+In summary, the rails used in this system are:
+\begin{itemize}
+	\item 3.3V
+	\item 5V
+	\item 12V
+	\item 24V
+\end{itemize}
+
+% subsection voltage_rails (end)
+
+% section board_design (end)
