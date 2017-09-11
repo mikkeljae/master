@@ -3,7 +3,7 @@ FET:		IBP045N10N3	:http://dk.rs-online.com/web/p/mosfet-transistorer/7528378/
 Boot Diode:	US1M		:http://dk.rs-online.com/web/p/dioder-ensretter-og-schottky-dioder/7103917/
 Diode til relays		:Same^^
 Boot Res:	1 Ohm		:http://dk.rs-online.com/web/p/overflademontering-faste-modstande/8094801/	
-Relay:					:http://dk.rs-online.com/web/p/kontaktorer/0420401/
+Relay:		LEV100		:http://dk.rs-online.com/web/p/kontaktorer/0420401/
 Inrush R:	75 ohm 		:http://dk.rs-online.com/web/p/hulmontering-faste-modstande/8469898/
 Inru relay:	G6B			:http://dk.rs-online.com/web/p/relaeer-arreterende/0808387/
 2Mosfet for relays 		:http://dk.rs-online.com/web/p/mosfet-transistorer/3544890/
@@ -55,10 +55,10 @@ Procedure:
 		Relay: http://dk.rs-online.com/web/p/relaeer/9098034/
 		Diode
 		Mosfet with max gate-soruce = 8V!: http://dk.rs-online.com/web/p/mosfet-transistorer/3544890/
->>>>>>> a1c25d904f5d40f0895561ed332abf7f2001f54b
 
 Notes for power supply
 		- Could be parallelized with batteries. Possibly 2 12 Volts batteries.
+		- Discussion of wire thickness on layout
 
 		
 		https://www.embeddedrelated.com/showarticle/422.php#point1

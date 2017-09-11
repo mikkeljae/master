@@ -1,6 +1,7 @@
 clear all; close all; clc;
 
 format long
+
 fs = 22000;
 T_on = 0.5* 1/fs;
 V = 24;
@@ -19,6 +20,15 @@ charge_time = 5*tau
 %From datasheet:
 ESL = 0.1/(2*pi*fs*330e-6)
 
+%Parasitic inductance
+L = 0.5;
+r = 1.5e-3;
+mu0 = 4*pi*1e-7; %Permebility of free air
+
+Lp = mu0/(2*pi) * L *(log(2*L/r)-1)
+Li = mu0/(8*pi)*L
+
+Lwire = Lp + Li
 
 %%Freewheling diode:
 R_inrush_relay_coil = 1800;
