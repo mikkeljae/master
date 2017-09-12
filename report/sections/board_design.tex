@@ -69,8 +69,8 @@ In summary, the rails used in this system are:
 % section board_design (end)
 
 
-\mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
 \subsection{PTN78020H Circuit}
+\mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
 The \texttt{PTN78020H} DC/DC converter is used to generate the 12V rail. 
 The component requires input and output capacitors in order to function properly and a resistor is needed to set the wanted output voltage. 
 According to the components datasheet \cite{PTN78020H}, a 1\% 383 k$\Omega$ is needed to generate an output voltage of 12V.
@@ -81,3 +81,70 @@ The datasheet specifies that if the application has load transients additional c
 It was therefore decided to add two 330 $\mu$F in parallel. 
 Two 10 $\mu$F ceramic capacitors are placed at the output to further improve the transient response. 
 \mikkel{Figure?}
+
+
+
+\subsection{Current Measuring}
+\mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
+While reading in the literature it was found that measuring the current through the motor is beneficial for controlling the pendulums.
+
+Current measurements are generally done by either hall effect based sensors or shunt resistors. 
+Hall effect based sensors are generally the expensive solution and measuring small currents can be problematic. 
+Therefore it was chosen to use a shunt resistor.
+The basic idea is to place a resistor with a very low resistance in series with the load which current should be measured. 
+Measuring the motor current when using a H-bridge can be done in a various of ways.
+The three main ones are high-side, in-line and low-side placement of the shunt resistor as shown in figure \ref{fig:shunt_measure_high_in_low}.
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
+	\caption{xxxx.}
+	\label{fig:shunt_measure_high_in_low}
+\end{figure}
+\mikkel{Figure should be replaced by own illustration}
+
+\cite{shunt_placement} and \cite{Current_Sense_Circuit_Collection} specifies the advantages and disadvantages of the three configurations. 
+Based on that it was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and bi-directional current measurement is not needed.
+
+
+\subsubsection{Requirements for the Current Measuring Circuit}
+The output of the current measuring circuit is an analogue signal that needs to be measured by the ADC of the Zynq chip.
+According to the Zynqs ADC user guide \cite{zynq_adc}, the measurable input range is from 0V to 1V, but the maximum allowed input voltage is 1.9V according to \cite{adc_zynq_webanswer}.
+The absolute maximum current through the motor is the stall current which is 80A, but the motor will run at well below this level in normal operation.
+The normal operation currents are expected to be up to 30A???(needs explanation somewhere...).
+It was therefore decided that the circuit  needs to be able to measure currents of at least up to 40A.
+The resolution per Ampere is increased by decreasing the current range that can be measured,
+If the current gets any higher the ADC input should not be harmed meaning that the input voltage should not exceed 1.9V.
+
+\mikkel{Below should be formatted differently}
+\textbf{Requirements for the circuit:}
+\begin{itemize}
+	\item ADC input voltage does not exceed 1.9V when motor is stalling.
+	\item Measures currents up to 40A, at minimum.
+\end{itemize}
+
+
+\subsubsection{Designing the Current Measuring Circuit}
+The requirements listed above can be realized in a number of ways by choosing resistance of the shunt resistor and gain of the current-sense amplifier.
+It was chosen to use a 200 $\mu \Omega$ SMD shunt resistor, as it is was the smallest resistance available at the university's electronics supplier. 
+Such a small resistance yields a minimal voltage drop and thus a minimal power consumption.
+The \texttt{INA210AIDCKT} from Texas Instruments was chosen as the current-sense amplifier, because is has all the wanted features, has a gain of 100 and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale \cite{INA210AIDCKT}.
+Using these components the stalling current of 80A will result in input voltage to the ADC of 1.6 V as shown in \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}.
+
+\begin{equation}
+	V_{max,input} = G \cdot V_{shunt}
+	\label{eq:adc_input_voltage1}
+\end{equation}
+\begin{equation}
+	V_{max,input} = G \cdot R_{shunt} \cdot I_{stall} = 100 \cdot 200\cdot10^{-6} \cdot 80 = 1.6V
+	\label{eq:adc_input_voltage2}
+\end{equation}
+
+The maximum current that can be measured is 50A as shown in \ref{eq:adc_input_voltage3}.
+
+\begin{equation}
+	I_{max, measurable} = \frac{V_{max, measurable}}{R_{shunt}\cdot G} = \frac{1}{100 \cdot 200\cdot10^{-6} } = 50A
+	\label{eq:adc_input_voltage3}
+\end{equation}
+
+These results clearly shows that the design meets the requirements.
