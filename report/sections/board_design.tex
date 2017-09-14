@@ -187,7 +187,7 @@ If the current gets any higher the ADC input should not be harmed meaning that t
 The requirements listed above can be realized in a number of ways by choosing resistance of the shunt resistor and gain of the current-sense amplifier.
 It was chosen to use a 200 $\mu \Omega$ SMD shunt resistor, as it is was the smallest resistance available at the university's electronics supplier. 
 Such a small resistance yields a minimal voltage drop and thus a minimal power consumption.
-The \texttt{INA210AIDCKT} from Texas Instruments was chosen as the current-sense amplifier, because is has all the wanted features, has a gain of 100 and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale \cite{INA210AIDCKT}.
+The \texttt{INA286AID} from Texas Instruments was chosen as the current-sense amplifier, because is has all the wanted features, has a gain of 100 and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale \cite{INA286AID}.
 Using these components the stalling current of 80A will result in input voltage to the ADC of 1.6 V as shown in \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}.
 
 \begin{equation}
