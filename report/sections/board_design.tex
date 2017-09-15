@@ -270,4 +270,26 @@ As can be seen, the INA286 in this configuration requires only the voltage input
 \label{sub:relay_circuitry}
 
 % subsection relay_circuitry (end)
-% section board_design (end)
+
+\subsection{Endstop Detection} % (fold)
+\label{sub:endstop_detection}
+As described in section \ref{sub:safety_circuitry} it was decided to use infrared transceivers to detect endstops.
+\mikkel{The actual 3D print design should be described elsewhere}
+It was decided to use the \texttt{TCST 2103} as it has the wanted functionality.
+It contains an infrared emitter pointing at a photo transistor, that conducts current proportional to the infrared light received.
+In this project it will be used to detect if the infrared light rays has been blocked by the cart or not. 
+The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the current conducted to a voltage level. 
+The output is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
+The schmitt trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\linewidth]{graphics/tcst_circuit_temp.jpg}
+	\caption{\texttt{TCST 2103} circuit.}
+	\label{fig:tcst_circuit}
+\end{figure}
+\mikkel{replace with own image!}
+% subsection endstop_detection (end)
+
+
+% section board_design (end) 
