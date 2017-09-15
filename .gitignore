@@ -39,3 +39,6 @@ build/
 #ticks?
 *.dpth
 *.md5
+
+#ODS
+*.ods#
