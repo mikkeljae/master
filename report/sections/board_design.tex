@@ -140,6 +140,8 @@ This feature is mainly useful when the load is placed far from the supply and ca
 It was decided to simply short it to the 12V rail at the component since the load is placed relatively close to the supply.
 $\overline{\text{\texttt{IN}}}$ carries the inhibit signal.
 Pulling this low will disable the output of the component.
+This is done by toggling the switch \texttt{SW1}. 
+This will open a MOSFET which in turn will pull the \texttt{DCDC\_EN} signal low.
 The datasheet also specifies that a ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
 It was chosen to use two 10 $\mu$F capacitors.
 In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
@@ -152,7 +154,9 @@ As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is 
 \subsection{PTH08080W and LMR10510XMF} % (fold)
 \label{sub:pth08080w}
 As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
-These two components form the backbone of the circuitry required to correctly boot the 
+The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
+These rails were designed mainly for ensuring the correct boot and shutdown of the MicroZed.
+These procedures are described in detail in \cite{isaswarm}.
 % subsection pth08080w (end)
 
 \subsection{Motor Current Sensing}
@@ -262,5 +266,8 @@ As can be seen, the INA286 in this configuration requires only the voltage input
 \end{figure}
 
 % subsubsection designing_the_current_measuring_circuit (end)
+\subsection{Relay Circuitry} % (fold)
+\label{sub:relay_circuitry}
 
+% subsection relay_circuitry (end)
 % section board_design (end)

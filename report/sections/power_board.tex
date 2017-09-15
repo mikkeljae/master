@@ -398,13 +398,29 @@ It should be noted that in the simulations there are no difference between the t
 
 Generally the designed features of the circuit was verified using the PLECS model.
 
+\subsubsection{Safety Relay} % (fold)
+\label{ssub:safety_relay}
+\thomas{This section and the next needs some numbers on charging time and similar}
+It should be possible to disengage the main power rail from the load in case of an emergency.
+This is done most simply by adding a relay in series with the load.
+The relay must be able to carry and break the full load current, 80A.
+The LEV100A4ANG meets this requirement. 
+It is capable of carrying up to 100A continuous current and can break significantly more.
+Since the supply capacitors are parallel with the load, these will also be disconnected by the relay.
+It has a 12V coil which requires $\approx$0.5A to activate.
+% subsubsection safety_relay (end)
+
 \subsubsection{Inrush Current}
 \label{ssub:inrush_current}
-When the system is initially turned on, the capacitors will begin to charge and they will draw a huge amount of current as there is only the ESR to limit the current. 
+When the system is initially turned on, the supply capacitors will charge.
+They will draw a huge amount of current as there is only the ESR to limit the current. 
 A resistor should be added to limit this inrush current. 
-Adding the resistor to the main current path would introduce considerable losses, which is why another current path is added to the circuit.
-It is done by adding the resistor and a relay in series with the main relay. 
-This relay should be switched \texttt{on} to charge the capacitors before switching \texttt{on} the main relay.
+Adding the resistor to the main current path would introduce considerable losses and limit the performance of the system.
+An additional current path is added to the circuit.
+This is done by adding a resistor and a relay in parallel with the main relay.
+When first powering up the system the secondary relay should be turned on in order to charge the supply capacitors.
+Once charged, the main relay is switched on and afterwards the secondary relay can be switched off.
+This will control the initial inrush current but the system should not be run until the secondary relay is switched off again.
 % section preliminary_testing (end)
 
 
