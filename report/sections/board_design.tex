@@ -117,10 +117,7 @@ In addition, the 6A current limit leaves sufficient room for the current spikes 
 The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
 % paragraph 12v_ (end)
 
-% subsection voltage_rails (end)
-
-% section board_design (end)
-
+% subsection voltage_rails (end) 
 
 \subsection{PTN78020H Circuit}
 \mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
@@ -143,7 +140,7 @@ This feature is mainly useful when the load is placed far from the supply and ca
 It was decided to simply short it to the 12V rail at the component since the load is placed relatively close to the supply.
 $\overline{\text{\texttt{IN}}}$ carries the inhibit signal.
 Pulling this low will disable the output of the component.
-The datasheet also specifies that ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
+The datasheet also specifies that a ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
 It was chosen to use two 10 $\mu$F capacitors.
 In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
 The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator.
@@ -152,7 +149,11 @@ It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parall
 As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
 \mikkel{Figure?}
 
-
+\subsection{PTH08080W and LMR10510XMF} % (fold)
+\label{sub:pth08080w}
+As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
+These two components form the backbone of the circuitry required to correctly boot the 
+% subsection pth08080w (end)
 
 \subsection{Motor Current Sensing}
 \mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
@@ -185,7 +186,9 @@ The three main ones are high-side, in-line and low-side placement of the shunt r
 Based on that it was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and bi-directional current measurement is not needed.
 
 
-\subsubsection{Requirements for the Current Measuring Circuit}
+\subsubsection{Requirements for the Current Measuring Circuit} % (fold)
+\label{ssub:requirements_for_the_current_measuring_circuit}
+
 The output of the current measuring circuit is an analogue signal that is measured by the ADC of the Zynq chip.
 According to the Zynq ADC user guide \cite{zynq_adc}, the measurable input range is from 0V to 1V, but the maximum allowed input voltage is 1.9V according to \cite{adc_zynq_webanswer}.
 The absolute maximum current through the motor is the stall current which is 80A, but the motor will run well below this level in normal operation.
@@ -202,8 +205,11 @@ If the current gets any higher the ADC input should not be harmed meaning that t
 	\item Measures currents up to 40A, at minimum.
 \end{itemize}
 
+% subsubsection requirements_for_the_current_measuring_circuit (end)
 
-\subsubsection{Designing the Current Measuring Circuit}
+\subsubsection{Designing the Current Measuring Circuit} % (fold)
+\label{ssub:designing_the_current_measuring_circuit}
+
 Placing a shunt resistor in the low-side configuration raises the voltage potential of the low-side of the H-bridge.
 This may influence the gate signal required to open the MOSFETs of the H-bridge.
 In addition, the shunt resistor will, regardless of placement result in a powerloss proportional to its size.
@@ -234,20 +240,27 @@ The measurable range using this IC is 0-50A as seen from \ref{eq:adc_input_volta
 \thomas{Is the information about 10mV full scale actually relevant to this design?}
 and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale 
 
-This design meets the required design spec and the schematic can be seen in figure \ref
+This design meets the required design spec and the schematics can be seen in figure \ref{fig:currentmeasure}.
+As can be seen, the INA286 in this configuration requires only the voltage input, \texttt{POWER\_SHUNT+/-} from the schematic on figure \ref{sfig:hbridgeshunt}, to generate a suitable output which is then fed directly to the ADC through the anti-aliasing filter shown on figure \ref{sfig:ina286aidschematic}.
 
 \begin{figure}
 	\centering
 	\begin{subfigure}[b]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{graphics\}
+		\includegraphics[width=\linewidth]{graphics/hbridge}
 		\caption{H-bridge with shunt resistor in low-side configuration.}
 		\label{sfig:hbridgeshunt}	
 	\end{subfigure}
 	\begin{subfigure}[b]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{graphics\}
+		\includegraphics[width=\linewidth]{graphics/ina286}
 		\caption{Schematic of the INA286AID as used in the project.}
 		\label{sfig:ina286aidschematic}
 	\end{subfigure}
+	\caption{Schematics relating to the current measurement circuitry.}
+	\label{fig:currentmeasure}
 \end{figure}
+
+% subsubsection designing_the_current_measuring_circuit (end)
+
+% section board_design (end)
