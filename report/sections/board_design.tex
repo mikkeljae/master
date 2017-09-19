@@ -117,54 +117,87 @@ In addition, the 6A current limit leaves sufficient room for the current spikes 
 The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
 % paragraph 12v_ (end)
 
-% subsection voltage_rails (end)
-
-% section board_design (end)
-
+% subsection voltage_rails (end) 
 
 \subsection{PTN78020H Circuit}
 \mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/dcdc12v}
+	\caption{The PTN78020H DC/DC converter and the appertaining circuitry.}
+	\label{fig:dcdc12v}
+\end{figure}
+
 The \texttt{PTN78020H} DC/DC converter is used to generate the 12V rail. 
-The component requires input and output capacitors in order to function properly and a resistor is needed to set the wanted output voltage. 
-According to the components datasheet \cite{PTN78020H}, a 1\% 383 k$\Omega$ is needed to generate an output voltage of 12V.
-The datasheet furthermore specifies that ceramic capacitance of 18.8 $\mu$F is needed at the input. 
-It was chosen to use two 0805 10 $\mu$F capacitors.
+The component requires input and output capacitors in order to function properly and a resistor is needed to set the desired output voltage. 
+The circuit used is based on the typical application circuit shown in the datasheet \cite{PTN78020H} and is implemented as shown in figure \ref{fig:dcdc12v}.
+A resistor is required from \texttt{VoADJ} to ground to set the desired output voltage, in this case 12V.
+In the datasheet on table 2 is a list of common voltages and the resistance required to achieve those voltages.
+To generate 12V a 1\% 383 k$\Omega$ is needed.
+\texttt{VoSENSE} should be connected close to the main load to allow for more precise regulation of the output.
+This feature is mainly useful when the load is placed far from the supply and can be left floating if the accuracy of the rail is not important.
+It was decided to simply short it to the 12V rail at the component since the load is placed relatively close to the supply.
+$\overline{\text{\texttt{IN}}}$ carries the inhibit signal.
+Pulling this low will disable the output of the component.
+This is done by toggling the switch \texttt{SW1}. 
+This will open a MOSFET which in turn will pull the \texttt{DCDC\_EN} signal low.
+The datasheet also specifies that a ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
+It was chosen to use two 10 $\mu$F capacitors.
 In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
-The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator. 
-It was therefore decided to add two 330 $\mu$F in parallel. 
-Two 10 $\mu$F ceramic capacitors are placed at the output to further improve the transient response. 
+The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator.
+While the load at the 12V rail is mostly steady, it does supply the boot capacitors which create a slight ripple on the rail.
+It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parallel.
+As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
 \mikkel{Figure?}
 
+\subsection{PTH08080W and LMR10510XMF} % (fold)
+\label{sub:pth08080w}
+As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
+The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
+These rails were designed mainly for ensuring the correct boot and shutdown of the MicroZed.
+These procedures are described in detail in \cite{isaswarm}.
+% subsection pth08080w (end)
 
-
-\subsection{Current Measuring}
+\subsection{Motor Current Sensing}
 \mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
 While reading in the literature it was found that measuring the current through the motor is beneficial for controlling the pendulums.
+\thomas{This needs elaboration. Why is it beneficial? What does it add to the project?}
 
 Current measurements are generally done by either hall effect based sensors or shunt resistors. 
-Hall effect based sensors are generally the expensive solution and measuring small currents can be problematic. 
-Therefore it was chosen to use a shunt resistor.
-The basic idea is to place a resistor with a very low resistance in series with the load which current should be measured. 
-Measuring the motor current when using a H-bridge can be done in a various of ways.
+Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
+Additionally, their interference with the circuit they are measuring is negligible.
+Hall effect sensors do come at a higher cost and measuring smaller currents accurately may be a problem.
+A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
+By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
+This solution is simple and, if designed correctly, performs better at lower currents than hall effect sensors.
+\thomas{source on performance of hall effect vs shunt resistors?}
+This is beneficial since the current sensing in this project is used to do current mode control of the system, requiring a reasonably accurate measurement.
+\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
+When measuring the current through an H-Bridge, as is done in this project, the shunt resistor can be placed in various positions.
 The three main ones are high-side, in-line and low-side placement of the shunt resistor as shown in figure \ref{fig:shunt_measure_high_in_low}.
 
 \begin{figure}[h]
 	\centering
-    \includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
+    %\includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
 	\caption{xxxx.}
 	\label{fig:shunt_measure_high_in_low}
 \end{figure}
 \mikkel{Figure should be replaced by own illustration}
 
-\cite{shunt_placement} and \cite{Current_Sense_Circuit_Collection} specifies the advantages and disadvantages of the three configurations. 
+\cite{shunt_placement} and \cite{Current_Sense_Circuit_Collection} specifies the advantages and disadvantages of the three configurations.
+\thomas{Perhaps add a quick summary of each and highlight the selected one?} 
 Based on that it was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and bi-directional current measurement is not needed.
 
 
-\subsubsection{Requirements for the Current Measuring Circuit}
-The output of the current measuring circuit is an analogue signal that needs to be measured by the ADC of the Zynq chip.
-According to the Zynqs ADC user guide \cite{zynq_adc}, the measurable input range is from 0V to 1V, but the maximum allowed input voltage is 1.9V according to \cite{adc_zynq_webanswer}.
-The absolute maximum current through the motor is the stall current which is 80A, but the motor will run at well below this level in normal operation.
-The normal operation currents are expected to be up to 30A???(needs explanation somewhere...).
+\subsubsection{Requirements for the Current Measuring Circuit} % (fold)
+\label{ssub:requirements_for_the_current_measuring_circuit}
+
+The output of the current measuring circuit is an analogue signal that is measured by the ADC of the Zynq chip.
+According to the Zynq ADC user guide \cite{zynq_adc}, the measurable input range is from 0V to 1V, but the maximum allowed input voltage is 1.9V according to \cite{adc_zynq_webanswer}.
+The absolute maximum current through the motor is the stall current which is 80A, but the motor will run well below this level in normal operation.
+The normal operation currents are expected to be up to 30A
+\thomas{Some test or explanation required to justify 30A}
 It was therefore decided that the circuit  needs to be able to measure currents of at least up to 40A.
 The resolution per Ampere is increased by decreasing the current range that can be measured,
 If the current gets any higher the ADC input should not be harmed meaning that the input voltage should not exceed 1.9V.
@@ -176,14 +209,23 @@ If the current gets any higher the ADC input should not be harmed meaning that t
 	\item Measures currents up to 40A, at minimum.
 \end{itemize}
 
+% subsubsection requirements_for_the_current_measuring_circuit (end)
 
-\subsubsection{Designing the Current Measuring Circuit}
-The requirements listed above can be realized in a number of ways by choosing resistance of the shunt resistor and gain of the current-sense amplifier.
-It was chosen to use a 200 $\mu \Omega$ SMD shunt resistor, as it is was the smallest resistance available at the university's electronics supplier. 
-Such a small resistance yields a minimal voltage drop and thus a minimal power consumption.
-The \texttt{INA286AID} from Texas Instruments was chosen as the current-sense amplifier, because is has all the wanted features, has a gain of 100 and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale \cite{INA286AID}.
-Using these components the stalling current of 80A will result in input voltage to the ADC of 1.6 V as shown in \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}.
+\subsubsection{Designing the Current Measuring Circuit} % (fold)
+\label{ssub:designing_the_current_measuring_circuit}
 
+Placing a shunt resistor in the low-side configuration raises the voltage potential of the low-side of the H-bridge.
+This may influence the gate signal required to open the MOSFETs of the H-bridge.
+In addition, the shunt resistor will, regardless of placement result in a powerloss proportional to its size.
+For these reasons minimizing the value of the shunt resistor is important. 
+The smallest value available from the electronics supplier used at SDU provides a 200$\mu\Omega$ SMD shunt resistor.
+Such a small resistance yields a minimal voltage drop and thus keeps power consumption at a minimum.\\
+The resulting voltage from the motor stalling, that is an 80A current flowing through the resistor would result in only a 16mV voltage drop.
+Since the input range of the ADC is 0-1V, this low voltage would yield very poor resolution in the area of actual interest, 0-40A.
+An amplifier circuit is necessary.
+Purpose built current-sense amplifiers exist which are used specifically for amplifying the voltage drop across a shunt resistor.
+One such amplifier is the \texttt{INA286AID} from Texas Instruments \cite{INA286AID}.
+It has a gain of 100, lifting the voltage resulting from motor stall to 1.6V as seen from \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}..
 \begin{equation}
 	V_{max,input} = G \cdot V_{shunt}
 	\label{eq:adc_input_voltage1}
@@ -192,12 +234,62 @@ Using these components the stalling current of 80A will result in input voltage 
 	V_{max,input} = G \cdot R_{shunt} \cdot I_{stall} = 100 \cdot 200\cdot10^{-6} \cdot 80 = 1.6V
 	\label{eq:adc_input_voltage2}
 \end{equation}
-
-The maximum current that can be measured is 50A as shown in \ref{eq:adc_input_voltage3}.
+The measurable range using this IC is 0-50A as seen from \ref{eq:adc_input_voltage3}.
 
 \begin{equation}
 	I_{max, measurable} = \frac{V_{max, measurable}}{R_{shunt}\cdot G} = \frac{1}{100 \cdot 200\cdot10^{-6} } = 50A
 	\label{eq:adc_input_voltage3}
 \end{equation}
 
-These results clearly shows that the design meets the requirements.
+\thomas{Is the information about 10mV full scale actually relevant to this design?}
+and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale 
+
+This design meets the required design spec and the schematics can be seen in figure \ref{fig:currentmeasure}.
+As can be seen, the INA286 in this configuration requires only the voltage input, \texttt{POWER\_SHUNT+/-} from the schematic on figure \ref{sfig:hbridgeshunt}, to generate a suitable output which is then fed directly to the ADC through the anti-aliasing filter shown on figure \ref{sfig:ina286aidschematic}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{graphics/hbridge}
+		\caption{H-bridge with shunt resistor in low-side configuration.}
+		\label{sfig:hbridgeshunt}	
+	\end{subfigure}
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{graphics/ina286}
+		\caption{Schematic of the INA286AID as used in the project.}
+		\label{sfig:ina286aidschematic}
+	\end{subfigure}
+	\caption{Schematics relating to the current measurement circuitry.}
+	\label{fig:currentmeasure}
+\end{figure}
+
+% subsubsection designing_the_current_measuring_circuit (end)
+\subsection{Relay Circuitry} % (fold)
+\label{sub:relay_circuitry}
+
+% subsection relay_circuitry (end)
+
+\subsection{Endstop Detection} % (fold)
+\label{sub:endstop_detection}
+As described in section \ref{sub:safety_circuitry} it was decided to use infrared transceivers to detect endstops.
+\mikkel{The actual 3D print design should be described elsewhere}
+It was decided to use the \texttt{TCST 2103} as it has the wanted functionality.
+It contains an infrared emitter pointing at a photo transistor, that conducts current proportional to the infrared light received.
+In this project it will be used to detect if the infrared light rays has been blocked by the cart or not. 
+The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the current conducted to a voltage level. 
+The output is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
+The schmitt trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\linewidth]{graphics/tcst_circuit_temp.jpg}
+	\caption{\texttt{TCST 2103} circuit.}
+	\label{fig:tcst_circuit}
+\end{figure}
+\mikkel{replace with own image!}
+% subsection endstop_detection (end)
+
+
+% section board_design (end) 
