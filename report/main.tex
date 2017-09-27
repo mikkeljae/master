@@ -12,7 +12,9 @@
 \usepackage{pgfplots}
 \usepackage{letltxmacro}
 \usepackage{tikz}
-
+\usepackage[english]{babel}
+\usepackage[style=numeric]{biblatex}
+\addbibresource{bibliography.bib}
 \usepackage{caption}
 \usepackage{subcaption}
 % Should force tikz to only run once on each included .tex file
@@ -62,6 +64,8 @@
 \newpage
 %\input{bib}
 
-\bibliographystyle{plain}
-\bibliography{bibliography} 
+%\bibliographystyle{plain}
+%\bibliography{bibliography} 
+\printbibliography[plain]
+
 \end{document}
