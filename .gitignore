@@ -6,6 +6,8 @@
 *.toc
 *.backup
 *.dvi
+*.bcf
+*.xml
 main.pdf
 *.fdb_latexmk
 *.fls

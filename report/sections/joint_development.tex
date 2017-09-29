@@ -1,23 +1,93 @@
 %!TEX root = ../main.tex
-\section{Joint Development} % (fold)
+\section{Joint Development}
 \label{sec:joint_development}
 
 
-\subsection{Joint Microcontroller} % (fold)
+\subsection{Joint Microcontroller}
 \label{sub:joint_microcontroller}
 
 
-
+\mikkel{Not finished}
 \begin{itemize}
 	\item Low power
 	\item Compact size
-	\item Innovation
 	\item Three interrupt pins
 	\item Eight I/O pins in total 
 	\item SPI interface
 	\item Non volatile memory
 	\item 3.3V/5V supply
 \end{itemize}
-% subsection joint_microcontroller (end)
 
-% section joint_development (end)
+
+\begin{table}
+	\centering
+	\begin{tabular}{l}
+		 \textbf{Requirements:} \\ \hline
+		 Low power \\ \hline
+		 Compact size \\ \hline
+		 Three interrupt pins \\ \hline
+		 Eight I/O pins in total\\ \hline
+		 SPI interface \\ \hline
+		 Non volatile memory \\ \hline
+		 3.3V/5V supply \\ \hline
+	\end{tabular}
+	\caption{Hmmm. Not satisfied with this.}
+	\label{tab:joint_mic_rec}
+\end{table}
+
+We chose the the ATtiny84 - yay!
+
+
+\subsection{Voltage Rails}
+\label{sub:voltage_rail}
+It is necessary to determine which voltage rails are needed for the components on the joint board to function.
+The wireless module, \texttt{NRF24}, and the ATtiny84 can both be run at 3.3V, but the Rolin encoder needs 5V.
+Clearly a 3.3V rail and a 5V rail is needed. 
+The current consumption on both rails need to be determined in order to specify the requirements for the voltage regulators and the required size of the battery needed.
+\mikkel{There should be a nice introduction to this section about the Joint in general... Battery and so on.}
+
+
+\paragraph{3.3V:}
+\label{par:3_3v}
+The \texttt{NRF24} module has maximum supply current of 12.3mA \cite{NFR24L01} and the \texttt{ATtiny82} has a maximum of 9mA \cite{attiny84}.
+This totals 21.3mA of current that the 3.3V rail needs to supply.
+
+\paragraph{5V:}
+\label{par:5v}
+The only component drawing current from the 5V rail is the Rolin encoder which has a maximum supply current of 20mA \cite{RLBD01}.
+
+\subsection{Power Consumption} 
+\label{subsub:power_consumption}
+The power consumption at each rail is calculated and 
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r|r}
+		 Voltage rail 	& Current [mA] 	& Power [mW]\\
+		 \hline
+		 3.3V 			& 21.3			&70.3		\\
+		 5V  			& 20 			&100		\\
+		 \hline
+		 Total 			& 				&170.3		
+	\end{tabular}
+	\caption{Power usage on voltage rails and in total.}
+	\label{tab:power_joint}
+\end{table}
+
+\subsection{Battery}
+\label{subsub:battery}
+The physical dimensions of the battery is constrained by the free space in the designed joint.
+It needs to be able to fit in a cylinder with a diameter of 57mm and height of 9mm.
+Furthermore needs to have enough capacity to power the circuit for a full workday of a student, which is estimated to be 10 hours.
+\mikkel{10 hours workday?}
+
+\paragraph{9V Battery}
+Batteries in the standard 9V package can purchased with with enough capacity, but the physical size disqualifies it.
+
+\paragraph{Button Cell Battery}
+Button cell batteries does live up to the physical constraints, but does not have the wanted capacity. 
+Several of them can be put in series, but they still does not yield the wanted capacity.
+
+\paragraph{Li-Ion Battery}
+Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fit both the physical and capacity constrains.
+WE FOUND ONE!!!!!
