@@ -291,5 +291,45 @@ The schmitt trigger circuit is designed to have a high threshold of 3V and a low
 \mikkel{replace with own image!}
 % subsection endstop_detection (end)
 
+\subsection{Copper Thickness}
+Part of the board is designed to house the H-Bridge that drives the motor.
+The H-bridge is designed to carry up to 80A, well above what can reasonably be carried at standard PCB copper thickness.
+This section seeks to estimate the required copper thickness to allow for the design current.
+Allowing a current through a conductor will produce a temperature rise due to the power dissipated in the conductor.
+This power
+The current-carrying capacity (CCC) of a conductor is limited, so far as the current is not destructive, by the temperature rise permissable in the design.
+Essentially, the acceptable temperature rise is limited by the maximum operating temperature of the PCB material.
+This spec is known as the temperature index.
+The PCB material most commonly used is FR-4 which has a temperature index of 130\degree.
+At an ambient temperature of 20\degree this would imply a permissable conductor temperature rise of 110\degree.
+In all practical situations, this is unreasonably high.
+The material will discolor and degrade over time with the excessive heating and cooling of the board while also increasing the apparent ambient temperature of other components on the PCB, lowering the efficiency of the circuit.
+In actual designs, a much more conservative temperature rise of 10\degree is often used, 15\degree is acceptable and 20\degree is considered high.
+The actual temperature rise of a conductor is dependent on a great number of variables, among these are: conductor length, cross-sectional area, conductor material, PCB material, ambient temperature, convection, PCB layout (the amount of copper in the vicinity), etc.
+Additionally, not all conductors carry the same current so different conductors have different thermal impacts on different locations on the PCB.
+Clearly, it is difficult to accurately calculate the required copper thickness, however an estimate can be made.
+In IPC-2221A \cite{ipc2221} data is presented to show the temperature rise resulting from allowing a current through a trace on a PCB on different trace widths.
+This data was first published in \cite{conduct}, a progress report from the American National Bureau of Standards dating back to 1956.
+Much has happened in manufacturing since then. 
+The original data does not take into account the possibility of multi-layered boards or different board materials.
+In 2009 the new IPC-2152 \cite{ipc2152} was published and reevaluates the topic of current-carrying capacity.
+This standard, however, is unavailable due to its high cost.
+A number of PCB trace width calculators exist online which extrapolate from the original data to give estimates of the required copper thickness and width.
+One such calculator was used to determine the required copper thickness and width required in this project.
+~\\
+There are economic constraints in place for this project which requires the authors to be somewhat conservative with respect to how exotic a solution will be considered.
+Most manufacturers support increasing the thickness of copper on a specific layer, allowing well above the 35$\mu$m standard copper thickness.
+The manufacturer used in this project was chosen due to a comparatively low price on 4-layer boards with 70$\mu$m copper on outer layers and 52.5$\mu$m on internal layers.
+
+A distinction is made for different conductors or, on the PCB, traces, depending on the type of current they are expected to carry.
+\begin{itemize}
+	\item \textbf{Signal:} This is the type with the lowest expected current and is used throughout digital circuitry and low power analog signals.
+	Signal traces are by far the most abundant on the circuit and due to the very low currents the trace width should be as small as possible.
+	The manufacturer is capable of creating traces at 6 mil or higher and as such the trace width for this type is 6 mil.
+	\item \textbf{Power:} This type is generally used for supply rails.
+	\item \textbf{High Power:} This type is used exclusively for the 24V rail
+\end{itemize}
+
+
 
 % section board_design (end) 
