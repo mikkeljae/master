@@ -1,21 +1,26 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
+\setcounter{tocdepth}{2} %Only show sections and subsections in toc.
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{todonotes}
 \usepackage{rsfso} %Add the fancy L used in lagrange
 \usepackage{siunitx}
 \usepackage{pgfplots}
 \usepackage{letltxmacro}
 \usepackage{tikz}
-
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage[style=numeric]{biblatex}
+\addbibresource{bibliography.bib}
 \usepackage{caption}
 \usepackage{subcaption}
 % Should force tikz to only run once on each included .tex file
+%\usepgfplotslibrary{external} 
 \usetikzlibrary{external} 
 \tikzexternalize
 %in LatexTools > settings-user, add the following after "display_log": "false",
@@ -46,11 +51,25 @@
 \newcommand{\degree}{$^{\circ}$C~}
 
 %Information to be included in the title page:
-\title{Real-Time Systems}
+\title{MASTER}
 \author{Thomas S. Christensen, Mikkel Skaarup Jaedicke}
 \date{Jan, 2017}
 
 \begin{document}
+\input{sections/title_page}
+\newpage
+\pagenumbering{Roman}
+\input{sections/abstract}
+\newpage
+\tableofcontents
+\newpage
+%\listoftodos
+
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+\input{sections/introduction}
 \input{sections/test_bed.tex}
 \newpage
 \input{sections/model_development.tex}
@@ -58,10 +77,11 @@
 \input{sections/test_platform}
 \input{sections/power_board}
 \input{sections/board_design}
+\input{sections/joint_development}
 \clearpage
 \newpage
-%\input{bib}
-
-\bibliographystyle{plain}
-\bibliography{bibliography} 
+\section*{References}
+\printbibliography[heading=none, keyword={all}]
+\section*{Datasheets}
+\printbibliography[heading=none, keyword={data}]
 \end{document}

@@ -1,0 +1,198 @@
+%!TEX root = ../main.tex
+\section{Joint Development}
+\label{sec:joint_development}
+
+
+\subsection{Joint Microcontroller}
+\label{sub:joint_microcontroller}
+
+
+\mikkel{Not finished}
+\begin{itemize}
+	\item Low power
+	\item Compact size
+	\item Three interrupt pins
+	\item Eight I/O pins in total 
+	\item SPI interface
+	\item Non volatile memory
+	\item 3.3V/5V supply
+\end{itemize}
+
+
+\begin{table}
+	\centering
+	\begin{tabular}{l}
+		 \textbf{Requirements:} \\ \hline
+		 Low power \\ \hline
+		 Compact size \\ \hline
+		 Three interrupt pins \\ \hline
+		 Eight I/O pins in total\\ \hline
+		 SPI interface \\ \hline
+		 Non volatile memory \\ \hline
+		 3.3V/5V supply \\ \hline
+	\end{tabular}
+	\caption{Hmmm. Not satisfied with this.}
+	\label{tab:joint_mic_rec}
+\end{table}
+
+We chose the the ATtiny84 - yay!
+
+
+\subsection{Voltage Rails}
+\label{sub:voltage_rail}
+It is necessary to determine which voltage rails are needed for the components on the joint board to function.
+The wireless module, \texttt{NRF24}, and the ATtiny84 can both be run at 3.3V, but the Rolin encoder needs 5V.
+Clearly a 3.3V rail and a 5V rail is needed. 
+The current consumption on both rails need to be determined in order to specify the requirements for the voltage regulators and the required size of the battery needed.
+\mikkel{There should be a nice introduction to this section about the Joint in general... Battery and so on.}
+
+
+\paragraph{3.3V:}
+\label{par:3_3v}
+The \texttt{NRF24} module has maximum supply current of 12.3mA \cite{NFR24L01} and the \texttt{ATtiny82} has a maximum of 9mA \cite{attiny84}.
+This totals 21.3mA of current that the 3.3V rail needs to supply.
+
+\paragraph{5V:}
+\label{par:5v}
+The only component drawing current from the 5V rail is the Rolin encoder which has a maximum supply current of 20mA \cite{RLBD01}.
+
+\subsection{Power Consumption} 
+\label{subsub:power_consumption}
+The power consumption at each rail is calculated and 
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r|r}
+		 Voltage rail 	& Current [mA] 	& Power [mW]\\
+		 \hline
+		 3.3V 			& 21.3			&70.3		\\
+		 5V  			& 20 			&100		\\
+		 \hline
+		 Total 			& 				&170.3		
+	\end{tabular}
+	\caption{Power usage on voltage rails and in total.}
+	\label{tab:power_joint}
+\end{table}
+
+\subsection{Battery}
+\label{subsub:battery}
+The physical dimensions of the battery is constrained by the free space in the designed joint.
+It needs to be able to fit in a cylinder with a diameter of 57mm and height of 9mm.
+Furthermore needs to have enough capacity to power the circuit for a full workday of a student, which is estimated to be 10 hours.
+\mikkel{10 hours workday?}
+
+\paragraph{9V Battery}
+Batteries in the standard 9V package can purchased with with enough capacity, but the physical size disqualifies it.
+
+\paragraph{Button Cell Battery}
+Button cell batteries does live up to the physical constraints, but does not have the wanted capacity. 
+Several of them can be put in series, but they still does not yield the wanted capacity.
+
+\paragraph{Li-Ion Battery}
+Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fit both the physical and capacity constrains.
+WE FOUND ONE!!!!!
+3.7 Volt - YES!
+3.7V to 4.2V - ca. =!=!??
+
+\subsection{Voltage Rail Generation}
+\label{sub:voltage_rail_generation}
+As described in section \ref{sub:voltage_rail}, a 5V and a 3.3V rail is needed. 
+
+\subsubsection*{5V}
+Generating 5V can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
+The boost regulator \texttt{SP6641BEK-L-5-0} has an input range of 0.9V to 4.5V and an fixed output of 5V \cite{sp6641b}.
+The circuitry used in this project will be based on the design of the boost converter explained in the datasheet.
+\mikkel{Schematic of boost converter here?}
+
+\subsubsection*{3.3V}
+The task of generating 3.3V from the battery is complicated by the battery voltage varying from 4.2V down to 3.0V*.
+\mikkel{Source needed when we know battery}
+
+Three different solutions appeared after an initial analyse of the task:
+
+\begin{itemize}
+	\item Buck converter
+	\item Buck-Boost converter
+	\item Linear regulator
+\end{itemize}
+
+The qualities and drawbacks of the three solutions are presented here.
+
+\paragraph{Buck Converter}
+The voltage from the battery can be converted to 3.3V using a Buck converter.
+A Buck converter is relatively simple and circuitry can easily be designed for the task.
+It is only able to supply an output voltage that is lower than the input voltage.
+Which means that when the battery voltage is lower than 3.3V the converter will stop producing a stable 3.3V output.
+This means that a portion of the battery capacity cannot be used.
+The \texttt{TPS62220} is a Buck regulator and generally has good specifications for this task. 
+With an input voltage of 3.7V and an output voltage of 3.3V it has an efficiency of approximately 95\% with an output current in the range of 1mA to 20mA \cite{TPS6222}.
+The minimum drop out voltage of the \texttt{TPS62220} is low, because it has a 100\% duty cycle mode.
+In this mode, the the drop out voltage is purely defined by the \texttt{ON} resistance of the internal switch, the DC resistance of the external inductor and the output current.
+
+The drop out voltage can be calculated using equation \ref{eq:drop_v_tps62}, \cite{TPS6222}.
+\begin{equation}
+	V_{drop} = I_{O} \cdot (R_{DS(on),max}+R_I)
+	\label{eq:drop_v_tps62}
+\end{equation}
+
+\begin{equation}
+	V_{drop} = 0.02 \cdot (0.67+0.09) = 15 [mV]
+	\label{eq:drop_v_tps62_2}
+\end{equation}
+
+Where $I_O$ is the output current, $R_{DS(on),max}$ is the \texttt{ON} resistance of the internal switch and $R_I$ is the DC resistance of the external inductor.
+The inductor resistance used is found in the \texttt{LQH55D} SMD inductor \cite{LQH55D}.
+\mikkel{Update if new inductor is used}
+This means that it can supply 3.3V output when the input voltage is 3.315V or greater
+
+
+
+\paragraph{Buck-Boost Converter}
+The motivation for using a Buck-Boost converter is to allow for full utilization of the battery capacity.
+This requires that the converter can make a seamless transition between the stepping up and stepping down of the input voltage. 
+\texttt{TPS6300} is a Buck-Boost regulator that has these features.
+The external circuitry is simple, but the drawback of this regulator and converter is the efficiency of it.
+With an input voltage of 3.7V and an output voltage of 3.3V it has an efficiency of approximately 75\% with an output current in the range of 1mA to 20mA \cite{TPS6300}.
+
+\paragraph{Linear Regulator}
+A linear regulator is a component that can regulate the output voltage by varying an internal resistance.
+Linear regulators have a drop voltage that limit the output voltage. 
+The \texttt{LD3985} has an ultra low drop voltage of 20mV at 50mA output current \cite{LD3985}.
+
+Therefore the efficiency is proportional to ratio between the output and input voltage and can be estimated using equation \ref{eq:eff_lin} \cite{ap_note_140}.
+
+\begin{equation}
+	\eta \simeq \frac{V_{out}}{V_{in}}
+	\label{eq:eff_lin}
+\end{equation}
+
+The battery voltage varies from 4.2?? to 3.3V, but the nominal voltage is 3.7V and this will be used as an estimate of the mean voltage of the battery.
+Using this the mean efficiency can be estimated as shown in equation \ref{eq:eff_lin_val}.
+
+\begin{equation}
+	\eta \simeq \frac{3.3}{3.7} = 0.89 = 89\%
+	\label{eq:eff_lin_val}
+\end{equation}
+
+
+\paragraph{Comparison}
+The most important parameters of the three solutions discussed are shown in table \ref{tab:vol_gen_joint}.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|c|c|c}
+		  				&	Buck 	& Buck-Boost 	& Linear\\
+		 \hline
+		 Efficiency  	&  95\% 	& 75\%			&89\%		\\
+		 Drop out [mV]		&15  	& N/A		&20		\\
+	\end{tabular}
+	\caption[Parameters of voltage generation solutions.]{Parameters of the three solutions using a Buck converter, Buck-Boost converter or a linear regulator. The efficiency shown is estimated with an input voltage of 3.7V, an output voltage of 3.3V and an output current in the range of 1mA to 20mA. The drop out voltage is estimated with an output current of 20mA (Buck) and 50mA (linear regulator).}
+	\label{tab:vol_gen_joint}
+\end{table}
+
+The Buck converter solution has the highest efficiency and is therefore the natural choice.
+As already discussed the disadvantage of using a Buck converter is that the full battery capacity cannot be utilized.
+A discharge test should be conducted to determine the amount of capacity that cannot be utilized.
+At the time of writing, the chosen battery has not yet been procured and the test will therefore be conducted on a similar battery instead.
+The discharge curve of the two types of batteries will not be identical, but will be sufficient for deciding which solution should be used.
+
