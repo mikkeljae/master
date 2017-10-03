@@ -219,7 +219,7 @@ Where $I_{lkgs}$ is the gate-source leakage current, $I_{qbs}$ is the gate drive
  $Q_{gate}$ 	& $Q_{ls}$ 	& $I_{lkgs}$ 	& $I_{qbs}$ 		& $I_{lk}$ 			& $I_{lkdiode}$ 	& $t_{on}$ 		\\ 	\hline
  $117$ [nC]		& $3$ [nC]	& $100$ [nA]	&$-30$ [$\mu$A]		& $1$ [$\mu$A]		& $1$ [nA]			& $43$ [$\mu$S]	\\ 	\hline
 \end{tabular}
-\caption{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver data sheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET data sheet values and $I_{lkdiode}$  is a diode data sheet value. $t_{on}$ is calculated using 95\% dutycycle and 22kHz switching.}
+\caption[Parameter values used to determine total charge.]{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver data sheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET data sheet values and $I_{lkdiode}$  is a diode data sheet value. $t_{on}$ is calculated using 95\% dutycycle and 22kHz switching.}
 \label{tab:bootstrap_parameter}
 \end{table}
 $t_{on}$ can be calculated knowing that the worst case duty cycle for the high side MOSFET is 95\% and the switching frequency is 22 kHz.
@@ -292,8 +292,7 @@ The load current experienced by the supply is also shown in figure \ref{fig:sim_
 
 \begin{figure}[h]
 	\centering
-    %\input{graphics/sim_currents.tex}
-    \missingfigure{text}
+    \input{graphics/sim_currents.tex}
 	\caption{Current in the motor and the total load when when simulating a full bridge in PLECS.}
 	\label{fig:sim_currents}
 \end{figure}
@@ -390,8 +389,7 @@ It should be noted that in the simulations there are no difference between the t
 
 \begin{figure}[h]
 	\centering
-    %\input{graphics/cap_currents.tex}
-	\missingfigure{text}
+    \input{graphics/cap_currents.tex}
 	\caption{Current drawn from the electrolytic and ceramic capacitors, when simulating in PLECS. }
 	\label{fig:cap_currents}
 \end{figure}
