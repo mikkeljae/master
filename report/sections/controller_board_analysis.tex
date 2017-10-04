@@ -1,0 +1,82 @@
+%!TEX root = ../main.tex
+\subsection{Analysis}
+\label{sub:controller_board_analysis}
+
+In an effort to split the development into smaller, more managable parts, it was decided to initially develop the system such that it fulfills the following requirements:
+
+\begin{itemize}
+	\item The cart should be able to move with known position.
+	\item Endstops on the platform should stop movement.
+	\item Emergency button should stop movement.
+\end{itemize}
+
+Clearly, making the cart move is crucial in the development of the system and forms the basis for any later developments.
+The latter two requirements are related to the safe operation of the platform.
+It is expected that at least during development, an error may occur that causes the cart to move uncontrollably.
+In such a situation the programmer should be able to completely shut off power to the motor.
+The endstops will ensure that a minimum of mechanical or electrical damage is incurred on the platform in case of a cart crash.
+The following paragraphs will explore what is required in order to fulfill the above requirements.
+\subsubsection{Safety Circuitry} % (fold)
+\label{subsub:safety_circuitry}
+Safety first.
+A safety system should, whenever possible, be isolated from the remaining system.
+That is, it should depend on non of the remaining circuitry or programming.
+Usually, if it can at all be avoided, no programming should be involved in determining a safety condition.
+With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
+In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
+\\~\\
+Creating the endstops can be done in a multitude of ways.
+In this project three approaches were considered:
+\paragraph{Mechanical Switch:} % (fold)
+\label{par:mechanical_switch}
+The simplest form of switch is the mechanical switch.
+The switch should be mounted in such a way that the cart would move into the switch, therefore activating it.
+This approach is not without issues.
+Firstly, the simplest mounting solution would require the switch to be mounted in the direct path of the cart.
+If the cart is traveling at full speed it is unlikely that the cart would stop before crashing into the switching mechanism, potentially damaging it.
+A switch mounted in this fashion would need to be rather robust.
+Some other mounting solutions could be thought of that do not suffer from this problem, especially if a flexible microswitch is used.
+These types of switches can be fragile and may not be sufficiently durable, considering the usecase.
+All mechanical switches have one drawback in common: they are mechanical.
+Generally, mechanical items wear out over time and require maintainance or replacement.
+% paragraph mechanical_switch (end)
+\paragraph{Hall Effect Sensor:} % (fold)
+\label{par:hall_effect_sensor}
+This type of sensor measures magnetic fields and produces a voltage proportional to the strength of the field.
+By placing a small neodymium magnet on the cart and mounting a hall effect sensor on the rail in such a way that the coincide would allow for detecting when the cart is above the sensor.
+If the sensor is combined with a schmitt-trigger circuit the output could be a binary result, either the endstop is reached or it is not.
+Using this method requires that a magnet is placed on the cart itself and that a sensor is mounted to the rail.
+It should be noted that accelerating rather strong magnetic fields back and forth on the platform may not be the least electrically noisy solution one could think of.
+Magnetic fields are also wide, meaning that the cart would "sneak up on" the threshold.
+This requires some amount of calibration to determine the correct distance between sensor and magnet, which may not be mechanically simple to determine. 
+% paragraph hall_effect_sensor (end)
+\paragraph{Infrared Transceiver:} % (fold)
+\label{par:infrared_transceiver}
+This type of device is a combined LED and infrared sensor.
+The LED is optimised for emitting infrared light, or radiation (IR), and the sensor for sensing it.
+The LED emits IR outward from the device which, when an object is placed in front of it, will bounce off the object and be caught by the sensor.
+As with the hall effect sensor, this type of device produces a voltage output proportional to the amount of IR being sensed and as such a schmitt-trigger circuit would also be benficial in this case.
+With this sensor type it is important to realise that the LED will not be the only emitter of IR in the vicinity.
+Any type of lamp will emit IR, especially glowbulbs (of which there are few left, luckily) but also sunlight contains some amount of IR.
+When using this sensor the circuit should be designed in such a way that only the effect of the IR radiated back on the sensor will trigger the circuit.
+The sensor should be mounted immediately below the cart so as to maximize the radiated IR and therefore the signal strength.
+% paragraph infrared_transceiver (end)
+\\~\\
+While all of the above have their drawbacks, it was decided to use the infrared transceiver.
+This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart.
+\\~\\
+In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
+It may be that additional safety features are added later.
+In order to minimize the amount of circuitry, all safety features will trip the same circuit.
+\thomas{Add circuit showing the safety relay}
+On figure \ref{fig:relay_circuit} is shown the safety circuitry.
+A relay is mounted in series with the supply rail for the motor.
+The default state for this relay should be \texttt{off}.
+Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
+Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
+Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
+One relay that fulfills these requirements is the.
+\\~\\
+The driver circuit for the relay is activated only when all safety conditions are off.
+If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
+Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
