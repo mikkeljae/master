@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
-\setcounter{tocdepth}{2} %Only show sections and subsections in toc.
+\setcounter{tocdepth}{3} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -70,14 +70,11 @@
 \clearpage
 \pagenumbering{arabic}
 \input{sections/introduction}
-\input{sections/test_bed.tex}
-\newpage
-\input{sections/model_development.tex}
-\newpage
-\input{sections/test_platform}
-\input{sections/power_board}
-\input{sections/board_design}
+\input{sections/analysis.tex}
+\input{sections/controller_board}
 \input{sections/joint_development}
+\input{sections/model_development.tex}
+\input{sections/test_platform}
 \clearpage
 \newpage
 \section*{References}

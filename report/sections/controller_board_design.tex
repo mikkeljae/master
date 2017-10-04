@@ -1,0 +1,747 @@
+%!TEX root = ../main.tex
+\subsection{Design}
+\label{sub:controller_board_design}
+
+Multiple electronics components are required to realise the double pendulum being developed throughout this report.
+This section explores the design of those components and the communication between them.
+Most of the circuitry is combined on a single PCB, the driver board, however some of the functionality is moved to smaller boards, local to the place where they are needed.\\
+
+The components of the system are listed here:
+\begin{itemize}
+	\item Motor Encoder
+	\item Joint Encoder
+	\item End Stops
+	\item Motor Driver
+	\item Emergency Circuitry
+	\item Relay Driver
+	\item RF Transceiver
+	\item MicroZed 
+\end{itemize}
+Many of these components require a number of subcomponents, which will be explored further in later sections.
+
+\subsubsection{Voltage Rails} % (fold)
+\label{subsub:voltage_rails}
+In the design of the board it is necessary to determine which voltage rails are required for the system to function.
+The power delivery for the MicroZed was designed by the authors in an earlier project \cite{isaswarm} and will be reused with minor changes.
+This power delivery system provides, amongst other voltages, the 3.3V rail, originally intended for powering the MicroZed IO banks only.
+In this system however, the RF tranceiver is also powered from this rail.
+As a result a review of the circuitry around the 3.3V rail is necessary to ensure that it can provide the required power.
+The MicroZed power delivery system, the encoders of the system, the endstops and part of the emergency circuitry are all driven from a 5V rail.
+The Motor Driver, the HIP4081 \cite{driver} and the relay driving circuitry is driven from a 12V rail.
+Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.
+This rail is not crucial to the design of the board as it is provided by an external, mains connected power supply and will not be explored further in this section.\\
+The current requirement for each of these rails are discussed in the following paragraphs
+
+\paragraph{3.3V:} % (fold)
+\label{par:3_3v}
+As mentioned, this rail is intended for powering the MicroZed IO banks.
+In the original design the LMR10510XMF DC/DC converter is used to provide the necessary power.
+This chip is capable of supplying up to 1A.
+Components exist in the same series which are pin compatible and are capable of supplying up to 2A.
+The RF Transceiver used in this project, however, \ref{} requires only up to 15mA when receiving data.
+Assuming that Avnet has already provided headroom for the IO bank supply and considering that this project makes little use of the IO on the Zynq-7000 chip, it is deemed unnecessary to upgrade this supply and the original design is used as is.
+% paragraph 3_3v_ (end)
+
+\paragraph{5V:} % (fold)
+\label{par:5v}
+This rail supplies, mainly, the MicroZed.
+The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
+In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
+There are two types of encoders, the HEDS-5540 \cite{heds5540}, which requires a maximum of 85mA and a Rolin magnetic encoder, which requires a maximum of 25mA.\\
+The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
+The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
+This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
+Another 10mA is added to that figure due to the collector current possible on the transistor side.\\
+Finally the emergency circuitry along with some other digital electronics are powered from the 5V rail.
+As these are all digital IC's that operate on nothing but signals, their individual powers are negligible but a very conservative 25mA power budget is provided for all of the digital electronics on the 5V rail. This brings the total power budget for the 5V rail to $\approx$2.1A.
+See table \ref{tab:5vpowerbudget} for a full overview.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r}
+		 Component & Current [mA]\\
+		 \hline
+		 MicroZed & 1850\\
+		 HEDS-5540 & 85\\
+		 Rolin Enc. & 25\\
+		 TCST2103 & 110\\
+		 Digital & 25\\
+		 \hline
+		 Total & 2095
+	\end{tabular}
+	\caption{Power budget for the 5V rail}
+	\label{tab:5vpowerbudget}
+\end{table}
+
+In \cite{isaswarm} the authors used a design in which the PTH08080 is used to generate a 5V rail.
+Reusing this module will save on design time as well as the budget available to the project and as such is desirable.
+This module however, is capable of supplying only 2A at 5V, slightly less than the value calculated in this section.
+By far the largest contributor to the power budget is the MicroZed.
+The calculation of the contribution from the MicroZed is done assuming 85\% utilisation of PL and a conservative 80\% efficiency of internal DC/DC converters.
+Considering this, it is safe to assume that the real power draw from the MicroZed is significantly smaller than the calculated value and as a result it is chosen to reuse the PTH08080 despite of apparent shortcomings of the module.
+% paragraph 5 (end)
+
+\paragraph{12V:} % (fold)
+\label{par:12v}
+This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
+The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
+The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail.\\
+There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
+Both of these require power to stay in the closed position.
+The first, the G6B \cite{g6b}, requires 16.7mA while the former, the LEV100A4ANG \cite{lev100}, requires 461mA.\\
+The motor driver of the system, the HIP4081 requires only 10mA.
+As mentioned, the bootstrap circuitry is also powered from the 12V rail.
+Rather than a steady supply, this circuitry requires a large peak current for short periods while charging in between switching.
+For this reason the design choice here is to determine what is available and choose the component which yields the most headroom while still being economically feasible.
+Amongst all of the components the total power budget for the 12V rail is $\approx$1340mA.
+See table \ref{tab:12vpowerbudget} for a full overview.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r}
+		 Component & Current [mA]\\
+		 \hline
+		 PTH08080 & 850\\
+		 G6B & 16.7\\
+		 LEV100A4ANG & 461\\
+		 HIP4081 & 10\\
+		 \hline
+		 Total & 1337.7
+	\end{tabular}
+	\caption{Power budget for the 12V rail}
+	\label{tab:12vpowerbudget}
+\end{table}
+
+The PTN78020 delivers 6A at 12V and is part of the same series as the PTH08080 described earlier.
+This allows many of the same design procedures to be reused.
+In addition, the 6A current limit leaves sufficient room for the current spikes expected from the bootstrap circuitry.
+The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
+% paragraph 12v_ (end)
+
+% subsection voltage_rails (end) 
+
+
+\subsubsection{12V Rail Circuitry}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/dcdc12v}
+	\caption{The PTN78020H DC/DC converter and the appertaining circuitry.}
+	\label{fig:dcdc12v}
+\end{figure}
+
+The \texttt{PTN78020H} DC/DC converter is used to generate the 12V rail. 
+The component requires input and output capacitors in order to function properly and a resistor is needed to set the desired output voltage. 
+The circuit used is based on the typical application circuit shown in the datasheet \cite{PTN78020H} and is implemented as shown in figure \ref{fig:dcdc12v}.
+A resistor is required from \texttt{VoADJ} to ground to set the desired output voltage, in this case 12V.
+In the datasheet on table 2 is a list of common voltages and the resistance required to achieve those voltages.
+To generate 12V a 1\% 383 k$\Omega$ is needed.
+\texttt{VoSENSE} should be connected close to the main load to allow for more precise regulation of the output.
+This feature is mainly useful when the load is placed far from the supply and can be left floating if the accuracy of the rail is not important.
+It was decided to simply short it to the 12V rail at the component since the load is placed relatively close to the supply.
+$\overline{\text{\texttt{IN}}}$ carries the inhibit signal.
+Pulling this low will disable the output of the component.
+This is done by toggling the switch \texttt{SW1}. 
+This will open a MOSFET which in turn will pull the \texttt{DCDC\_EN} signal low.
+The datasheet also specifies that a ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
+It was chosen to use two 10 $\mu$F capacitors.
+In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
+The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator.
+While the load at the 12V rail is mostly steady, it does supply the boot capacitors which create a slight ripple on the rail.
+It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parallel.
+As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
+\mikkel{Figure?}
+
+\subsubsection{5V and 3.3V Rail Circuitry} % (fold)
+\label{subsub:pth08080w}
+As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
+The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
+These rails were designed mainly for ensuring the correct boot and shutdown of the MicroZed.
+These procedures are described in detail in \cite{isaswarm}.
+% subsection pth08080w (end)
+
+
+\subsubsection{MOSFET and H-Bridge Driver} % (fold)
+\label{ssub:h_bridge}
+It is necessary to device some form of driving circuitry for the motor driving the timing belt.
+On the platform is a Maxon 148867 Brushed DC Motor.
+This is a 150W motor with a nominal current of 6A and a stall current of 80A.
+Clearly, the system should under normal use not come anywhere close to stalling the motor but considering the use case, experimentation with control from students, it may be beneficial to design the circuitry such that it can withstand being stalled, for at least a short period of time.
+In order to reach this goal, it is necessary to size the components for at least some amount above 80A continuous.
+The \texttt{IPP045N10N3} MOSFET \cite{mosfet} is a 100V/100A MOSFET.
+It is made in the standard TO-220 housing.
+This housing allows for easy mounting of a heatsink and due to its wide application, there are many shapes and sizes to choose from.
+Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
+
+\begin{table}[tb]
+	\centering
+	\begin{tabular}{|r|c|c|c|}
+	\hline
+		\textbf{Parameter} & \textbf{Min} & \textbf{Typ} & \textbf{Max} \\
+	\hline
+		$V_{\text{th}}$ [V] & 2 & 2.7 & 3.5 \\
+	\hline
+		$R_{\text{ds(on)}}$ [m$\Omega$]& - & 3.6 & 4.2 \\
+	\hline
+		$Q_\text{g}$ [nC] & - & 88 & 117 \\
+	\hline
+		$I_\text{d}$ [A] & - & 100 & - \\
+	\hline
+		$V_{\text{ds}}$ [V] & 100 & - & - \\
+	\hline
+	\end{tabular}
+	\caption{Relevant parameters of the IPP045N10N3 MOSFET \cite{mosfet} chosen for the full-bridge.
+	Here, \vth is the gate threshold voltage, \ron is the drain-source on resistance, \qg is the total gate charge, \id is the maximum continuous drain current and \vds is the minimum guaranteed drain-source breakdown voltage.}
+	\label{tab:mosfetparameters}
+\end{table}
+
+It should be noted that even though \vth is maximum 3.5V, this is not enough to fully open the MOSFET.
+Rather, this voltage is where the MOSFET will start to conduct.
+Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not fully conducting until \vgs $>4.5$V.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\linewidth]{graphics/mosfet_transfer_characteristic}
+	\caption{Transfer characteristic of the IPP045N10N3 as per the datasheet.
+	Inspecting the graph reveals that the maximum \id of 100A is reached at \vgs$\approx4.5\rightarrow4.75$V.}
+	\label{fig:mosfettransfercharacteristic}
+\end{figure}
+
+The motor should be able to move in both directions so an h-bridge, or full-bridge is required.
+By properly switching the MOSFETs in the circuit on and off the average voltage across the motor can be controlled and therefore also the speed and direction of the motor, see \ref{sec:hbridge} for more details.
+\\~\\
+\thomas{Insert reference to note on full-bridge drive}
+Having chosen a MOSFET for the full-bridge, some form of driver must be designed for the full-bridge.
+For this task, ready-made full-bridge drivers exist on the market that incorporate all of the electronics required to generate the driving signals, requiring only a PWM signal from the designer.
+In order to choose one, a few parameters must be fulfilled.
+
+\begin{itemize}
+	\item \textbf{Output Current:} The amount of current necessary to properly drive the MOSFET.
+	This value depends on the switching frequency of the application, the gate-to-source voltage ($V_{gs}$) and the total gate charge of the MOSFET.
+	\item \textbf{Driving Voltage:} In order to ensure that the MOSFET is turned on quickly and fully the driver should be able to supply a voltage well above the gate threshold of the MOSFET.
+	\item \textbf{High-Side Drive Capabilities:} The high side MOSFET of the full-bridge is referenced not to ground, but to $V_{\text{cc}}$.
+	This means that in order to switch on this MOSFET $V_{\text{gs}}$ must be at least $V_{\text{cc}}+V_{\text{th}}$ where $V_{\text{th}}$ is the gate threshold voltage of the MOSFET.
+	This is bootstrapping and is explained in more detail in section \ref{sec:bootstrap}.
+	\item \textbf{Shoot-Through Protection and Deadtime:} Due to the structure of the full-bridge it is important that two MOSFETs on the same half-bridge are never on at the same time as this would result in a short from $V_{\text{cc}}$ to ground.
+	This is resolved with a combination of deadtime (a delay where no MOSFET is on) and a logic table that ensures that an illegal switch combination can never happen.
+\end{itemize}
+
+The HIP4081AIBZ \cite{driver} full-bridge driver meets all of the above requirements.
+It can supply up to 2.5A on the output pins with a voltage approximately 1V below \vcc, well above the required \vth.
+Since the motor should, preferably, be driven outside the audible frequency range, it was chosen to set the switching frequency at 22kHz.
+This frequency was chosen over an even higher frequency because increasing the frequency also increases the switching losses.
+At this frequency there is $\frac{1}{22000}\approx45\mu$S per cycle. 
+Well within this time the gate should be fully opened.
+Since:
+
+\begin{equation}
+	I = C\frac{\text{dv}}{\text{dt}} \quad\Rightarrow\quad \text{dt} = C\frac{\text{dv}}{I}
+\end{equation}
+\thomas{Is this the correct way of calculating it?}
+
+Accounting for various voltage drops it is assumed that \vgs is 10V, a rough estimate of the time to open the gate completely can be found as:
+
+\begin{equation}
+	\text{dt} = 117\cdot10^{-9}\frac{10}{2.5}\approx0.47\mu\text{S}
+\end{equation}
+
+This time is approximately 100 times shorter than the allotted time frame.
+The component also has floating drive circuitry, meaning that by referencing the high-side driver to source of the high-side MOSFET, the driver can be made to output a voltage higher than \vcc.
+This does require a few external components for the bootstrapping.
+The choice of these components and a more in depth explanation of the procedure is given in section \ref{ssub:bootstrap_circuit}.
+Finally, the component has a user-programmable dead time and shoot-through protection. 
+
+HIP4081AIBZ - Full-bridge driver - (ISL83202)
+
+IPP045N10N3 - Mosfet
+
+choice of VGS, 8V - show graph of transfer characteristics of mosfet, high due to uncertainty.
+
+
+
+
+
+\subsubsection{Bootstrap Circuit}
+\label{ssub:bootstrap_circuit}
+\missingfigure{Put in a bootstrap circuit and make a couple of references to it, when it makes sense.}
+The chosen gate driver has floating drive circuitry for the high side MOSFETS, but needs a bootstrap circuit for providing the higher voltage. 
+A standard bootstrap circuits consists of a diode, a capacitor and a resistor to limit initial charging current to the capacitor. 
+The advantage of using a bootstrap circuit to supply a high voltage for the floating drive is that it is very simple. 
+The disadvantage is that it sets a limit for the maximum and minimum duty cycle as the bootstrap capacitor needs to be charged fully in each period.
+The bootstrap circuitry for this project will be designed to have a maximum duty cycle for the higher MOSFETS of 95\%, thus meaning that the charging of the bootstrap capacitor should take no longer than 5\% of a period.  
+
+The bootstrap diode needs to have a fast recovery time, preferably below 100 ns \cite{bootstrap_infineon}, to minimize the energy fed back to the supply from the bootstrap capacitor.
+\texttt{US1M-E3} was chosen as it has a reverse recovery time of 75 ns and comes in SMD packaging. 
+It allows for a maximum average forward current of 1 A and a maximum forward voltage drop of 1.7 V \cite{diode_ds}.
+Determining the values for the bootstrap capacitor was done using the calculations shown in \cite{bootstrap_ON}.
+The maximum allowed voltage drop across the bootstrap capacitor during \texttt{on} time needs to be determined: 
+\begin{equation}
+\Delta V_{boot} = V_{DD} - V_{F} - V_{GSMIN}
+\end{equation}
+Where $\Delta V_{boot}$ is the voltage drop across the bootstrap capacitor during \texttt{on} time, $V_{DD}$ is the supply voltage, $V_F$ is the forward voltage drop across the diode and $V_{GSMIN}$ is the minimum wanted \texttt{gate-source} voltage.
+$V_{GSMIN}$ was chosen to 8 V to to ensure a high enough gate voltage to turn on the MOSFETS. 
+The chosen MOSFETS have a maximum gate threshold voltage of 3.5 V. 
+Inserting the values yields the maximum allowed value of $\Delta V_{boot}$:
+\begin{equation}
+\Delta V_{boot} = 12 - 1.7 - 8 = 2.3 V	
+\end{equation}
+
+The total charge that needs to be supplied from the bootstrap capacitor is the gate charge of the MOSFET and quiescent and leakage currents in the \texttt{on} time:
+\begin{equation}
+	Q_{total} = Q_{gate} + Q_{ls} + (I_{lkgs} + I_{qbs} + I_{lk} + I_{lkdiode}) \cdot t_{on}
+	\label{eq:charge_total}
+\end{equation}
+Where $I_{lkgs}$ is the gate-source leakage current, $I_{qbs}$ is the gate driver quiescent current, $I_{lk}$ is the gate driver leakage current, $I_{lkdiode}$ is the diode leakage current, $ t_{on}$ is the \texttt{on} time and $Q_{ls}$ is the charge required by the internal level shifter in the gate driver.
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|}
+ \hline
+ $Q_{gate}$ 	& $Q_{ls}$ 	& $I_{lkgs}$ 	& $I_{qbs}$ 		& $I_{lk}$ 			& $I_{lkdiode}$ 	& $t_{on}$ 		\\ 	\hline
+ $117$ [nC]		& $3$ [nC]	& $100$ [nA]	&$-30$ [$\mu$A]		& $1$ [$\mu$A]		& $1$ [nA]			& $43$ [$\mu$S]	\\ 	\hline
+\end{tabular}
+\caption[Parameter values used to determine total charge.]{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver data sheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET data sheet values and $I_{lkdiode}$  is a diode data sheet value. $t_{on}$ is calculated using 95\% dutycycle and 22kHz switching.}
+\label{tab:bootstrap_parameter}
+\end{table}
+$t_{on}$ can be calculated knowing that the worst case duty cycle for the high side MOSFET is 95\% and the switching frequency is 22 kHz.
+Inserting the values, shown in \ref{tab:bootstrap_parameter}, yields the minimum charge value of the capacitor:
+\begin{equation}
+	Q_{total} = 119 [nC]
+\end{equation}
+
+The minimum value of the bootstrap capacitor can now be calculated:
+\begin{equation}
+	C_{boot} = \frac{Q_{total}}{\Delta V_{boot}} = \frac{119}{2.3} = 51.6 [nF]
+\end{equation}
+A ceramic capacitor will be used as it has a negligible leakage current. 
+Looking for SMD ceramic capacitors it was found that in the range of the found minimum value is 56, 68, 82 and 100 [nF].
+56 [nF] is, in theory, a big enough capacitor for the circuit, but a bigger capacitor is an advantage as $\Delta V_{boot}$ will then decrease.
+When increasing the size of the capacitor it should be noted that the initial charge current will become larger.
+It was therefore chosen to use a 100 [nF] ceramic capacitor.
+
+The initial charge current to the capacitor needs to be limited in order not to exceed the maximum ratings of the diode.
+Therefore a resistor is put in series with the diode.
+The resistor value should not be too big as the voltage drop across it is subtracted from the bootstrap capacitor voltage.
+A 1 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 12 A.
+This is clearly above the maximum average forward current of the diode, but the diode can withstand a 8.3 ms single half sine-wave of maximum 30 A \cite{diode_ds}.
+The charging of a capacitor is approximately finished after 5 time constants
+\mikkel{MANGLER KILDE!!! Denne er måske OK \url{http://www.electronics-tutorials.ws/rc/rc_1.html}}
+\begin{equation}
+T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 0.5 \mu S 
+\end{equation}
+Meaning that the diode can be exposed to a maximum of 12A for $0.5 \mu S $, which is well below the absolute maximum rating.
+It should also be noted that bootstrap capacitor needs at least $0.5 \mu S $ for the initial charging.
+\mikkel{In the application note they state that they include a 400ns bootstrap}
+
+Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
+The time it takes to charge the capacitor the energy that is used in each period is:
+\begin{equation}
+	T_{charge,period} = 5\cdot \tau = 5\cdot (R \cdot C_{boot}) = 5\cdot (1 \cdot  51.6 \cdot 10^{-9}) = 258 nS 
+\end{equation}
+The 258 nS are equivalent to 0.6\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 99.4\%.
+
+\mikkel{Because of DCDC converter for 12V rail it was decided to use 4 Ohm (4.7Ohm) resistor to limit the charge current. The max dutycycle should be recalculated.}
+
+% subsection power_board (end)
+
+\subsubsection{Supply Capacitors}
+\label{ssub:sup_caps}
+Driving an inductive load, such as a motor, requires capacitors placed close to the MOSFETS in order to minimize the voltage spikes created by the load current and parasitic inductance in the wires from the supply.
+This section will determine the size and requirements of the supply capacitors using calculations and simulation in PLECS.
+
+First off, the ripple current across the motor inductor needs to be determined as this is the current the supply capacitors need to supply.
+Equations \ref{eq:inductor_gen} shows the general inductor equation and in \ref{eq:inductor_rip} it is re factored to calculate the ripple current.
+\begin{equation}
+	V(t) = L \cdot \frac{dI(t)}{dt}
+	\label{eq:inductor_gen}
+\end{equation}
+
+\begin{equation}
+	\Delta I = \frac{\Delta V}{L} \Delta t
+	\label{eq:inductor_rip}
+\end{equation}
+
+The highest ripple current is found when the duty cycle is 50$\%$ and the full voltage of 24V is applied as calculated in equation \ref{eq:inductor_rip_size}.
+
+\begin{equation}
+	\Delta I = \frac{24}{82\cdot 10^{-6}} \cdot 0.5 \cdot \frac{1}{22000} = 6.7 [A] 
+	\label{eq:inductor_rip_size}
+\end{equation}
+
+The peak-to-peak ripple current of $6.7$A is also found when simulating the system using PLECS as shown in figure \ref{fig:sim_currents}.
+The load current experienced by the supply is also shown in figure \ref{fig:sim_currents}, where abrupt changes in current are seen. 
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/sim_currents.tex}
+	\caption{Current in the motor and the total load when when simulating a full bridge in PLECS.}
+	\label{fig:sim_currents}
+\end{figure}
+
+This is clearly problematic and even if the supply wires have just a few nH in parasitic inductance it would correspond to a huge voltage ripple which is unwanted. 
+Therefore supply capacitors needs to be added to the circuit as close to the switching MOSFET as possibly.
+The minimum capacitance can be calculated by refactoring the general capacitor equation shown in \ref{eq:cap_gen} into equation \ref{eq:cap_min}.
+\begin{equation} 
+	I(t) = C \cdot \frac{dV(t)}{dt}
+	\label{eq:cap_gen}
+\end{equation}
+
+\begin{equation} 
+	C = \Delta I \cdot \frac{\Delta t}{\Delta V}
+	\label{eq:cap_min}
+\end{equation}
+There is no specified requirements for the maximum allowable voltage ripple on such a board, but it is generally undesired.
+It was decided to design the board to have a voltage ripple of less than 1V.
+Using the found ripple current and a maximum voltage ripple of 1 V, the minimum value can be found as in equation \ref{eq:cap_min_size}.
+
+\begin{equation} 
+	C = 6.7 \cdot \frac{0.5 \cdot \frac{1}{22000}}{1 } = 151 [\mu F]
+	\label{eq:cap_min_size}
+\end{equation}
+
+It can now be decided which capacitors should be used.
+It was chosen to use electrolytic capacitors as they generally are cheaper, when in this range of capacitance. 
+Another reason to choose electrolytic capacitors is their equivalent series resistance, ESR, that will dampen the oscillations introduces by the LC circuit of the capacitors and the parasitic inductance of the wires.
+When inspecting capacitor data sheets the ripple current is given in RMS values. 
+The RMS value of the load current is calculated to be 1.9A.
+It was chosen to use the \texttt{MAL215099911E3} capacitors and let them be connected in parallel. 
+The relevant parameters of this capacitor is shown in table \ref{tab:cap_parameters}.
+Connecting two of these capacitors in parallel would yield a total allowed RMS ripple current of 2.6A, which would be enough.
+To allow for some headroom it was chosen to use four, which yields a combined maximum RMS ripple current of 5.3A. 
+Clearly the total capacitance of 1320$\mu$F is far above the minimum needed of 151$\mu$F, but this will just decrease the voltage ripple.
+
+\begin{table}[tb]
+	\centering
+	\begin{tabular}{|r|c|}
+	\hline
+		\textbf{Parameter} & \textbf{Value} \\
+	\hline
+		$U_r$ & 100 [V]  \\ \hline
+		$C_r$ & 330 [$\mu$F]  \\ \hline
+		$I_r$ RMS @ 100[kHz] & 1.4 [A]  \\ \hline
+		$I_r$ RMS @ 10[kHz] & 1.3 [A]  \\ \hline
+		
+	\end{tabular}
+	\caption{Relevant parameters of the \texttt{MAL215099911E3} capacitor \cite{sup_cap}.
+	Here $U_r$ is the rated voltage, $C_r$ is the rated capacitance and $I_r$ is the ripple current.}
+	\label{tab:cap_parameters}
+\end{table}
+
+The disadvantage of the electrolytic capacitors is that they are not usable for high frequency content.
+Therefore it was chosen to add ceramic capacitors as they perform much better at high frequencies. 
+Calculating the needed size of these is very complicated as the high frequency content is determined by the switching speed of the MOSFETS, parasitics and the circuit board layout in general. 
+Based on previous experience it was decided, to use four 1$\mu$F ceramic capacitors in the \texttt{0805} housing as they can easily be changed if it turns out that more capacitance is needed.
+
+In order to be able to simulate the system, an estimate of the inductance of the supply wires is needed.
+According to \cite{partial_induc} the inductance of the wire can be estimated using equations \ref{eq:wire_induc1} to \ref{eq:wire_induc3}.
+
+\begin{equation}
+	L_p = \frac{\mu_0}{2 \pi} \cdot L \cdot \big(ln(\frac{2L}{r}-1)\big)
+	\label{eq:wire_induc1}
+\end{equation}
+\begin{equation}
+	L_i = \frac{\mu_0}{8 \pi} \cdot L
+\end{equation}
+\begin{equation}
+	L_w = L_p + L_i
+	\label{eq:wire_induc3}
+\end{equation}
+Where $\mu_0$ is permeability of free air, L is the length of the wire, r is the radius of the wire copper, $L_p$ is the external self partial inductance, $L_i$ is the internal partial inductance of the wire and $L_w$ is the total self partial inductance.
+The wire length and radius is not known at this point, but it assumed that it will be approximately 0.5m long and with a radius of 2mm. 
+Inserting the appropriate values yields a wire inductance of 575nH.
+
+The system was built in PLECS in order to simulate the currents and voltages and verify the designed system.
+The PLECS model is shown in figure \ref{fig:plecs_schem}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\linewidth]{graphics/plecs_schem.png}
+	\caption{Full bridge circuit with supply capacitors and wire inductance modelled using PLECS. The Motor box consists of an inductor and a resistor in series. All components apart from the MOSFETS have the same values as the chosen components.}
+	\label{fig:plecs_schem}
+\end{figure}	
+
+Simulating the system at 50\% duty cycle yields a voltage ripple of approximately 24mV, which is definitely acceptable. 
+
+It can also be noted that an effect of the inductance in the supply wires and the supply capacitors is that the supply current is low pass filtered and is thereby protected against the ripple current and only needs to supply the DC component of the load current.
+
+The current drawn from the capacitors is shown in figure \ref{fig:cap_currents}.
+Here it can be seen that the electrolytic capacitors supply the majority of the current, while the ceramic capacitors supply a small spike with high frequency content.
+It should be noted that in the simulations there are no difference between the two types of capacitors other than the ESR put in series with the electrolytic capacitors. 
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/cap_currents.tex}
+	\caption{Current drawn from the electrolytic and ceramic capacitors, when simulating in PLECS. }
+	\label{fig:cap_currents}
+\end{figure}
+
+Generally the designed features of the circuit was verified using the PLECS model.
+
+\subsubsection{Safety Relay} % (fold)
+\label{ssub:safety_relay}
+\thomas{This section and the next needs some numbers on charging time and similar}
+It should be possible to disengage the main power rail from the load in case of an emergency.
+This is done most simply by adding a relay in series with the load.
+The relay must be able to carry and break the full load current, 80A.
+The LEV100A4ANG meets this requirement. 
+It is capable of carrying up to 100A continuous current and can break significantly more.
+Since the supply capacitors are parallel with the load, these will also be disconnected by the relay.
+It has a 12V coil which requires $\approx$0.5A to activate.
+% subsubsection safety_relay (end)
+
+\subsubsection{Inrush Current}
+\label{ssub:inrush_current}
+When the system is initially turned on, the supply capacitors will charge.
+They will draw a huge amount of current as there is only the ESR to limit the current. 
+A resistor should be added to limit this inrush current. 
+Adding the resistor to the main current path would introduce considerable losses and limit the performance of the system.
+An additional current path is added to the circuit.
+This is done by adding a resistor and a relay in parallel with the main relay.
+When first powering up the system the secondary relay should be turned on in order to charge the supply capacitors.
+Once charged, the main relay is switched on and afterwards the secondary relay can be switched off.
+This will control the initial inrush current but the system should not be run until the secondary relay is switched off again.
+% section preliminary_testing (end)
+
+
+
+
+
+
+\subsubsection{Motor Current Sensing}
+\mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
+While reading in the literature it was found that measuring the current through the motor is beneficial for controlling the pendulums.
+\thomas{This needs elaboration. Why is it beneficial? What does it add to the project?}
+
+Current measurements are generally done by either hall effect based sensors or shunt resistors. 
+Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
+Additionally, their interference with the circuit they are measuring is negligible.
+Hall effect sensors do come at a higher cost and measuring smaller currents accurately may be a problem.
+A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
+By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
+This solution is simple and, if designed correctly, performs better at lower currents than hall effect sensors.
+\thomas{source on performance of hall effect vs shunt resistors?}
+This is beneficial since the current sensing in this project is used to do current mode control of the system, requiring a reasonably accurate measurement.
+\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
+When measuring the current through an H-Bridge, as is done in this project, the shunt resistor can be placed in various positions.
+The three main ones are high-side, in-line and low-side placement of the shunt resistor as shown in figure \ref{fig:shunt_measure_high_in_low}.
+
+\begin{figure}[h]
+	\centering
+    %\includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
+	\caption{xxxx.}
+	\label{fig:shunt_measure_high_in_low}
+\end{figure}
+\mikkel{Figure should be replaced by own illustration}
+
+\cite{shunt_placement} and \cite{Current_Sense_Circuit_Collection} specifies the advantages and disadvantages of the three configurations.
+\thomas{Perhaps add a quick summary of each and highlight the selected one?} 
+Based on that it was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and bi-directional current measurement is not needed.
+
+
+\paragraph{Requirements for the Current Measuring Circuit} % (fold)
+\label{par:requirements_for_the_current_measuring_circuit}
+
+The output of the current measuring circuit is an analogue signal that is measured by the ADC of the Zynq chip.
+According to the Zynq ADC user guide \cite{zynq_adc}, the measurable input range is from 0V to 1V, but the maximum allowed input voltage is 1.9V according to \cite{adc_zynq_webanswer}.
+The absolute maximum current through the motor is the stall current which is 80A, but the motor will run well below this level in normal operation.
+The normal operation currents are expected to be up to 30A
+\thomas{Some test or explanation required to justify 30A}
+It was therefore decided that the circuit  needs to be able to measure currents of at least up to 40A.
+The resolution per Ampere is increased by decreasing the current range that can be measured,
+If the current gets any higher the ADC input should not be harmed meaning that the input voltage should not exceed 1.9V.
+
+\mikkel{Below should be formatted differently}
+\textbf{Requirements for the circuit:}
+\begin{itemize}
+	\item ADC input voltage does not exceed 1.9V when motor is stalling.
+	\item Measures currents up to 40A, at minimum.
+\end{itemize}
+
+% subsubsection requirements_for_the_current_measuring_circuit (end)
+
+\paragraph{Designing the Current Measuring Circuit} % (fold)
+\label{par:designing_the_current_measuring_circuit}
+
+Placing a shunt resistor in the low-side configuration raises the voltage potential of the low-side of the H-bridge.
+This may influence the gate signal required to open the MOSFETs of the H-bridge.
+In addition, the shunt resistor will, regardless of placement result in a powerloss proportional to its size.
+For these reasons minimizing the value of the shunt resistor is important. 
+The smallest value available from the electronics supplier used at SDU provides a 200$\mu\Omega$ SMD shunt resistor.
+Such a small resistance yields a minimal voltage drop and thus keeps power consumption at a minimum.\\
+The resulting voltage from the motor stalling, that is an 80A current flowing through the resistor would result in only a 16mV voltage drop.
+Since the input range of the ADC is 0-1V, this low voltage would yield very poor resolution in the area of actual interest, 0-40A.
+An amplifier circuit is necessary.
+Purpose built current-sense amplifiers exist which are used specifically for amplifying the voltage drop across a shunt resistor.
+One such amplifier is the \texttt{INA286AID} from Texas Instruments \cite{INA286AID}.
+It has a gain of 100, lifting the voltage resulting from motor stall to 1.6V as seen from \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}..
+\begin{equation}
+	V_{max,input} = G \cdot V_{shunt}
+	\label{eq:adc_input_voltage1}
+\end{equation}
+\begin{equation}
+	V_{max,input} = G \cdot R_{shunt} \cdot I_{stall} = 100 \cdot 200\cdot10^{-6} \cdot 80 = 1.6V
+	\label{eq:adc_input_voltage2}
+\end{equation}
+The measurable range using this IC is 0-50A as seen from \ref{eq:adc_input_voltage3}.
+
+\begin{equation}
+	I_{max, measurable} = \frac{V_{max, measurable}}{R_{shunt}\cdot G} = \frac{1}{100 \cdot 200\cdot10^{-6} } = 50A
+	\label{eq:adc_input_voltage3}
+\end{equation}
+
+\thomas{Is the information about 10mV full scale actually relevant to this design?}
+and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale 
+
+This design meets the required design spec and the schematics can be seen in figure \ref{fig:currentmeasure}.
+As can be seen, the INA286 in this configuration requires only the voltage input, \texttt{POWER\_SHUNT+/-} from the schematic on figure \ref{sfig:hbridgeshunt}, to generate a suitable output which is then fed directly to the ADC through the anti-aliasing filter shown on figure \ref{sfig:ina286aidschematic}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{graphics/hbridge}
+		\caption{H-bridge with shunt resistor in low-side configuration.}
+		\label{sfig:hbridgeshunt}	
+	\end{subfigure}
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{graphics/ina286}
+		\caption{Schematic of the INA286AID as used in the project.}
+		\label{sfig:ina286aidschematic}
+	\end{subfigure}
+	\caption{Schematics relating to the current measurement circuitry.}
+	\label{fig:currentmeasure}
+\end{figure}
+
+% subsubsection designing_the_current_measuring_circuit (end)
+\subsubsection{Relay Circuitry} % (fold)
+\label{ssub:relay_circuitry}
+As discussed in sections \ref{ssub:safety_relay} and \ref{ssub:inrush_current}, two relays are necessary in this design.
+The two circuits are functionally similar so only the circuitry related to the inrush relay is shown here and any relevant differences are discussed.
+Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the inrush relay.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/relay_circuit}
+	\caption{Circuitry related to the inrush relay.}
+	\label{fig:relaycircuit}
+\end{figure}
+
+% subsection relay_circuitry (end)
+
+\subsubsection{Endstop Detection} % (fold)
+\label{ssub:endstop_detection}
+As described in section \ref{sub:safety_circuitry} it was decided to use infrared transceivers to detect endstops.
+\mikkel{The actual 3D print design should be described elsewhere}
+It was decided to use the \texttt{TCST 2103} as it has the wanted functionality.
+It contains an infrared emitter pointing at a photo transistor, that conducts current proportional to the infrared light received.
+In this project it will be used to detect if the infrared light rays has been blocked by the cart or not. 
+The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the current conducted to a voltage level. 
+The output is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
+The schmitt trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\linewidth]{graphics/tcst_circuit_temp.jpg}
+	\caption{\texttt{TCST 2103} circuit.}
+	\label{fig:tcst_circuit}
+\end{figure}
+\mikkel{replace with own image!}
+% subsection endstop_detection (end)
+
+\subsubsection{Copper Thickness}
+Part of the board is designed to house the H-Bridge that drives the motor.
+The H-bridge is designed to carry up to 80A, well above what can reasonably be carried at standard PCB copper thickness.
+This section seeks to estimate the required copper thickness to allow for the design current.
+Allowing a current through a conductor will produce a temperature rise due to the power dissipated in the conductor.
+This power
+The current-carrying capacity (CCC) of a conductor is limited, so far as the current is not destructive, by the temperature rise permissable in the design.
+Essentially, the acceptable temperature rise is limited by the maximum operating temperature of the PCB material.
+This spec is known as the temperature index.
+The PCB material most commonly used is FR-4 which has a temperature index of 130\degree.
+At an ambient temperature of 20\degree this would imply a permissable conductor temperature rise of 110\degree.
+In all practical situations, this is unreasonably high.
+The material will discolor and degrade over time with the excessive heating and cooling of the board while also increasing the apparent ambient temperature of other components on the PCB, lowering the efficiency of the circuit.
+In actual designs, a much more conservative temperature rise of 10\degree is often used, 15\degree is acceptable and 20\degree is considered high.
+The actual temperature rise of a conductor is dependent on a great number of variables, among these are: conductor length, cross-sectional area, conductor material, PCB material, ambient temperature, convection, PCB layout (the amount of copper in the vicinity), etc.
+Additionally, not all conductors carry the same current so different conductors have different thermal impacts on different locations on the PCB.
+Clearly, it is difficult to accurately calculate the required copper thickness, however an estimate can be made.
+In IPC-2221A \cite{ipc2221} data is presented to show the temperature rise resulting from allowing a current through a trace on a PCB on different trace widths.
+This data was first published in \cite{conduct}, a progress report from the American National Bureau of Standards dating back to 1956.
+Much has happened in PCB manufacturing since then. 
+The original data does not take into account the possibility of multi-layered boards or many of the newer board materials.
+In 2009 the new IPC-2152 \cite{ipc2152} was published and reevaluates the topic of current-carrying capacity.
+This standard, however, is unavailable due to its high cost and the original charts are used instead.
+A number of PCB trace width calculators exist online which extrapolate from the original data to give estimates of the required copper thickness and width.
+One such calculator \cite{pcb_trace_calc} was used to determine the required copper thickness and width required in this project.
+~\\
+There are economic constraints in place for this project which requires the authors to be somewhat conservative with respect to how exotic a solution will be considered.
+Most manufacturers support increasing the thickness of copper on a specific layer, allowing well above the 35$\mu$m standard copper thickness.
+The manufacturer used in this project was chosen due to a comparatively low price on 4-layer boards with 70$\mu$m copper on outer layers and 52.5$\mu$m on internal layers.
+
+A distinction is made for different conductors or, on the PCB, traces, depending on the type of current they are expected to carry.
+\begin{itemize}
+	\item \textbf{Signal:} This is the type with the lowest expected current and is used throughout digital circuitry and low power analog signals.
+	Signal traces are by far the most abundant on the circuit and due to the very low currents the trace width should be as small as possible.
+	The manufacturer is capable of creating traces at 8 mil or higher and as such the trace width for this type is 8 mil.
+	\item \textbf{Power:} This type is generally used for supply rails.
+	The trace width for this type is 20mil. Accepting 15\degree temperature increase will allow up to $\approx$1.5A of current.
+	This is sufficient for supplying any of the IC's and other components connected to this trace type.
+	\item \textbf{High Power:} This type is used exclusively for the 24V rail.
+	The trace width for this type is 20mil. Accepting 15\degree temperature increase will allow up to $\approx$2.4A of current.
+	Since the inrush current is limited to $\approx$0.14A this leaves plenty of headroom for creating the 3.3V, 5V and 12V rails.
+\end{itemize}
+
+
+
+% section board_design (end) 
+
+
+\subsubsection{Schematic Revision} % (fold)
+\label{ssub:schematic_revision}
+
+% subsection schematic_revision (end)
+The authors experience with board design and layout ensures that a board layout is never error free in the first revision. 
+This has been true even though a tremendous amount of work went into designing the board.
+Therefore a strategy was devised to increase the likelihood of producing an error free board.
+Many hours were spent on it, but hopefully it will relieve the authors of many hours of frustrating work on debugging the board and save money by removing the need of buying several different revisions of the PCB. 
+The strategy consist of five steps that needs to be completed after finishing the design of the board:
+
+\begin{itemize}
+	\item Documentation
+	\item General inspection
+	\item Datasheet and report comparison
+	\item Footprint inspection 
+	\item Peer-review
+\end{itemize}
+
+The content of each step will be elaborated here. 
+
+\paragraph{Documentation}
+Each circuit is documented to ensure that the design is done correctly.
+Documenting a circuit requires studying the components datasheets and ensuring that they each meets the requirement.
+Furthermore it requires a thorough inspection of the expected functionality of the circuit.
+This step leads to correcting errors where a component is used wrong in respect to the wanted functionality of the circuit.
+
+\paragraph{General Inspection}
+General inspection of the schematic includes finding typographical errors on signals, components, resistor values, etc.
+Furthermore each signal is inspected to ensure that it is connected correctly and it is also decided if it should be connected to an external header for measuring purposes.
+
+\paragraph{Datasheet and Report Comparison}
+Each circuit in the schematic is compared to its datasheets recommendation and the documentation written in the report. 
+This step essentially ensures that each circuit has been verified more the one time. 
+One could think that this step is irrelevant, but the authors believe it is important due to the complexity of the schematic.
+After completion of this step, all circuits have been checked at least two times and the schematic a should be correct. 
+
+\paragraph{Footprint Inspection}
+Provided that the schematic is correct, the only possibly source of errors is the components footprints. 
+Inspecting the footprint consist of verifying the correct pin assignment and the correct land patterns.
+Both are done by inspecting each components datasheet. 
+After completion of this step, both the schematic and footprints should be correct and the board is expected to be free from errors.
+
+\paragraph{Peer-review}
+In this part of the process the board design, schematic and footprints should be correct and everything has been verified by the authors multiple times.
+It is generally a problem that when working with a design for a long period of time, some errors are very hard to find for the designers themselves. 
+Therefore the complete design was reviewed by Jesper Nielsen, who is employed to do high power electronics PCBs at the University of Southern Denmark. 
+The revision was done by pointing out the main features of the board and discussing the found components, schematic and the board layout.
+
+% section schematic_revision (end)
