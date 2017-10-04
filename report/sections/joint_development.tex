@@ -178,7 +178,7 @@ Using this the mean efficiency can be estimated as shown in equation \ref{eq:eff
 \paragraph{Comparison}
 The most important parameters of the three solutions discussed are shown in table \ref{tab:vol_gen_joint}.
 
-\begin{table}
+\begin{table}[h]
 	\centering
 	\begin{tabular}{l|c|c|c}
 		  				&	Buck 	& Buck-Boost 	& Linear\\
@@ -193,6 +193,28 @@ The most important parameters of the three solutions discussed are shown in tabl
 The Buck converter solution has the highest efficiency and is therefore the natural choice.
 As already discussed the disadvantage of using a Buck converter is that the full battery capacity cannot be utilized.
 A discharge test should be conducted to determine the amount of capacity that cannot be utilized.
-At the time of writing, the chosen battery has not yet been procured and the test will therefore be conducted on a similar battery instead.
-The discharge curve of the two types of batteries will not be identical, but will be sufficient for deciding which solution should be used.
 
+
+\paragraph{Battery Discharge}
+At the time of writing, the chosen battery has not yet been procured and the test will therefore be conducted on a similar battery instead.
+The battery under test is a 850 mAH Li-Ion battery with the dimensions 49mm X 29mm X 6mm.
+It should be noted that both the capacity and physical dimensions are similar to the chosen battery.
+The discharge curve of the two batteries will not be identical, but will be sufficient close to to allow for deciding which solution should be used.
+The test was conducted by connecting the battery to an electrical load programmed to discharge with a constant power of 0.3 Watt, while measuring the battery voltage.
+The measured discharge curve is shown in figure \ref{fig:bat_discharge}.
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/discharge.tex}
+	\caption{Voltages measured across a 850 mAH Li-Ion battery while discharging using an electrical load programmed to 0.3 Watt. Horizontal red line represents the 3.3V level.}
+	\label{fig:bat_discharge}
+\end{figure}
+It can be observed that the battery voltage only drops below 3.3V for a very short time before the battery is completely discharged.
+
+\paragraph{Conclusion}
+The Buck converter solution has the highest efficiency and has a lower drop out voltage than the linear regulator solution.
+The disadvantage of using a Buck converter is that the full battery capacity cannot be utilized, but a test showed that almost all of the capacity can be used.
+Therefore it was chosen to use a Buck converter with the \texttt{TPS62220} regulator. 
+The Buck converter circuit used is based on the recommendations in the datasheet of the \texttt{TPS62220}.
+The circuit is shown in figure XXX? .
+\mikkel{INSERT FIGURE}
