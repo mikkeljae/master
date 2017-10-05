@@ -1,0 +1,117 @@
+%!TEX root = ../main.tex
+\subsection{Analysis}
+\label{sub:controller_board_analysis}
+
+In order to develop a controller board that can control the double pendulum, the needed functionality of the board needs to be analysed. 
+This section will constitute an analysis of the needed functionality of the controller board and an analysis of possible solutions to wanted functionality.
+
+
+\subsubsection{Motor Driver}
+It is necessary to device some form of driving circuitry for the motor driving the timing belt.
+The motor should be able to move in both directions so an H-bridge is required.
+By properly switching the MOSFETs in the circuit \texttt{on} and \texttt{off} the average voltage across the motor can be controlled and therefore also the speed and direction of the motor.
+
+
+\subsubsection{Micro Controller}
+MicroZed is chosen...... But why???
+
+\subsubsection{Voltage Rails}
+The controller board will have lots of different electronics and there will be a need for different voltage rails as standard digital electronics cannot use the 24V that is used to drive the motor.
+Each voltage rail needs to be designed to be able to deliver the power that is needed by the components.
+
+\subsubsection{Supply Capacitors}
+Supply capacitors needs to be placed in near vicinity of the switching MOSFETs to protect the controller board against voltage spikes created by the parasitics inductance from the board and power delivery wires.
+
+\subsubsection{Inrush Relay}
+With a large amount of capacity placed on the controller board follows a large inrush current when power is initially delivered to the board. 
+This large current can harm the power delivery system, if it has no internal current limiting scheme.
+An inrush relay circuitry should be designed in order to limit the inrush current and thereby protect the power delivery system.
+
+\subsubsection{Motor Current Sensing}
+
+While reading in the literature it was found that measuring the current through the motor is beneficial for controlling the pendulums....... Where should we refer to?
+\thomas{This needs elaboration. Why is it beneficial? What does it add to the project?}
+Current measurements are generally done by either hall effect based sensors or shunt resistors. 
+Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
+Additionally, their interference with the circuit they are measuring is negligible.
+Hall effect sensors do come at a higher cost and measuring smaller currents accurately may be a problem.
+A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
+By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
+This solution is simple and, if designed correctly, performs better at lower currents than hall effect sensors.
+\thomas{source on performance of hall effect vs shunt resistors?}
+This is beneficial since the current sensing in this project is used to do current mode control of the system, requiring a reasonably accurate measurement.
+\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
+
+
+\subsubsection{Safety} % (fold)
+\label{subsub:safety}
+It is expected that at an error may occur that causes the cart to move uncontrollably.
+A safety system should be constructed in such a way that it will prevent the cart from crashing violently.
+It should be isolated from the remaining system.
+Therefore, if it can at all be avoided, no programming should be involved in determining a safety condition.
+With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
+In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
+\\~\\
+\mikkel{Endstops should be explained earlier in the report}
+Creating the endstops can be done in a multitude of ways.
+In this project three approaches were considered:
+\paragraph{Mechanical Switch:} % (fold)
+\label{par:mechanical_switch}
+The simplest form of switch is the mechanical switch.
+The switch should be mounted in such a way that the cart would move into the switch, therefore activating it.
+This approach is not without issues.
+Firstly, the simplest mounting solution would require the switch to be mounted in the direct path of the cart.
+If the cart is traveling at full speed it is unlikely that the cart would stop before crashing into the switching mechanism, potentially damaging it.
+A switch mounted in this fashion would need to be rather robust.
+Some other mounting solutions could be thought of that do not suffer from this problem, especially if a flexible microswitch is used.
+These types of switches can be fragile and may not be sufficiently durable, considering the usecase.
+All mechanical switches have one drawback in common: they are mechanical.
+Generally, mechanical items wear out over time and require maintainance or replacement.
+% paragraph mechanical_switch (end)
+\paragraph{Hall Effect Sensor:} % (fold)
+\label{par:hall_effect_sensor}
+This type of sensor measures magnetic fields and produces a voltage proportional to the strength of the field.
+By placing a small neodymium magnet on the cart and mounting a hall effect sensor on the rail in such a way that the coincide would allow for detecting when the cart is above the sensor.
+If the sensor is combined with a schmitt-trigger circuit the output could be a binary result, either the endstop is reached or it is not.
+Using this method requires that a magnet is placed on the cart itself and that a sensor is mounted to the rail.
+It should be noted that accelerating rather strong magnetic fields back and forth on the platform may not be the least electrically noisy solution one could think of.
+Magnetic fields are also wide, meaning that the cart would "sneak up on" the threshold.
+This requires some amount of calibration to determine the correct distance between sensor and magnet, which may not be mechanically simple to determine. 
+% paragraph hall_effect_sensor (end)
+\paragraph{Infrared Transceiver:} % (fold)
+\label{par:infrared_transceiver}
+This type of device is a combined LED and infrared sensor.
+The LED is optimised for emitting infrared light, or radiation (IR), and the sensor for sensing it.
+The LED emits IR outward from the device which, when an object is placed in front of it, will bounce off the object and be caught by the sensor.
+As with the hall effect sensor, this type of device produces a voltage output proportional to the amount of IR being sensed and as such a schmitt-trigger circuit would also be benficial in this case.
+With this sensor type it is important to realise that the LED will not be the only emitter of IR in the vicinity.
+Any type of lamp will emit IR, especially glowbulbs (of which there are few left, luckily) but also sunlight contains some amount of IR.
+When using this sensor the circuit should be designed in such a way that only the effect of the IR radiated back on the sensor will trigger the circuit.
+The sensor should be mounted immediately below the cart so as to maximize the radiated IR and therefore the signal strength.
+% paragraph infrared_transceiver (end)
+\\~\\
+While all of the above have their drawbacks, it was decided to use the infrared transceiver.
+This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart.
+\\~\\
+In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
+In order to minimize the amount of circuitry, all safety features will trip the same circuit.
+
+%Removed by Mikkel:
+%It is expected that at an error may occur that causes the cart to move uncontrollably.
+%In such a situation the programmer should be able to completely shut off power to the motor.
+%The endstops will ensure that a minimum of mechanical or electrical damage is incurred on the platform in case of a cart crash.
+
+
+\subsubsection{Requirements}
+
+Endstop circuit with infrared transceivers and Emergency button should cut off power to motor via relay
+\\
+H-Bridge with MOSFETS to control motor
+\\
+Voltage rail generation.
+\\
+Correctly sized supply capacitors
+\\
+Inrush relay
+\\
+Motor current sensing circuitry
