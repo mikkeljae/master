@@ -2,38 +2,8 @@
 \subsection{Circuit Design}
 \label{sub:controller_board_circuit_design}
 
-Multiple electronics components are required to realise the double pendulum being developed throughout this report.
-This section explores the design of those components and the communication between them.
-Most of the circuitry is combined on a single PCB, the driver board, however some of the functionality is moved to smaller boards, local to the place where they are needed.\\
-
-The components of the system are listed here:
-\begin{itemize}
-	\item Motor Encoder
-	\item Joint Encoder
-	\item End Stops
-	\item Motor Driver
-	\item Emergency Circuitry
-	\item Relay Driver
-	\item RF Transceiver
-	\item MicroZed 
-\end{itemize}
-Many of these components require a number of subcomponents, which will be explored further in later sections.
-
-
-\subsubsection{Safety Relay?}
-\mikkel{Should be in this section somehow}
-\thomas{Add circuit showing the safety relay}
-On figure \ref{fig:relay_circuit} is shown the safety circuitry.
-A relay is mounted in series with the supply rail for the motor.
-The default state for this relay should be \texttt{off}.
-Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
-Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
-Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
-One relay that fulfills these requirements is the.
-\\~\\
-The driver circuit for the relay is activated only when all safety conditions are off.
-If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
-Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
+Multiple electronics components are required to realise the functionalities described in the precious section.
+This section explores the selection of those components and design of the corresponding circuits.
 
 
 
@@ -524,11 +494,34 @@ This is done by adding a resistor and a relay in parallel with the main relay.
 When first powering up the system the secondary relay should be turned on in order to charge the supply capacitors.
 Once charged, the main relay is switched on and afterwards the secondary relay can be switched off.
 This will control the initial inrush current but the system should not be run until the secondary relay is switched off again.
-% section preliminary_testing (end)
 
+\subsubsection{Relay Circuitry} % (fold)
+\label{ssub:relay_circuitry}
+As discussed in sections \ref{ssub:safety_relay} and \ref{ssub:inrush_current}, two relays are necessary in this design.
+The two circuits are functionally similar so only the circuitry related to the inrush relay is shown here and any relevant differences are discussed.
+Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the inrush relay.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/relay_circuit}
+	\caption{Circuitry related to the inrush relay.}
+	\label{fig:relaycircuit}
+\end{figure}
 
+\mikkel{These sections should be merged.}
 
+\thomas{Add circuit showing the safety relay}
+On figure \ref{fig:relay_circuit} is shown the safety circuitry.
+A relay is mounted in series with the supply rail for the motor.
+The default state for this relay should be \texttt{off}.
+Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
+Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
+Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
+One relay that fulfills these requirements is the.
+\\~\\
+The driver circuit for the relay is activated only when all safety conditions are off.
+If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
+Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
 
 
 \subsubsection{Motor Current Sensing}
@@ -625,18 +618,8 @@ As can be seen, the INA286 in this configuration requires only the voltage input
 \end{figure}
 
 % subsubsection designing_the_current_measuring_circuit (end)
-\subsubsection{Relay Circuitry} % (fold)
-\label{ssub:relay_circuitry}
-As discussed in sections \ref{ssub:safety_relay} and \ref{ssub:inrush_current}, two relays are necessary in this design.
-The two circuits are functionally similar so only the circuitry related to the inrush relay is shown here and any relevant differences are discussed.
-Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the inrush relay.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\linewidth]{graphics/relay_circuit}
-	\caption{Circuitry related to the inrush relay.}
-	\label{fig:relaycircuit}
-\end{figure}
+
 
 % subsection relay_circuitry (end)
 
