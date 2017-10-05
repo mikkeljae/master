@@ -2,29 +2,57 @@
 \subsection{Analysis}
 \label{sub:controller_board_analysis}
 
-In an effort to split the development into smaller, more managable parts, it was decided to initially develop the system such that it fulfills the following requirements:
+In order to develop a controller board that can control the double pendulum, the needed functionality of the board needs to be analysed. 
+This section will constitute an analysis of the needed functionality of the controller board and an analysis of possible solutions to wanted functionality.
 
-\begin{itemize}
-	\item The cart should be able to move with known position.
-	\item Endstops on the platform should stop movement.
-	\item Emergency button should stop movement.
-\end{itemize}
 
-Clearly, making the cart move is crucial in the development of the system and forms the basis for any later developments.
-The latter two requirements are related to the safe operation of the platform.
-It is expected that at least during development, an error may occur that causes the cart to move uncontrollably.
-In such a situation the programmer should be able to completely shut off power to the motor.
-The endstops will ensure that a minimum of mechanical or electrical damage is incurred on the platform in case of a cart crash.
-The following paragraphs will explore what is required in order to fulfill the above requirements.
-\subsubsection{Safety Circuitry} % (fold)
-\label{subsub:safety_circuitry}
-Safety first.
-A safety system should, whenever possible, be isolated from the remaining system.
-That is, it should depend on non of the remaining circuitry or programming.
-Usually, if it can at all be avoided, no programming should be involved in determining a safety condition.
+\subsubsection{Motor Driver}
+It is necessary to device some form of driving circuitry for the motor driving the timing belt.
+The motor should be able to move in both directions so an H-bridge is required.
+By properly switching the MOSFETs in the circuit \texttt{on} and \texttt{off} the average voltage across the motor can be controlled and therefore also the speed and direction of the motor.
+
+
+\subsubsection{Micro Controller}
+MicroZed is chosen...... But why???
+
+\subsubsection{Voltage Rails}
+The controller board will have lots of different electronics and there will be a need for different voltage rails as standard digital electronics cannot use the 24V that is used to drive the motor.
+Each voltage rail needs to be designed to be able to deliver the power that is needed by the components.
+
+\subsubsection{Supply Capacitors}
+Supply capacitors needs to be placed in near vicinity of the switching MOSFETs to protect the controller board against voltage spikes created by the parasitics inductance from the board and power delivery wires.
+
+\subsubsection{Inrush Relay}
+With a large amount of capacity placed on the controller board follows a large inrush current when power is initially delivered to the board. 
+This large current can harm the power delivery system, if it has no internal current limiting scheme.
+An inrush relay circuitry should be designed in order to limit the inrush current and thereby protect the power delivery system.
+
+\subsubsection{Motor Current Sensing}
+
+While reading in the literature it was found that measuring the current through the motor is beneficial for controlling the pendulums....... Where should we refer to?
+\thomas{This needs elaboration. Why is it beneficial? What does it add to the project?}
+Current measurements are generally done by either hall effect based sensors or shunt resistors. 
+Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
+Additionally, their interference with the circuit they are measuring is negligible.
+Hall effect sensors do come at a higher cost and measuring smaller currents accurately may be a problem.
+A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
+By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
+This solution is simple and, if designed correctly, performs better at lower currents than hall effect sensors.
+\thomas{source on performance of hall effect vs shunt resistors?}
+This is beneficial since the current sensing in this project is used to do current mode control of the system, requiring a reasonably accurate measurement.
+\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
+
+
+\subsubsection{Safety} % (fold)
+\label{subsub:safety}
+It is expected that at an error may occur that causes the cart to move uncontrollably.
+A safety system should be constructed in such a way that it will prevent the cart from crashing violently.
+It should be isolated from the remaining system.
+Therefore, if it can at all be avoided, no programming should be involved in determining a safety condition.
 With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
 In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
 \\~\\
+\mikkel{Endstops should be explained earlier in the report}
 Creating the endstops can be done in a multitude of ways.
 In this project three approaches were considered:
 \paragraph{Mechanical Switch:} % (fold)
@@ -66,17 +94,24 @@ While all of the above have their drawbacks, it was decided to use the infrared 
 This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart.
 \\~\\
 In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
-It may be that additional safety features are added later.
 In order to minimize the amount of circuitry, all safety features will trip the same circuit.
-\thomas{Add circuit showing the safety relay}
-On figure \ref{fig:relay_circuit} is shown the safety circuitry.
-A relay is mounted in series with the supply rail for the motor.
-The default state for this relay should be \texttt{off}.
-Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
-Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
-Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
-One relay that fulfills these requirements is the.
-\\~\\
-The driver circuit for the relay is activated only when all safety conditions are off.
-If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
-Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
+
+%Removed by Mikkel:
+%It is expected that at an error may occur that causes the cart to move uncontrollably.
+%In such a situation the programmer should be able to completely shut off power to the motor.
+%The endstops will ensure that a minimum of mechanical or electrical damage is incurred on the platform in case of a cart crash.
+
+
+\subsubsection{Requirements}
+
+Endstop circuit with infrared transceivers and Emergency button should cut off power to motor via relay
+\\
+H-Bridge with MOSFETS to control motor
+\\
+Voltage rail generation.
+\\
+Correctly sized supply capacitors
+\\
+Inrush relay
+\\
+Motor current sensing circuitry

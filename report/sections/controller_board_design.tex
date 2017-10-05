@@ -1,6 +1,6 @@
 %!TEX root = ../main.tex
-\subsection{Design}
-\label{sub:controller_board_design}
+\subsection{Circuit Design}
+\label{sub:controller_board_circuit_design}
 
 Multiple electronics components are required to realise the double pendulum being developed throughout this report.
 This section explores the design of those components and the communication between them.
@@ -18,6 +18,24 @@ The components of the system are listed here:
 	\item MicroZed 
 \end{itemize}
 Many of these components require a number of subcomponents, which will be explored further in later sections.
+
+
+\subsubsection{Safety Relay?}
+\mikkel{Should be in this section somehow}
+\thomas{Add circuit showing the safety relay}
+On figure \ref{fig:relay_circuit} is shown the safety circuitry.
+A relay is mounted in series with the supply rail for the motor.
+The default state for this relay should be \texttt{off}.
+Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
+Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
+Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
+One relay that fulfills these requirements is the.
+\\~\\
+The driver circuit for the relay is activated only when all safety conditions are off.
+If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
+Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
+
+
 
 \subsubsection{Voltage Rails} % (fold)
 \label{subsub:voltage_rails}
@@ -166,8 +184,7 @@ These procedures are described in detail in \cite{isaswarm}.
 
 \subsubsection{MOSFET and H-Bridge Driver} % (fold)
 \label{ssub:h_bridge}
-It is necessary to device some form of driving circuitry for the motor driving the timing belt.
-On the platform is a Maxon 148867 Brushed DC Motor.
+The motor that needs to be driven is a Maxon 148867 Brushed DC Motor.
 This is a 150W motor with a nominal current of 6A and a stall current of 80A.
 Clearly, the system should under normal use not come anywhere close to stalling the motor but considering the use case, experimentation with control from students, it may be beneficial to design the circuitry such that it can withstand being stalled, for at least a short period of time.
 In order to reach this goal, it is necessary to size the components for at least some amount above 80A continuous.
@@ -210,10 +227,7 @@ Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not ful
 	\label{fig:mosfettransfercharacteristic}
 \end{figure}
 
-The motor should be able to move in both directions so an h-bridge, or full-bridge is required.
-By properly switching the MOSFETs in the circuit on and off the average voltage across the motor can be controlled and therefore also the speed and direction of the motor, see \ref{sec:hbridge} for more details.
-\\~\\
-\thomas{Insert reference to note on full-bridge drive}
+
 Having chosen a MOSFET for the full-bridge, some form of driver must be designed for the full-bridge.
 For this task, ready-made full-bridge drivers exist on the market that incorporate all of the electronics required to generate the driving signals, requiring only a PWM signal from the designer.
 In order to choose one, a few parameters must be fulfilled.
@@ -511,20 +525,7 @@ This will control the initial inrush current but the system should not be run un
 
 
 \subsubsection{Motor Current Sensing}
-\mikkel{A wild subsection appears! (Should be moved to a section where it makes sense)}
-While reading in the literature it was found that measuring the current through the motor is beneficial for controlling the pendulums.
-\thomas{This needs elaboration. Why is it beneficial? What does it add to the project?}
-
-Current measurements are generally done by either hall effect based sensors or shunt resistors. 
-Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
-Additionally, their interference with the circuit they are measuring is negligible.
-Hall effect sensors do come at a higher cost and measuring smaller currents accurately may be a problem.
-A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
-By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
-This solution is simple and, if designed correctly, performs better at lower currents than hall effect sensors.
-\thomas{source on performance of hall effect vs shunt resistors?}
-This is beneficial since the current sensing in this project is used to do current mode control of the system, requiring a reasonably accurate measurement.
-\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
+....
 When measuring the current through an H-Bridge, as is done in this project, the shunt resistor can be placed in various positions.
 The three main ones are high-side, in-line and low-side placement of the shunt resistor as shown in figure \ref{fig:shunt_measure_high_in_low}.
 
