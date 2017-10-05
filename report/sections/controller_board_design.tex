@@ -48,6 +48,7 @@ This rail supplies, mainly, the MicroZed.
 The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
 In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
 There are two types of encoders, the HEDS-5540 \cite{heds5540}, which requires a maximum of 85mA and a Rolin magnetic encoder, which requires a maximum of 25mA.\\
+\mikkel{Rolin should not be discussed here}
 The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
 The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
 This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
@@ -86,6 +87,7 @@ Considering this, it is safe to assume that the real power draw from the MicroZe
 This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
 The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
 The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail.\\
+\mikkel{Mention efficiency if this should make sense.}
 There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
 Both of these require power to stay in the closed position.
 The first, the G6B \cite{g6b}, requires 16.7mA while the former, the LEV100A4ANG \cite{lev100}, requires 461mA.\\
@@ -228,6 +230,7 @@ In order to choose one, a few parameters must be fulfilled.
 
 The HIP4081AIBZ \cite{driver} full-bridge driver meets all of the above requirements.
 It can supply up to 2.5A on the output pins with a voltage approximately 1V below \vcc, well above the required \vth.
+\mikkel{Vcc is what? it is referenced twice, but with different meanings}
 Since the motor should, preferably, be driven outside the audible frequency range, it was chosen to set the switching frequency at 22kHz.
 This frequency was chosen over an even higher frequency because increasing the frequency also increases the switching losses.
 At this frequency there is $\frac{1}{22000}\approx45\mu$S per cycle. 
@@ -244,7 +247,7 @@ Accounting for various voltage drops it is assumed that \vgs is 10V, a rough est
 \begin{equation}
 	\text{dt} = 117\cdot10^{-9}\frac{10}{2.5}\approx0.47\mu\text{S}
 \end{equation}
-
+\mikkel{Not completely correct. Should be seen as RC circuit with the gate resistor}
 This time is approximately 100 times shorter than the allotted time frame.
 The component also has floating drive circuitry, meaning that by referencing the high-side driver to source of the high-side MOSFET, the driver can be made to output a voltage higher than \vcc.
 This does require a few external components for the bootstrapping.
