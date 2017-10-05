@@ -283,7 +283,7 @@ choice of VGS, 8V - show graph of transfer characteristics of mosfet, high due t
 \label{ssub:bootstrap_circuit}
 \missingfigure{Put in a bootstrap circuit and make a couple of references to it, when it makes sense.}
 The chosen gate driver has floating drive circuitry for the high side MOSFETS, but needs a bootstrap circuit for providing the higher voltage. 
-A standard bootstrap circuits consists of a diode, a capacitor and a resistor to limit initial charging current to the capacitor. 
+A standard bootstrap circuits consists of a diode, a capacitor and a resistor. 
 The advantage of using a bootstrap circuit to supply a high voltage for the floating drive is that it is very simple. 
 The disadvantage is that it sets a limit for the maximum and minimum duty cycle as the bootstrap capacitor needs to be charged fully in each period.
 The bootstrap circuitry for this project will be designed to have a maximum duty cycle for the higher MOSFETS of 95\%, thus meaning that the charging of the bootstrap capacitor should take no longer than 5\% of a period.  
@@ -341,10 +341,22 @@ Therefore a resistor is put in series with the diode.
 The resistor value should not be too big as the voltage drop across it is subtracted from the bootstrap capacitor voltage.
 A 1 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 12 A.
 This is clearly above the maximum average forward current of the diode, but the diode can withstand a 8.3 ms single half sine-wave of maximum 30 A \cite{diode_ds}.
-The charging of a capacitor is approximately finished after 5 time constants
-\mikkel{MANGLER KILDE!!! Denne er måske OK \url{http://www.electronics-tutorials.ws/rc/rc_1.html}}
+
+The capacitor voltage while charging in a RC circuit is described by equation \ref{eq:cap_charge}, according to \cite{prac_ele_for_inven}.
+
+\begin{equation}
+	V_C = V_S (1-e^{\frac{-t}{R\cdot C}})
+	\label{eq:cap_charge}
+\end{equation}
+
+Where $V_C$ is the capacitor voltage, $V_S$ is the supply voltage, $R$ is the resistance and $C$ is the capacitance.
+The RC time constant is defined as $\tau = R\cdot C$.
+Equation \ref{eq:cap_charge} can be used to calculate the time it takes an RC circuit to charge to a specific level.
+After one time constant the capacitor is charged 63.2\% and after five time constant the capacitor is approximately fully charged, 99.3\%.
+This knowledge can be used to calculate the time it takes to charge the bootstrap capacitor as shown in \ref{eq:cap_boot_time}.
 \begin{equation}
 T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 0.5 \mu S 
+\label{eq:cap_boot_time}
 \end{equation}
 Meaning that the diode can be exposed to a maximum of 12A for $0.5 \mu S $, which is well below the absolute maximum rating.
 It should also be noted that bootstrap capacitor needs at least $0.5 \mu S $ for the initial charging.
