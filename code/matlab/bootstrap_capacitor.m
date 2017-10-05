@@ -40,13 +40,13 @@ V_boot4 = Q_total / C_boot4
 
 % If C_4 is chosen
 
-R = 1;
+R = 4.7;
 max_amp = VDD/R;                       % Calculate from bootstrap resistor 
 tau = R*C_boot4;                       % time constant
 init_charge_time  = tau *5              %It is usually considered that five time constants are enough to charge a capacitor.
 
 
-tau_period = 1 * C_boot;
+tau_period = R * C_boot;
 period_charge_time = 5*tau_period
 
 period= 1/22000
