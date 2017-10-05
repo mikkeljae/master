@@ -650,8 +650,27 @@ The schmitt trigger circuit is designed to have a high threshold of 3V and a low
 \end{figure}
 \mikkel{replace with own image!}
 % subsection endstop_detection (end)
+% subsection board_layout (end)
 
-\subsubsection{Copper Thickness}
+\subsubsection{Board Layout} % (fold)
+\label{sub:board_layout}
+The layout of the board involved a number of considerations, especially concerning the layout of the power part of the circuit.
+These considerations involve the layer stack, the required copper thickness and various placements of components.
+This section will discuss in appropriate detail these considerations.
+Figure \ref{fig:board_layout} 
+The board can be split into two parts: a digital circuit and a power circuit.
+These parts have seperate ground planes in order to protect the digital circuitry from the high and sudden currents
+Firstly, it is desirable to determine what requirements exist for the trace widths and thicknesses in the layout.
+
+\begin{figure}
+	\centering
+	%\includegraphics[width=\linewidth]{graphics/board_layout}
+	\missingfigure{bottom and top board layout}
+	\caption{Top and bottom view of the controller board.}
+	\label{fig:board_layout}
+\end{figure}
+
+\paragraph{Copper Thickness}
 Part of the board is designed to house the H-Bridge that drives the motor.
 The H-bridge is designed to carry up to 80A, well above what can reasonably be carried at standard PCB copper thickness.
 This section seeks to estimate the required copper thickness to allow for the design current.
@@ -680,6 +699,7 @@ One such calculator \cite{pcb_trace_calc} was used to determine the required cop
 There are economic constraints in place for this project which requires the authors to be somewhat conservative with respect to how exotic a solution will be considered.
 Most manufacturers support increasing the thickness of copper on a specific layer, allowing well above the 35$\mu$m standard copper thickness.
 The manufacturer used in this project was chosen due to a comparatively low price on 4-layer boards with 70$\mu$m copper on outer layers and 52.5$\mu$m on internal layers.
+On the power part of the board this results in a total of 122.5$\mu$m of copper for the 24V rail and power ground.
 
 A distinction is made for different conductors or, on the PCB, traces, depending on the type of current they are expected to carry.
 \begin{itemize}
@@ -693,8 +713,6 @@ A distinction is made for different conductors or, on the PCB, traces, depending
 	The trace width for this type is 20mil. Accepting 15\degree temperature increase will allow up to $\approx$2.4A of current.
 	Since the inrush current is limited to $\approx$0.14A this leaves plenty of headroom for creating the 3.3V, 5V and 12V rails.
 \end{itemize}
-
-
 
 % section board_design (end) 
 
