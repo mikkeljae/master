@@ -78,6 +78,7 @@ The switching time should be calculated to verify this.
 \cite{mosfet_switch_app_note} describes switching characteristics of MOSFETs without taking parasitics into account.
 Approximating the turn-on time of the MOSFET is sufficient here as it just needs to be verified that the MOSFETs are fully open within a small fraction of the switching period.
 \cite{mosfet_switch_app_note} approximates the turn-on time of a MOSFET in equation \ref{eq:mosfet_turn_on}.
+
 \begin{equation}
 t_{switch} = R_G \cdot C_{iss} \cdot ln\left(\frac{1}{1-\frac{V_{gp}}{V_{GS}}}\right) 
 \label{eq:mosfet_turn_on}
@@ -85,19 +86,15 @@ t_{switch} = R_G \cdot C_{iss} \cdot ln\left(\frac{1}{1-\frac{V_{gp}}{V_{GS}}}\r
 
 Where $t_{switch}$ is the switching time, $R_G$ is the total gate resistance, $C_{iss}$ is the effective input capacitance of the
 MOSFET, $V_{gp}$ is the gate plateau voltage and $V_{GS}$ is the voltage applied to the gate applied by the motor driver.
-Accounting for various voltage drops it is assumed that \vgs is 8V and by inspecting figure \ref{fig:mosfettransfercharacteristic}
-
-
-
-
-
- a rough estimate of the time to open the gate completely can be found as:
+Accounting for various voltage drops it is assumed that \vgs is 8V and by inspecting figure \ref{fig:mosfettransfercharacteristic}, $V_{gp}$ is estimated to 4.5V.
+$R_G$ and $C_{iss}$ is datasheet values.
 
 \begin{equation}
-	\text{dt} = 117\cdot10^{-9}\frac{10}{2.5}\approx0.47\mu\text{S}
+t_{switch} = 9.4 \cdot 4.48 \cdot 10^{-9} \cdot ln\left(\frac{1}{1-\frac{4.5}{8}}\right) = 34.8 nS 
+\label{eq:mosfet_turn_on}
 \end{equation}
-\mikkel{Not completely correct. Should be seen as RC circuit with the gate resistor}
-This time is approximately 100 times shorter than the allotted time frame.
+This MOSFET switching time is orders of magnitude smaller than the PWM switching period.
+
 The component also has floating drive circuitry, meaning that by referencing the high-side driver to source of the high-side MOSFET, the driver can be made to output a voltage higher than \vcc.
 This does require a few external components for the bootstrapping.
 The choice of these components and a more in depth explanation of the procedure is given in section \ref{ssub:bootstrap_circuit}.
