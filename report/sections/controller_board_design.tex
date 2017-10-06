@@ -123,18 +123,18 @@ Inserting the values yields the maximum allowed value of $\Delta V_{boot}$:
 \Delta V_{boot} = 12 - 1.7 - 8 = 2.3 V	
 \end{equation}
 
-The total charge that needs to be supplied from the bootstrap capacitor is the gate charge of the MOSFET and quiescent and leakage currents in the \texttt{on} time:
+The total charge that needs to be supplied from the bootstrap capacitor is the gate charge of the MOSFET along with the quiescent and leakage currents in the \texttt{on} time:
 \begin{equation}
 	Q_{total} = Q_{gate} + Q_{ls} + (I_{lkgs} + I_{qbs} + I_{lk} + I_{lkdiode}) \cdot t_{on}
 	\label{eq:charge_total}
 \end{equation}
-Where $I_{lkgs}$ is the gate-source leakage current, $I_{qbs}$ is the gate driver quiescent current, $I_{lk}$ is the gate driver leakage current, $I_{lkdiode}$ is the diode leakage current, $ t_{on}$ is the \texttt{on} time and $Q_{ls}$ is the charge required by the internal level shifter in the gate driver.
+Where $Q_{gate}$ is the maximum total gate charge, $I_{lkgs}$ is the gate-source leakage current, $I_{qbs}$ is the gate driver quiescent current, $I_{lk}$ is the gate driver leakage current, $I_{lkdiode}$ is the diode leakage current, $ t_{on}$ is the \texttt{on} time and $Q_{ls}$ is the charge required by the internal level shifter in the gate driver.
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|l|l|l|l|}
  \hline
  $Q_{gate}$ 	& $Q_{ls}$ 	& $I_{lkgs}$ 	& $I_{qbs}$ 		& $I_{lk}$ 			& $I_{lkdiode}$ 	& $t_{on}$ 		\\ 	\hline
- $117$ [nC]		& $3$ [nC]	& $100$ [nA]	&$-30$ [$\mu$A]		& $1$ [$\mu$A]		& $1$ [nA]			& $43$ [$\mu$S]	\\ 	\hline
+ $116$ [nC]		& $3$ [nC]	& $100$ [nA]	&$-30$ [$\mu$A]		& $1$ [$\mu$A]		& $1$ [nA]			& $43$ [$\mu$S]	\\ 	\hline
 \end{tabular}
 \caption[Parameter values used to determine total charge.]{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver data sheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET data sheet values and $I_{lkdiode}$  is a diode data sheet value. $t_{on}$ is calculated using 95\% dutycycle and 22kHz switching.}
 \label{tab:bootstrap_parameter}
@@ -142,12 +142,12 @@ Where $I_{lkgs}$ is the gate-source leakage current, $I_{qbs}$ is the gate drive
 $t_{on}$ can be calculated knowing that the worst case duty cycle for the high side MOSFET is 95\% and the switching frequency is 22 kHz.
 Inserting the values, shown in \ref{tab:bootstrap_parameter}, yields the minimum charge value of the capacitor:
 \begin{equation}
-	Q_{total} = 119 [nC]
+	Q_{total} = 118 [nC]
 \end{equation}
 
 The minimum value of the bootstrap capacitor can now be calculated:
 \begin{equation}
-	C_{boot} = \frac{Q_{total}}{\Delta V_{boot}} = \frac{119}{2.3} = 51.6 [nF]
+	C_{boot} = \frac{Q_{total}}{\Delta V_{boot}} = \frac{118}{2.3} = 51.2 [nF]
 \end{equation}
 A ceramic capacitor will be used as it has a negligible leakage current. 
 Looking for SMD ceramic capacitors it was found that in the range of the found minimum value is 56, 68, 82 and 100 [nF].
