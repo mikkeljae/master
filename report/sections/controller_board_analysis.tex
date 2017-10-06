@@ -3,8 +3,7 @@
 \label{sub:controller_board_analysis}
 
 In order to develop a controller board capable of controlling a double pendulum, the required functionality of the board needs to be determined. 
-This section will constitute an analysis of this functionality and an analysis of possible solutions to desired functionality. 
-
+This section will constitute an analysis of this functionality and an analysis of possible solutions to desired functionality.
 
 \subsubsection{Motor Driver}
 It is necessary to device some form of driving circuitry for the motor driving the timing belt.
@@ -42,28 +41,33 @@ By adding such a resistor in series with the load, the voltage across the resist
 
 \subsubsection{Safety} % (fold)
 \label{subsub:safety}
-It is expected that at an error may occur that causes the cart to move uncontrollably.
+It is expected that, eventually, at an error may occur that causes the cart to move uncontrollably.
 A safety system should be constructed in such a way that it will prevent the cart from crashing violently.
 It should be isolated from the remaining system.
 Therefore, if it can at all be avoided, no programming should be involved in determining a safety condition.
 With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
 In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
+Clearly, the system should function only if all safety conditions are met.
+This will be ensured by creating an aggregation circuit which compares all of the safety conditions, creating one signal which will be capable of closing the main relay if necessary.
 \\~\\
 \mikkel{Endstops should be explained earlier in the report}
-Creating the endstops can be done in a multitude of ways.
-In this project three approaches were considered:
+One of the safety features of the system is the endstops.
+These are in place to quickly cut power to the system if the cart reaches the end of the rail.
+Creating these endstops can be done in different ways.
+Three potential implementations are presented here:
 \paragraph{Mechanical Switch:} % (fold)
 \label{par:mechanical_switch}
 The simplest form of switch is the mechanical switch.
 The switch should be mounted in such a way that the cart would move into the switch, therefore activating it.
 This approach is not without issues.
-Firstly, the simplest mounting solution would require the switch to be mounted in the direct path of the cart.
-If the cart is traveling at full speed it is unlikely that the cart would stop before crashing into the switching mechanism, potentially damaging it.
+Mounting of the switch should be done in such a way that it is not in the direct path of the cart.
+If the cart is traveling at full speed it is unlikely that the cart would stop before crashing into the switching mechanism.
 A switch mounted in this fashion would need to be rather robust.
 Some other mounting solutions could be thought of that do not suffer from this problem, especially if a flexible microswitch is used.
-These types of switches can be fragile and may not be sufficiently durable, considering the usecase.
-All mechanical switches have one drawback in common: they are mechanical.
-Generally, mechanical items wear out over time and require maintainance or replacement.
+These would require significant extra design to properly mount the switch.
+Mechanical switches can be fragile and may not be sufficiently durable, considering the usecase.
+All mechanical switches have one drawback in common: they are mechanical and will be subject to wear over time, eventually requiring maintainance or replacement.
+
 % paragraph mechanical_switch (end)
 \paragraph{Hall Effect Sensor:} % (fold)
 \label{par:hall_effect_sensor}
@@ -77,41 +81,40 @@ This requires some amount of calibration to determine the correct distance betwe
 % paragraph hall_effect_sensor (end)
 \paragraph{Infrared Transceiver:} % (fold)
 \label{par:infrared_transceiver}
-This type of device is a combined LED and infrared sensor.
-The LED is optimised for emitting infrared light, or radiation (IR), and the sensor for sensing it.
-The LED emits IR outward from the device which, when an object is placed in front of it, will bounce off the object and be caught by the sensor.
-As with the hall effect sensor, this type of device produces a voltage output proportional to the amount of IR being sensed and as such a schmitt-trigger circuit would also be benficial in this case.
+Infrared transceivers come in different configurations but generally the device is comprised of an LED and a photo transistor.
+The LED is optimised for emitting infrared light, or radiation (IR).
+In the configuration under consideration in this project the LED emits IR towards the photo transistor, opening it.
+When an object passes between the LED and the transistor the transistor is closed.
+This change can be detected using a simple schmitt-trigger circuit. 
 With this sensor type it is important to realise that the LED will not be the only emitter of IR in the vicinity.
-Any type of lamp will emit IR, especially glowbulbs (of which there are few left, luckily) but also sunlight contains some amount of IR.
-When using this sensor the circuit should be designed in such a way that only the effect of the IR radiated back on the sensor will trigger the circuit.
-The sensor should be mounted immediately below the cart so as to maximize the radiated IR and therefore the signal strength.
+Any type of lamp will emit IR, especially glowbulbs but also sunlight contain a significant amount of IR.
+When using this sensor the circuit should be designed in such a way that only the effect of the IR from the LED on the photo transistor will affect the circuit.
 % paragraph infrared_transceiver (end)
 \\~\\
 While all of the above have their drawbacks, it was decided to use the infrared transceiver.
-This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart.
+This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart or rail.
 \\~\\
 In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
-In order to minimize the amount of circuitry, all safety features will trip the same circuit.
 
-%Removed by Mikkel:
-%It is expected that at an error may occur that causes the cart to move uncontrollably.
-%In such a situation the programmer should be able to completely shut off power to the motor.
-%The endstops will ensure that a minimum of mechanical or electrical damage is incurred on the platform in case of a cart crash.
-
-
-\subsubsection{Requirements}
-
-Endstop circuit with infrared transceivers and Emergency button should cut off power to motor via relay
-\\
-H-Bridge with MOSFETS to control motor
-\\
-Voltage rail generation.
-\\
-Correctly sized supply capacitors
-\\
-Inrush relay
-\\
-Motor current sensing circuitry
-
-
-The circuitry is combined on a single PCB....
+\subsubsection{Board Layout and Considerations} % (fold)
+\label{ssub:board_layout_and_considerations}
+A number of options are available when considering the general layout of the controller circuitry.
+Different circuits can be segregated into individual board, simplifying the layout and production of each board but imposing requirements on board-to-board connections between different circuits.
+One possible configuration under consideration is the segregation of the digital circuit and the power circuits.
+This would allow a different number of layers and different copper thickness on the two PCBs.
+Extra layers are beneficial when routing the multitude of signals in a digital circuit but also add extra cost to the production of the circuit.
+Similarly, extra copper is likely to be necessary on the power circuit but also adds cost.
+Exploring various manufacturing options revealed that the added cost of making a new design significantly outweighs the savings by segregating the thicker copper and extra layers, rather than producing just a single PCB incorporating both extra layers and extra copper.
+For this reason it was decided to produce just a single PCB, housing all of the electronics related to the controller.
+\\~\\
+In summary, it was found necessary to implement the following:
+\begin{itemize}
+	\item H-bridge using MOSFETs to drive the motor.
+	\item Supply capacitors and appropriately sized inrush relay.
+	\item Voltage rails for the various components in the circuit.
+	\item Shunt resistor circuit for correctly sensing current.
+	\item Endstops and appertaining circuitry.
+	\item Emergency button and appertaining circuitry.
+	\item Security aggregation circuitry.
+\end{itemize}
+% subsubsection board_layout (end)
