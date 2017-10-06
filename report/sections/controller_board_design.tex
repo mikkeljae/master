@@ -73,14 +73,25 @@ Since the motor should, preferably, be driven outside the audible frequency rang
 This frequency was chosen over an even higher frequency because increasing the frequency also increases the switching losses.
 At this frequency there is $\frac{1}{22000}\approx45\mu$S per cycle. 
 Well within this time the gate should be fully opened.
-Since:
+The switching time should be calculated to verify this.
 
+\cite{mosfet_switch_app_note} describes switching characteristics of MOSFETs without taking parasitics into account.
+Approximating the turn-on time of the MOSFET is sufficient here as it just needs to be verified that the MOSFETs are fully open within a small fraction of the switching period.
+\cite{mosfet_switch_app_note} approximates the turn-on time of a MOSFET in equation \ref{eq:mosfet_turn_on}.
 \begin{equation}
-	I = C\frac{\text{dv}}{\text{dt}} \quad\Rightarrow\quad \text{dt} = C\frac{\text{dv}}{I}
+t_{switch} = R_G \cdot C_{iss} \cdot ln\left(\frac{1}{1-\frac{V_{gp}}{V_{GS}}}\right) 
+\label{eq:mosfet_turn_on}
 \end{equation}
-\thomas{Is this the correct way of calculating it?}
 
-Accounting for various voltage drops it is assumed that \vgs is 10V, a rough estimate of the time to open the gate completely can be found as:
+Where $t_{switch}$ is the switching time, $R_G$ is the total gate resistance, $C_{iss}$ is the effective input capacitance of the
+MOSFET, $V_{gp}$ is the gate plateau voltage and $V_{GS}$ is the voltage applied to the gate applied by the motor driver.
+Accounting for various voltage drops it is assumed that \vgs is 8V and by inspecting figure \ref{fig:mosfettransfercharacteristic}
+
+
+
+
+
+ a rough estimate of the time to open the gate completely can be found as:
 
 \begin{equation}
 	\text{dt} = 117\cdot10^{-9}\frac{10}{2.5}\approx0.47\mu\text{S}
@@ -160,7 +171,6 @@ Therefore a resistor is put in series with the diode.
 The resistor value should not be too big as the voltage drop across it is subtracted from the bootstrap capacitor voltage.
 A 4.7 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 2.6 A.
 This is clearly above the maximum average forward current of the diode, but the diode can withstand a 8.3 ms single half sine-wave of maximum 30 A \cite{diode_ds}.
-
 The capacitor voltage while charging in a RC circuit is described by equation \ref{eq:cap_charge}, according to \cite{prac_ele_for_inven}.
 
 \begin{equation}
@@ -172,11 +182,13 @@ Where $V_C$ is the capacitor voltage, $V_S$ is the supply voltage, $R$ is the re
 The RC time constant is defined as $\tau = R\cdot C$.
 Equation \ref{eq:cap_charge} can be used to calculate the time it takes an RC circuit to charge to a specific level.
 After one time constant the capacitor is charged 63.2\% and after five time constant the capacitor is approximately fully charged, 99.3\%.
-This knowledge can be used to calculate the time it takes to charge the bootstrap capacitor as shown in \ref{eq:cap_boot_time}.
+This knowledge can be used to calculate the time it takes to initially charge the bootstrap capacitors as shown in equation \ref{eq:cap_boot_time}.
+
 \begin{equation}
 T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 5\cdot (4.7 \cdot 100 \cdot 10^{-9}) = 2.35 \mu S 
 \label{eq:cap_boot_time}
 \end{equation}
+
 Meaning that the diode can be exposed to a maximum of 2.6A for $2.35 \mu S $, which is well below the absolute maximum rating.
 It should also be noted that bootstrap capacitor needs at least $2.35 \mu S $ for the initial charging.
 \mikkel{In the application note they state that they include a 400ns bootstrap}
