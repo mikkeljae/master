@@ -16,7 +16,7 @@ It is made in the standard TO-220 housing.
 This housing allows for easy mounting of a heatsink and due to its wide application, there are many shapes and sizes to choose from.
 Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
 
-\begin{table}[tb]
+\begin{table}[h]
 	\centering
 	\begin{tabular}{|r|c|c|c|}
 	\hline
@@ -59,22 +59,21 @@ In order to choose one, a few parameters must be fulfilled.
 	\item \textbf{Output Current:} The amount of current necessary to properly drive the MOSFET.
 	This value depends on the switching frequency of the application, the gate-to-source voltage ($V_{gs}$) and the total gate charge of the MOSFET.
 	\item \textbf{Driving Voltage:} In order to ensure that the MOSFET is turned on quickly and fully the driver should be able to supply a voltage well above the gate threshold of the MOSFET.
-	\item \textbf{High-Side Drive Capabilities:} The high side MOSFET of the full-bridge is referenced not to ground, but to $V_{\text{cc}}$.
-	This means that in order to switch on this MOSFET $V_{\text{gs}}$ must be at least $V_{\text{cc}}+V_{\text{th}}$ where $V_{\text{th}}$ is the gate threshold voltage of the MOSFET.
-	This is bootstrapping and is explained in more detail in section \ref{sec:bootstrap}.
+	\item \textbf{High-Side Drive Capabilities:} The high side MOSFET of the full-bridge is referenced not to ground, but to a floating reference.
+	This means that in order to switch on this MOSFET, $V_{\text{gate}}$ needs to be boosted compared to the floating reference. 
+	This is bootstrapping and is explained in more detail in section \ref{ssub:bootstrap_circuit}.
 	\item \textbf{Shoot-Through Protection and Deadtime:} Due to the structure of the full-bridge it is important that two MOSFETs on the same half-bridge are never on at the same time as this would result in a short from $V_{\text{cc}}$ to ground.
 	This is resolved with a combination of deadtime (a delay where no MOSFET is on) and a logic table that ensures that an illegal switch combination can never happen.
 \end{itemize}
 
 The HIP4081AIBZ \cite{driver} full-bridge driver meets all of the above requirements.
 It can supply up to 2.5A on the output pins with a voltage approximately 1V below \vcc, well above the required \vth.
-\mikkel{Vcc is what? it is referenced twice, but with different meanings}
+It also allows for an external bootstrap circuit, which makes it able to drive the high-side MOSFETs.
 Since the motor should, preferably, be driven outside the audible frequency range, it was chosen to set the switching frequency at 22kHz.
 This frequency was chosen over an even higher frequency because increasing the frequency also increases the switching losses.
 At this frequency there is $\frac{1}{22000}\approx45\mu$S per cycle. 
 Well within this time the gate should be fully opened.
 The switching time should be calculated to verify this.
-
 \cite{mosfet_switch_app_note} describes switching characteristics of MOSFETs without taking parasitics into account.
 Approximating the turn-on time of the MOSFET is sufficient here as it just needs to be verified that the MOSFETs are fully open within a small fraction of the switching period.
 \cite{mosfet_switch_app_note} approximates the turn-on time of a MOSFET in equation \ref{eq:mosfet_turn_on}.
@@ -99,12 +98,6 @@ The component also has floating drive circuitry, meaning that by referencing the
 This does require a few external components for the bootstrapping.
 The choice of these components and a more in depth explanation of the procedure is given in section \ref{ssub:bootstrap_circuit}.
 Finally, the component has a user-programmable dead time and shoot-through protection. 
-
-HIP4081AIBZ - Full-bridge driver - (ISL83202)
-
-IPP045N10N3 - Mosfet
-
-choice of VGS, 8V - show graph of transfer characteristics of mosfet, high due to uncertainty.
 
 \subsubsection{Bootstrap Circuit}
 \label{ssub:bootstrap_circuit}
@@ -188,7 +181,6 @@ T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 5\cdot (4.7 \cdot 100 \cdot
 
 Meaning that the diode can be exposed to a maximum of 2.6A for $2.35 \mu S $, which is well below the absolute maximum rating.
 It should also be noted that bootstrap capacitor needs at least $2.35 \mu S $ for the initial charging.
-\mikkel{In the application note they state that they include a 400ns bootstrap}
 
 Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
 The time it takes to charge the capacitor the energy that is used in each period is:
@@ -391,7 +383,7 @@ The three main ones are high-side, in-line and low-side placement of the shunt r
 
 \begin{figure}[h]
 	\centering
-    %\includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
+    \includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
 	\caption{xxxx.}
 	\label{fig:shunt_measure_high_in_low}
 \end{figure}
@@ -413,6 +405,7 @@ The normal operation currents are expected to be up to 30A
 It was therefore decided that the circuit  needs to be able to measure currents of at least up to 40A.
 The resolution per Ampere is increased by decreasing the current range that can be measured,
 If the current gets any higher the ADC input should not be harmed meaning that the input voltage should not exceed 1.9V.
+\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
 
 \mikkel{Below should be formatted differently}
 \textbf{Requirements for the circuit:}
@@ -485,7 +478,7 @@ As can be seen, the INA286 in this configuration requires only the voltage input
 
 \subsubsection{Endstop Detection} % (fold)
 \label{ssub:endstop_detection}
-As described in section \ref{sub:safety_circuitry} it was decided to use infrared transceivers to detect endstops.
+As described in section \ref{subsub:safety} it was decided to use infrared transceivers to detect endstops.
 \mikkel{The actual 3D print design should be described elsewhere}
 It was decided to use the \texttt{TCST 2103} as it has the wanted functionality.
 It contains an infrared emitter pointing at a photo transistor, that conducts current proportional to the infrared light received.
@@ -600,7 +593,6 @@ See table \ref{tab:12vpowerbudget} for a full overview.
 The PTN78020 delivers 6A at 12V and is part of the same series as the PTH08080 described earlier.
 This allows many of the same design procedures to be reused.
 In addition, the 6A current limit leaves sufficient room for the current spikes expected from the bootstrap circuitry.
-\thomas{Which are potentially infinite...}
 The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
 % paragraph 12v_ (end)
 
@@ -636,9 +628,8 @@ The datasheet specifies that if the application has load transients additional c
 While the load at the 12V rail is mostly steady, it does supply the boot capacitors which create a slight ripple on the rail.
 It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parallel.
 As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
-\mikkel{Figure?}
 
-\subsubsection{5V and 3.3V Rail Circuitry} % (fold)
+\subsubsection{5V and 3.3V Rail Circuitry} % (fold) 
 \label{subsub:pth08080w}
 As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
 The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
