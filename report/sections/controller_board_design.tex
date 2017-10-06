@@ -334,6 +334,28 @@ It should be noted that in the simulations there are no difference between the t
 
 Generally the designed features of the circuit was verified using the PLECS model.
 
+\subsubsection{Relay Circuitry} % (fold)
+\label{ssub:relay_circuitry}
+Two relays are necessary for the system, the main relay and an inrush relay.
+The main relay should be able to carry and break the total design current, 80A.
+This requirement is met by the LEV100A4ANG.
+It is capable of carrying up to 100A continuous current and can break significantly more.
+It has a 12V coil which requires $\approx$0.5A to hold in the closed state.
+As mentioned previously the inrush relay is necessary to facilitate the initial charging of the supply capacitors.
+The current to the capacitors is limited only by their ESR.
+A resistor should be added to limit this inrush current.
+Adding the resistor to the main current path would introduce considerable losses and limit the performance of the system.
+The inrush relay is implemented in parallel with the main relay to supply a temporary alternate current path in which the resistor is placed.
+The size of the resistor is somewhat irrelevant so long as it is large enough to protect the circuitry.
+Having a larger resistance will only increase the time it takes before the capacitors are sufficiently charged.
+For this reason a 180$\Omega$ 5W resistor is used.
+As shown by equation \ref{eq:cap_boot_time}, the charging time can be found as 
+
+\begin{equation}
+	T_{charge} = 5\cdot R_{inrush}\cdot C_{supply} = 5\cdot 180\cdot 1320\cdot10^{-6} = 1.188 \text{[S]}
+\end{equation}
+% subsubsection relay_circuitry (end)
+
 \subsubsection{Safety Relay} % (fold)
 \label{ssub:safety_relay}
 \thomas{This section and the next needs some numbers on charging time and similar}
@@ -366,7 +388,7 @@ Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{graphics/relay_circuit}
+	\includegraphics[width=.5\linewidth]{graphics/relay_circuit}
 	\caption{Circuitry related to the inrush relay.}
 	\label{fig:relaycircuit}
 \end{figure}
@@ -572,7 +594,7 @@ Considering this, it is safe to assume that the real power draw from the MicroZe
 \label{par:12v}
 This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
 The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
-The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail.\\
+The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail, assuming 100\% efficiency.\\
 \mikkel{Mention efficiency if this should make sense.}
 There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
 Both of these require power to stay in the closed position.
