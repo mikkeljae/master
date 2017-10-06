@@ -36,7 +36,6 @@ Additionally, their interference with the circuit they are measuring is negligib
 Hall effect sensors however, do come at a significantly higher cost.
 A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
 By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
-\thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
 
 
 \subsubsection{Safety} % (fold)
@@ -50,7 +49,6 @@ In order to more easily identify the cause of the fault, the remaining electroni
 Clearly, the system should function only if all safety conditions are met.
 This will be ensured by creating an aggregation circuit which compares all of the safety conditions, creating one signal which will be capable of closing the main relay if necessary.
 \\~\\
-\mikkel{Endstops should be explained earlier in the report}
 One of the safety features of the system is the endstops.
 These are in place to quickly cut power to the system if the cart reaches the end of the rail.
 Creating these endstops can be done in different ways.
