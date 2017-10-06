@@ -5,158 +5,13 @@
 Multiple electronics components are required to realise the functionalities described in the precious section.
 This section explores the selection of those components and design of the corresponding circuits.
 
-
-
-\subsubsection{Voltage Rails} % (fold)
-\label{subsub:voltage_rails}
-In the design of the board it is necessary to determine which voltage rails are required for the system to function.
-The power delivery for the MicroZed was designed by the authors in an earlier project \cite{isaswarm} and will be reused with minor changes.
-This power delivery system provides, amongst other voltages, the 3.3V rail, originally intended for powering the MicroZed IO banks only.
-In this system however, the RF tranceiver is also powered from this rail.
-As a result a review of the circuitry around the 3.3V rail is necessary to ensure that it can provide the required power.
-The MicroZed power delivery system, the encoders of the system, the endstops and part of the emergency circuitry are all driven from a 5V rail.
-The Motor Driver, the HIP4081 \cite{driver} and the relay driving circuitry is driven from a 12V rail.
-Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.
-This rail is not crucial to the design of the board as it is provided by an external, mains connected power supply and will not be explored further in this section.\\
-The current requirement for each of these rails are discussed in the following paragraphs
-
-\paragraph{3.3V:} % (fold)
-\label{par:3_3v}
-As mentioned, this rail is intended for powering the MicroZed IO banks.
-In the original design the LMR10510XMF DC/DC converter is used to provide the necessary power.
-This chip is capable of supplying up to 1A.
-Components exist in the same series which are pin compatible and are capable of supplying up to 2A.
-The RF Transceiver used in this project, however, \ref{} requires only up to 15mA when receiving data.
-Assuming that Avnet has already provided headroom for the IO bank supply and considering that this project makes little use of the IO on the Zynq-7000 chip, it is deemed unnecessary to upgrade this supply and the original design is used as is.
-% paragraph 3_3v_ (end)
-
-\paragraph{5V:} % (fold)
-\label{par:5v}
-This rail supplies, mainly, the MicroZed.
-The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
-In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
-The HEDS-5540 \cite{heds5540} encoder requires a maximum of 85mA..
-The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
-The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
-This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
-Another 10mA is added to that figure due to the collector current possible on the transistor side.\\
-Finally the emergency circuitry along with some other digital electronics are powered from the 5V rail.
-As these are all digital IC's that operate on nothing but signals, their individual powers are negligible but a very conservative 25mA power budget is provided for all of the digital electronics on the 5V rail. This brings the total power budget for the 5V rail to $\approx$2.1A.
-See table \ref{tab:5vpowerbudget} for a full overview.
-
-\begin{table}
-	\centering
-	\begin{tabular}{l|r}
-		 Component & Current [mA]\\
-		 \hline
-		 MicroZed & 1850\\
-		 HEDS-5540 & 85\\
-		 TCST2103 & 110\\
-		 Digital & 25\\
-		 \hline
-		 Total & 2070
-	\end{tabular}
-	\caption{Power budget for the 5V rail}
-	\label{tab:5vpowerbudget}
-\end{table}
-
-In \cite{isaswarm} the authors used a design in which the PTH08080 is used to generate a 5V rail.
-Reusing this module will save on design time as well as the budget available to the project and as such is desirable.
-This module however, is capable of supplying only 2A at 5V, slightly less than the value calculated in this section.
-By far the largest contributor to the power budget is the MicroZed.
-The calculation of the contribution from the MicroZed is done assuming 85\% utilisation of PL and a conservative 80\% efficiency of internal DC/DC converters.
-Considering this, it is safe to assume that the real power draw from the MicroZed is significantly smaller than the calculated value and as a result it is chosen to reuse the PTH08080 despite of apparent shortcomings of the module.
-% paragraph 5 (end)
-
-\paragraph{12V:} % (fold)
-\label{par:12v}
-This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
-The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
-The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail.\\
-\mikkel{Mention efficiency if this should make sense.}
-There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
-Both of these require power to stay in the closed position.
-The first, the G6B \cite{g6b}, requires 16.7mA while the former, the LEV100A4ANG \cite{lev100}, requires 461mA.\\
-The motor driver of the system, the HIP4081 requires only 10mA.
-As mentioned, the bootstrap circuitry is also powered from the 12V rail.
-Rather than a steady supply, this circuitry requires a large peak current for short periods while charging in between switching.
-For this reason the design choice here is to determine what is available and choose the component which yields the most headroom while still being economically feasible.
-Amongst all of the components the total power budget for the 12V rail is $\approx$1340mA.
-See table \ref{tab:12vpowerbudget} for a full overview.
-
-\begin{table}
-	\centering
-	\begin{tabular}{l|r}
-		 Component & Current [mA]\\
-		 \hline
-		 PTH08080 & 850\\
-		 G6B & 16.7\\
-		 LEV100A4ANG & 461\\
-		 HIP4081 & 10\\
-		 \hline
-		 Total & 1337.7
-	\end{tabular}
-	\caption{Power budget for the 12V rail}
-	\label{tab:12vpowerbudget}
-\end{table}
-
-The PTN78020 delivers 6A at 12V and is part of the same series as the PTH08080 described earlier.
-This allows many of the same design procedures to be reused.
-In addition, the 6A current limit leaves sufficient room for the current spikes expected from the bootstrap circuitry.
-\thomas{Which are potentially infinite...}
-The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
-% paragraph 12v_ (end)
-
-% subsection voltage_rails (end) 
-
-
-\subsubsection{12V Rail Circuitry}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\linewidth]{graphics/dcdc12v}
-	\caption{The PTN78020H DC/DC converter and the appertaining circuitry.}
-	\label{fig:dcdc12v}
-\end{figure}
-
-The \texttt{PTN78020H} DC/DC converter is used to generate the 12V rail. 
-The component requires input and output capacitors in order to function properly and a resistor is needed to set the desired output voltage. 
-The circuit used is based on the typical application circuit shown in the datasheet \cite{PTN78020H} and is implemented as shown in figure \ref{fig:dcdc12v}.
-A resistor is required from \texttt{VoADJ} to ground to set the desired output voltage, in this case 12V.
-In the datasheet on table 2 is a list of common voltages and the resistance required to achieve those voltages.
-To generate 12V a 1\% 383 k$\Omega$ is needed.
-\texttt{VoSENSE} should be connected close to the main load to allow for more precise regulation of the output.
-This feature is mainly useful when the load is placed far from the supply and can be left floating if the accuracy of the rail is not important.
-It was decided to simply short it to the 12V rail at the component since the load is placed relatively close to the supply.
-$\overline{\text{\texttt{IN}}}$ carries the inhibit signal.
-Pulling this low will disable the output of the component.
-This is done by toggling the switch \texttt{SW1}. 
-This will open a MOSFET which in turn will pull the \texttt{DCDC\_EN} signal low.
-The datasheet also specifies that a ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
-It was chosen to use two 10 $\mu$F capacitors.
-In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
-The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator.
-While the load at the 12V rail is mostly steady, it does supply the boot capacitors which create a slight ripple on the rail.
-It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parallel.
-As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
-\mikkel{Figure?}
-
-\subsubsection{5V and 3.3V Rail Circuitry} % (fold)
-\label{subsub:pth08080w}
-As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
-The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
-These rails were designed mainly for ensuring the correct boot and shutdown of the MicroZed.
-These procedures are described in detail in \cite{isaswarm}.
-% subsection pth08080w (end)
-
-
 \subsubsection{MOSFET and H-Bridge Driver} % (fold)
 \label{ssub:h_bridge}
 The motor that needs to be driven is a Maxon 148867 Brushed DC Motor.
 This is a 150W motor with a nominal current of 6A and a stall current of 80A.
 Clearly, the system should under normal use not come anywhere close to stalling the motor but considering the use case, experimentation with control from students, it may be beneficial to design the circuitry such that it can withstand being stalled, for at least a short period of time.
 In order to reach this goal, it is necessary to size the components for at least some amount above 80A continuous.
-The \texttt{IPP045N10N3} MOSFET \cite{mosfet} is a 100V/100A MOSFET.
+The \texttt{IRF100B202} MOSFET \cite{mosfet} is a 100V/97A MOSFET.
 It is made in the standard TO-220 housing.
 This housing allows for easy mounting of a heatsink and due to its wide application, there are many shapes and sizes to choose from.
 Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
@@ -167,18 +22,18 @@ Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
 	\hline
 		\textbf{Parameter} & \textbf{Min} & \textbf{Typ} & \textbf{Max} \\
 	\hline
-		$V_{\text{th}}$ [V] & 2 & 2.7 & 3.5 \\
+		$V_{\text{th}}$ [V] & 2 & - & 4 \\
 	\hline
-		$R_{\text{ds(on)}}$ [m$\Omega$]& - & 3.6 & 4.2 \\
+		$R_{\text{ds(on)}}$ [m$\Omega$]& - & 7.2 & 8.6 \\
 	\hline
-		$Q_\text{g}$ [nC] & - & 88 & 117 \\
+		$Q_\text{g}$ [nC] & - & 77 & 116 \\
 	\hline
-		$I_\text{d}$ [A] & - & 100 & - \\
+		$I_\text{d}$ [A] & - & - & 97 \\
 	\hline
 		$V_{\text{ds}}$ [V] & 100 & - & - \\
 	\hline
 	\end{tabular}
-	\caption{Relevant parameters of the IPP045N10N3 MOSFET \cite{mosfet} chosen for the full-bridge.
+	\caption{Relevant parameters of the IRF100B202 MOSFET \cite{mosfet} chosen for the full-bridge.
 	Here, \vth is the gate threshold voltage, \ron is the drain-source on resistance, \qg is the total gate charge, \id is the maximum continuous drain current and \vds is the minimum guaranteed drain-source breakdown voltage.}
 	\label{tab:mosfetparameters}
 \end{table}
@@ -189,12 +44,12 @@ Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not ful
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{graphics/mosfet_transfer_characteristic}
-	\caption{Transfer characteristic of the IPP045N10N3 as per the datasheet.
-	Inspecting the graph reveals that the maximum \id of 100A is reached at \vgs$\approx4.5\rightarrow4.75$V.}
+	\includegraphics[width=0.6\linewidth]{graphics/mosfet_transfer_characteristic}
+	\caption{Transfer characteristic of the IRF100B202 as per the datasheet.
+	Inspecting the graph reveals that the maximum \id of 100A is reached at \vgs$\approx4.2\rightarrow4.5$V.}
 	\label{fig:mosfettransfercharacteristic}
 \end{figure}
-
+ 
 
 Having chosen a MOSFET for the full-bridge, some form of driver must be designed for the full-bridge.
 For this task, ready-made full-bridge drivers exist on the market that incorporate all of the electronics required to generate the driving signals, requiring only a PWM signal from the designer.
@@ -637,183 +492,147 @@ The schmitt trigger circuit is designed to have a high threshold of 3V and a low
 	\label{fig:tcst_circuit}
 \end{figure}
 \mikkel{replace with own image!}
-% subsection endstop_detection (end)
-% subsection board_layout (end)
 
-\subsubsection{Board Layout} % (fold)
-\label{sub:board_layout}
-The layout of the board involved a number of considerations, especially concerning the layout of the power part of the circuit.
-These considerations involve the layer stack, the required copper thickness and various placements of components.
-This section will discuss in appropriate detail these considerations.
-Figure \ref{fig:board_layout} is an overview of the final layout of board.
-Firstly, it is desirable to determine what requirements exist for the trace widths and thicknesses in the layout.
+
+
+\subsubsection{Voltage Rails} % (fold)
+\label{subsub:voltage_rails}
+In the design of the board it is necessary to determine which voltage rails are required for the system to function.
+The power delivery for the MicroZed was designed by the authors in an earlier project \cite{isaswarm} and will be reused with minor changes.
+This power delivery system provides, amongst other voltages, the 3.3V rail, originally intended for powering the MicroZed IO banks only.
+In this system however, the RF tranceiver is also powered from this rail.
+As a result a review of the circuitry around the 3.3V rail is necessary to ensure that it can provide the required power.
+The MicroZed power delivery system, the encoders of the system, the endstops and part of the emergency circuitry are all driven from a 5V rail.
+The Motor Driver, the HIP4081 \cite{driver} and the relay driving circuitry is driven from a 12V rail.
+Finally, the motor is driven from a 24V rail, which will also be the main supply for the system.
+This rail is not crucial to the design of the board as it is provided by an external, mains connected power supply and will not be explored further in this section.\\
+The current requirement for each of these rails are discussed in the following paragraphs
+
+\paragraph{3.3V:} % (fold)
+\label{par:3_3v}
+As mentioned, this rail is intended for powering the MicroZed IO banks.
+In the original design the LMR10510XMF DC/DC converter is used to provide the necessary power.
+This chip is capable of supplying up to 1A.
+Components exist in the same series which are pin compatible and are capable of supplying up to 2A.
+The RF Transceiver used in this project, however, \ref{} requires only up to 15mA when receiving data.
+Assuming that Avnet has already provided headroom for the IO bank supply and considering that this project makes little use of the IO on the Zynq-7000 chip, it is deemed unnecessary to upgrade this supply and the original design is used as is.
+% paragraph 3_3v_ (end)
+
+\paragraph{5V:} % (fold)
+\label{par:5v}
+This rail supplies, mainly, the MicroZed.
+The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
+In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
+The HEDS-5540 \cite{heds5540} encoder requires a maximum of 85mA..
+The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
+The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
+This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
+Another 10mA is added to that figure due to the collector current possible on the transistor side.\\
+Finally the emergency circuitry along with some other digital electronics are powered from the 5V rail.
+As these are all digital IC's that operate on nothing but signals, their individual powers are negligible but a very conservative 25mA power budget is provided for all of the digital electronics on the 5V rail. This brings the total power budget for the 5V rail to $\approx$2.1A.
+See table \ref{tab:5vpowerbudget} for a full overview.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r}
+		 Component & Current [mA]\\
+		 \hline
+		 MicroZed & 1850\\
+		 HEDS-5540 & 85\\
+		 TCST2103 & 110\\
+		 Digital & 25\\
+		 \hline
+		 Total & 2070
+	\end{tabular}
+	\caption{Power budget for the 5V rail}
+	\label{tab:5vpowerbudget}
+\end{table}
+
+In \cite{isaswarm} the authors used a design in which the PTH08080 is used to generate a 5V rail.
+Reusing this module will save on design time as well as the budget available to the project and as such is desirable.
+This module however, is capable of supplying only 2A at 5V, slightly less than the value calculated in this section.
+By far the largest contributor to the power budget is the MicroZed.
+The calculation of the contribution from the MicroZed is done assuming 85\% utilisation of PL and a conservative 80\% efficiency of internal DC/DC converters.
+Considering this, it is safe to assume that the real power draw from the MicroZed is significantly smaller than the calculated value and as a result it is chosen to reuse the PTH08080 despite of apparent shortcomings of the module.
+% paragraph 5 (end)
+
+\paragraph{12V:} % (fold)
+\label{par:12v}
+This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
+The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
+The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail.\\
+\mikkel{Mention efficiency if this should make sense.}
+There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
+Both of these require power to stay in the closed position.
+The first, the G6B \cite{g6b}, requires 16.7mA while the former, the LEV100A4ANG \cite{lev100}, requires 461mA.\\
+The motor driver of the system, the HIP4081 requires only 10mA.
+As mentioned, the bootstrap circuitry is also powered from the 12V rail.
+Rather than a steady supply, this circuitry requires a large peak current for short periods while charging in between switching.
+For this reason the design choice here is to determine what is available and choose the component which yields the most headroom while still being economically feasible.
+Amongst all of the components the total power budget for the 12V rail is $\approx$1340mA.
+See table \ref{tab:12vpowerbudget} for a full overview.
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|r}
+		 Component & Current [mA]\\
+		 \hline
+		 PTH08080 & 850\\
+		 G6B & 16.7\\
+		 LEV100A4ANG & 461\\
+		 HIP4081 & 10\\
+		 \hline
+		 Total & 1337.7
+	\end{tabular}
+	\caption{Power budget for the 12V rail}
+	\label{tab:12vpowerbudget}
+\end{table}
+
+The PTN78020 delivers 6A at 12V and is part of the same series as the PTH08080 described earlier.
+This allows many of the same design procedures to be reused.
+In addition, the 6A current limit leaves sufficient room for the current spikes expected from the bootstrap circuitry.
+\thomas{Which are potentially infinite...}
+The bootstrap circuitry is modified slightly to accomodate the limited supply as described in section \ref{}
+% paragraph 12v_ (end)
+
+% subsection voltage_rails (end) 
+
+
+\subsubsection{12V Rail Circuitry}
 
 \begin{figure}
 	\centering
-	%\includegraphics[width=\linewidth]{graphics/board_layout}
-	\missingfigure{bottom and top board layout}
-	\caption{Top and bottom view of the controller board.}
-	\label{fig:board_layout}
+	\includegraphics[width=\linewidth]{graphics/dcdc12v}
+	\caption{The PTN78020H DC/DC converter and the appertaining circuitry.}
+	\label{fig:dcdc12v}
 \end{figure}
 
-\paragraph{Copper Thickness}
-Part of the board is designed to house the H-Bridge that drives the motor.
-The H-bridge is designed to carry up to 80A, well above what can reasonably be carried at standard PCB copper thickness.
-This section seeks to estimate the required copper thickness to allow for the design current.
-Allowing a current through a conductor will produce a temperature rise due to the power dissipated in the conductor.
-This power
-The current-carrying capacity (CCC) of a conductor is limited, so far as the current is not destructive, by the temperature rise permissable in the design.
-Essentially, the acceptable temperature rise is limited by the maximum operating temperature of the PCB material.
-This spec is known as the temperature index.
-The PCB material most commonly used is FR-4 which has a temperature index of 130\degree.
-At an ambient temperature of 20\degree this would imply a permissable conductor temperature rise of 110\degree.
-In all practical situations, this is unreasonably high.
-The material will discolor and degrade over time with the excessive heating and cooling of the board while also increasing the apparent ambient temperature of other components on the PCB, lowering the efficiency of the circuit.
-In actual designs, a much more conservative temperature rise of 10\degree is often used, 15\degree is acceptable and 20\degree is considered high.
-The actual temperature rise of a conductor is dependent on a great number of variables, among these are: conductor length, cross-sectional area, conductor material, PCB material, ambient temperature, convection, PCB layout (the amount of copper in the vicinity), etc.
-Additionally, not all conductors carry the same current so different conductors have different thermal impacts on different locations on the PCB.
-Clearly, it is difficult to accurately calculate the required copper thickness, however an estimate can be made.
-In IPC-2221A \cite{ipc2221} data is presented to show the temperature rise resulting from allowing a current through a trace on a PCB on different trace widths.
-This data was first published in \cite{conduct}, a progress report from the American National Bureau of Standards dating back to 1956.
-Much has happened in PCB manufacturing since then. 
-The original data does not take into account the possibility of multi-layered boards or many of the newer board materials.
-In 2009 the new IPC-2152 \cite{ipc2152} was published and reevaluates the topic of current-carrying capacity.
-This standard, however, is unavailable due to its high cost and the original charts are used instead.
-A number of PCB trace width calculators exist online which extrapolate from the original data to give estimates of the required copper thickness and width.
-One such calculator \cite{pcb_trace_calc} was used to determine the required copper thickness and width required in this project.
-~\\
-There are economic constraints in place for this project which requires the authors to be somewhat conservative with respect to how exotic a solution will be considered.
-Most manufacturers support increasing the thickness of copper on a specific layer, allowing well above the 35$\mu$m standard copper thickness.
-The manufacturer used in this project was chosen due to a comparatively low price on 4-layer boards with 70$\mu$m copper on outer layers and 52.5$\mu$m on internal layers.
-On the power part of the board this results in a total of 122.5$\mu$m of copper for the 24V rail and power ground.
-~\\
-In order to simplify the design process, a distinction is made between three types of traces.
-This distinction is based on the expected amount of current carried by that trace.
-\begin{itemize}
-	\item \textbf{Signal:} This is the type with the lowest expected current and is used throughout digital circuitry and low power analog signals.
-	Signal traces are by far the most abundant on the circuit and due to the very low currents the trace width should be as small as possible.
-	The manufacturer is capable of creating traces at 8 mil or higher at the desired copper thickness and as such the trace width for this type is 8 mil.
-	\item \textbf{Power:} This type is generally used for supply rails.
-	The trace width for this type is 20mil. Accepting 15\degree temperature increase will allow up to $\approx$1.5A of current.
-	This is sufficient for supplying any of the IC's and other components connected to this trace type.
-	\item \textbf{High Power:} This type is used exclusively for the 24V rail.
-	The trace width for this type is 20mil. Accepting 15\degree temperature increase will allow up to $\approx$2.4A of current.
-	Since the inrush current is limited to $\approx$0.14A this leaves plenty of headroom for creating the 3.3V, 5V and 12V rails.
-\end{itemize}
+The \texttt{PTN78020H} DC/DC converter is used to generate the 12V rail. 
+The component requires input and output capacitors in order to function properly and a resistor is needed to set the desired output voltage. 
+The circuit used is based on the typical application circuit shown in the datasheet \cite{PTN78020H} and is implemented as shown in figure \ref{fig:dcdc12v}.
+A resistor is required from \texttt{VoADJ} to ground to set the desired output voltage, in this case 12V.
+In the datasheet on table 2 is a list of common voltages and the resistance required to achieve those voltages.
+To generate 12V a 1\% 383 k$\Omega$ is needed.
+\texttt{VoSENSE} should be connected close to the main load to allow for more precise regulation of the output.
+This feature is mainly useful when the load is placed far from the supply and can be left floating if the accuracy of the rail is not important.
+It was decided to simply short it to the 12V rail at the component since the load is placed relatively close to the supply.
+$\overline{\text{\texttt{IN}}}$ carries the inhibit signal.
+Pulling this low will disable the output of the component.
+This is done by toggling the switch \texttt{SW1}. 
+This will open a MOSFET which in turn will pull the \texttt{DCDC\_EN} signal low.
+The datasheet also specifies that a ceramic capacitance of at least 18.8 $\mu$F is needed at the input. 
+It was chosen to use two 10 $\mu$F capacitors.
+In order to ensure stability the \texttt{PTN78020H} needs an output capacitance of 330 $\mu$F.
+The datasheet specifies that if the application has load transients additional capacitance should be added to improve the response of the regulator.
+While the load at the 12V rail is mostly steady, it does supply the boot capacitors which create a slight ripple on the rail.
+It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parallel.
+As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
+\mikkel{Figure?}
 
-\paragraph{Copper Layout} % (fold)
-\label{par:copper_layout}
-The board can be split into two parts: a digital circuit and a power circuit.
-As seen on figure \ref{fig:board_layout} the power circuitry is placed on the right third of the board while the digital circuitry occupies the remainder of the board.
-The two parts have seperate ground planes in order to protect the digital circuitry from the high and sudden currents generated by the motor.
-A ground plane, even though the resistance through it is low, will have a significant voltage drop across it if currents of the sufficient magnitude are passed through it.
-For this same reason it is desirable to keep the current path as short as possible on the power side of the board.
-Figure \ref{fig:power_layout} depict a 3D view and 2D view of the power part of the board.
-As can be seen, the MOSFET's are bend such that a heatsink can be mounted on top.
-The upper pair is the left half-bridge and the lower pair is the right half-bridge.
-The outtake for the motor is positioned directly above and below the two half-bridges and a 3M bolt is mounted to allow for a robust connection.
-A large pad is made where the bolt is mounted as close as possible to the MOSFET's to allow for unrestricted flow of current.
-The pad between the motor outtakes is the connection from source of the low-side of the half-bridges to the shunt resistor used for current measurements.
-Since all current must pass through the shunt resistor, it is crucial that the flow of current is as unrestricted as possible.
-\\~\\
-Main power is input through M3 bolts mounted in the three holes between the half-bridges.
-Clearly, only two terminals are required but the three pads effectively divide the 24V rail into two parts, forcing any currents to flow around the pads.
-Instead it was decided to use two input terminals for the 24V rails that are mechanically fixed at the bolts.
-The ground plane is unrestricted and as such the current can flow freely and only one terminal is required.
-None of the planes on the power side of the PCB can be interrupted by traces, as this would severely hinder the flow of current in that plane.
-This means that it is necessary to add wires to carry the gate, return and shunt signals.
-These wires are soldered directly to the MOSFET pins and connected to the digital side through a header on the bottom side of the board. 
-
-\begin{figure}
-	\centering
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[angle=90,width=\linewidth]{graphics/power_layout_3}
-		\caption{3D layout of the power part on the top layer}
-		\label{sfig:power_layout_3}
-	\end{subfigure}
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=\linewidth]{graphics/power_layout}
-		\caption{Copper layout of the power part on the top layer.}
-		\label{sfig:power_layout_2}
-	\end{subfigure}
-	\caption{caption?}
-	\label{fig:power_layout}
-\end{figure}
-
-As mentioned previously it was chosen to use a 4-layer board.
-This was done for two reasons: It gives more copper for the main power rails on the power side of the board and it allows more space for routing signals on the digital part of the board.
-While the component density is not very high, the number of signals routed to headers does impose some difficulties routing on just two layers.
-On the digital side, a pour is made on each layer to fill the unused part of the layer with copper.
-Going from top to the bottom layer the pours are connected as such: ground, ground, 5V, ground.
-The internal ground layer is uninterrupted, except for vias, to provide a solid ground layer.
-The 5V layer means that any components requiring 5V need only a via to access it, making the routing simpler.
-This layer is also used for routing when routing through the top and bottom layers is infeasible.
-
-% paragraph copper_layout (end)
-\paragraph{Component Selection and Placement} % (fold)
-\label{par:component_case_selection_and_placement}
-There are limits to the production capabilities of the equipment, both of the manufacturer producing the PCB and the equipment available to the authors at SDU.
-For this reason some restrictions are set on the casing of components and their placement on the PCB.
-Generally, throughhole components are avoided where possible since these opstruct not only the layer they are placed on but also every other layer throughout the PCB and so surface mount technology (SMT) components are preferred.
-SMT components come in many sizes and some are simply too small to realistically route and solder with the available equipment.
-Generally, SOT-23, SOIC and 0805 packages and similar sizes are preferred where possible.
-With the equipment available at SDU only components on one side of the PCB can be placed and soldered with the pick-and-place machine and oven.
-Due to this, components are placed only on the top layer when possible.
-A few components, such as the large electrolytic capacitors and the RF module, are placed on the bottom layer but are large enough that they are easily handsoldered.
-A choice was made to route a number of signals to headers to allow for easier debugging and monitoring of the circuit.
-These headers are all part of the JST ZH-series connectors, are SMT and sufficiently small to fit on the top-side of the PCB.
-% paragraph component_case_selection_and_placement (end)
-% section board_design (end) 
-
-
-\subsubsection{Schematic Revision} % (fold)
-\label{ssub:schematic_revision}
-
-% subsection schematic_revision (end)
-The authors experience with board design and layout ensures that a board layout is never error free in the first revision. 
-This has been true even though a tremendous amount of work went into designing the board.
-Therefore a strategy was devised to increase the likelihood of producing an error free board.
-Many hours were spent on it, but hopefully it will relieve the authors of many hours of frustrating work on debugging the board and save money by removing the need of buying several different revisions of the PCB. 
-The strategy consist of five steps that needs to be completed after finishing the design of the board:
-
-\begin{itemize}
-	\item Documentation
-	\item General inspection
-	\item Datasheet and report comparison
-	\item Footprint inspection 
-	\item Peer-review
-\end{itemize}
-
-The content of each step will be elaborated here. 
-
-\paragraph{Documentation}
-Each circuit is documented to ensure that the design is done correctly.
-Documenting a circuit requires studying the components datasheets and ensuring that they each meets the requirement.
-Furthermore it requires a thorough inspection of the expected functionality of the circuit.
-This step leads to correcting errors where a component is used wrong in respect to the wanted functionality of the circuit.
-
-\paragraph{General Inspection}
-General inspection of the schematic includes finding typographical errors on signals, components, resistor values, etc.
-Furthermore each signal is inspected to ensure that it is connected correctly and it is also decided if it should be connected to an external header for measuring purposes.
-
-\paragraph{Datasheet and Report Comparison}
-Each circuit in the schematic is compared to its datasheets recommendation and the documentation written in the report. 
-This step essentially ensures that each circuit has been verified more the one time. 
-One could think that this step is irrelevant, but the authors believe it is important due to the complexity of the schematic.
-After completion of this step, all circuits have been checked at least two times and the schematic a should be correct. 
-
-\paragraph{Footprint Inspection}
-Provided that the schematic is correct, the only possibly source of errors is the components footprints. 
-Inspecting the footprint consist of verifying the correct pin assignment and the correct land patterns.
-Both are done by inspecting each components datasheet. 
-After completion of this step, both the schematic and footprints should be correct and the board is expected to be free from errors.
-
-\paragraph{Peer-review}
-In this part of the process the board design, schematic and footprints should be correct and everything has been verified by the authors multiple times.
-It is generally a problem that when working with a design for a long period of time, some errors are very hard to find for the designers themselves. 
-Therefore the complete design was reviewed by Jesper Nielsen, who is employed to do high power electronics PCBs at the University of Southern Denmark. 
-The revision was done by pointing out the main features of the board and discussing the found components, schematic and the board layout.
-
-% section schematic_revision (end)
+\subsubsection{5V and 3.3V Rail Circuitry} % (fold)
+\label{subsub:pth08080w}
+As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
+The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
+These rails were designed mainly for ensuring the correct boot and shutdown of the MicroZed.
+These procedures are described in detail in \cite{isaswarm}.
+% subsection pth08080w (end)
