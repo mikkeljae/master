@@ -185,7 +185,7 @@ It should also be noted that bootstrap capacitor needs at least $2.35 \mu S $ fo
 Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
 The time it takes to charge the capacitor the energy that is used in each period is:
 \begin{equation}
-	T_{charge,period} = 5\cdot \tau = 5\cdot (R \cdot C_{boot}) = 5\cdot (4.7 \cdot  51.6 \cdot 10^{-9}) = 1.21 \mu S 
+	T_{charge,period}  5\cdot (R \cdot C_{boot}) = 5\cdot (4.7 \cdot  51.6 \cdot 10^{-9}) = 1.21 \mu S 
 \end{equation}
 The $1.21 \mu S$ is equivalent to 2.7\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 97.3\%.
 % subsection power_board (end)
@@ -377,22 +377,12 @@ Designing the safety circuit in this manner ensures that the system cannot be st
 
 
 \subsubsection{Motor Current Sensing}
-....
-When measuring the current through an H-Bridge, as is done in this project, the shunt resistor can be placed in various positions.
-The three main ones are high-side, in-line and low-side placement of the shunt resistor as shown in figure \ref{fig:shunt_measure_high_in_low}.
-
-\begin{figure}[h]
-	\centering
-    \includegraphics[width=0.5\linewidth]{graphics/shunt_sense_high_in_low}
-	\caption{xxxx.}
-	\label{fig:shunt_measure_high_in_low}
-\end{figure}
-\mikkel{Figure should be replaced by own illustration}
-
+Measuring current in an H-Bridge with a shunt resistor can be done in a number of ways.
+The shunt resistor can be placed in various positions in the H-bridge.
+The three main ones are high-side, in-line and low-side placement of the shunt resistor.
 \cite{shunt_placement} and \cite{Current_Sense_Circuit_Collection} specifies the advantages and disadvantages of the three configurations.
 \thomas{Perhaps add a quick summary of each and highlight the selected one?} 
-Based on that it was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and bi-directional current measurement is not needed.
-
+It was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and because bi-directional current measurement is not needed in this application.
 
 \paragraph{Requirements for the Current Measuring Circuit} % (fold)
 \label{par:requirements_for_the_current_measuring_circuit}
@@ -406,13 +396,6 @@ It was therefore decided that the circuit  needs to be able to measure currents 
 The resolution per Ampere is increased by decreasing the current range that can be measured,
 If the current gets any higher the ADC input should not be harmed meaning that the input voltage should not exceed 1.9V.
 \thomas{What are the requirements of the accuracy? What can we achieve with the hardware?}
-
-\mikkel{Below should be formatted differently}
-\textbf{Requirements for the circuit:}
-\begin{itemize}
-	\item ADC input voltage does not exceed 1.9V when motor is stalling.
-	\item Measures currents up to 40A, at minimum.
-\end{itemize}
 
 % subsubsection requirements_for_the_current_measuring_circuit (end)
 
@@ -430,7 +413,7 @@ Since the input range of the ADC is 0-1V, this low voltage would yield very poor
 An amplifier circuit is necessary.
 Purpose built current-sense amplifiers exist which are used specifically for amplifying the voltage drop across a shunt resistor.
 One such amplifier is the \texttt{INA286AID} from Texas Instruments \cite{INA286AID}.
-It has a gain of 100, lifting the voltage resulting from motor stall to 1.6V as seen from \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}..
+It has a gain of 100, lifting the voltage resulting from motor stall to 1.6V as seen from equations \ref{eq:adc_input_voltage1} and \ref{eq:adc_input_voltage2}.
 \begin{equation}
 	V_{max,input} = G \cdot V_{shunt}
 	\label{eq:adc_input_voltage1}
@@ -446,11 +429,10 @@ The measurable range using this IC is 0-50A as seen from \ref{eq:adc_input_volta
 	\label{eq:adc_input_voltage3}
 \end{equation}
 
-\thomas{Is the information about 10mV full scale actually relevant to this design?}
-and a very low offset allowing it to be used in applications where the maximum voltage drop across the shunt resistor is 10 mV full-scale 
+It has a very low offset allowing it to be used in applications where the voltage drop across the shunt resistor is only a few mV.
 
-This design meets the required design spec and the schematics can be seen in figure \ref{fig:currentmeasure}.
-As can be seen, the INA286 in this configuration requires only the voltage input, \texttt{POWER\_SHUNT+/-} from the schematic on figure \ref{sfig:hbridgeshunt}, to generate a suitable output which is then fed directly to the ADC through the anti-aliasing filter shown on figure \ref{sfig:ina286aidschematic}.
+This design meets the required design specifications and the schematics can be seen in figure \ref{fig:currentmeasure}.
+As can be seen, the \texttt{INA286} in this configuration requires only the voltage input, \texttt{POWER\_SHUNT+/-} from the schematic on figure \ref{sfig:hbridgeshunt}, to generate a suitable output which is then fed directly to the ADC through the anti-aliasing filter shown on figure \ref{sfig:ina286aidschematic}.
 
 \begin{figure}
 	\centering
