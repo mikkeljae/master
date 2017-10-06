@@ -2,38 +2,8 @@
 \subsection{Circuit Design}
 \label{sub:controller_board_circuit_design}
 
-Multiple electronics components are required to realise the double pendulum being developed throughout this report.
-This section explores the design of those components and the communication between them.
-Most of the circuitry is combined on a single PCB, the driver board, however some of the functionality is moved to smaller boards, local to the place where they are needed.\\
-
-The components of the system are listed here:
-\begin{itemize}
-	\item Motor Encoder
-	\item Joint Encoder
-	\item End Stops
-	\item Motor Driver
-	\item Emergency Circuitry
-	\item Relay Driver
-	\item RF Transceiver
-	\item MicroZed 
-\end{itemize}
-Many of these components require a number of subcomponents, which will be explored further in later sections.
-
-
-\subsubsection{Safety Relay?}
-\mikkel{Should be in this section somehow}
-\thomas{Add circuit showing the safety relay}
-On figure \ref{fig:relay_circuit} is shown the safety circuitry.
-A relay is mounted in series with the supply rail for the motor.
-The default state for this relay should be \texttt{off}.
-Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
-Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
-Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
-One relay that fulfills these requirements is the.
-\\~\\
-The driver circuit for the relay is activated only when all safety conditions are off.
-If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
-Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
+Multiple electronics components are required to realise the functionalities described in the precious section.
+This section explores the selection of those components and design of the corresponding circuits.
 
 
 
@@ -65,8 +35,7 @@ Assuming that Avnet has already provided headroom for the IO bank supply and con
 This rail supplies, mainly, the MicroZed.
 The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
 In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
-There are two types of encoders, the HEDS-5540 \cite{heds5540}, which requires a maximum of 85mA and a Rolin magnetic encoder, which requires a maximum of 25mA.\\
-\mikkel{Rolin should not be discussed here}
+The HEDS-5540 \cite{heds5540} encoder requires a maximum of 85mA..
 The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
 The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
 This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
@@ -82,11 +51,10 @@ See table \ref{tab:5vpowerbudget} for a full overview.
 		 \hline
 		 MicroZed & 1850\\
 		 HEDS-5540 & 85\\
-		 Rolin Enc. & 25\\
 		 TCST2103 & 110\\
 		 Digital & 25\\
 		 \hline
-		 Total & 2095
+		 Total & 2070
 	\end{tabular}
 	\caption{Power budget for the 5V rail}
 	\label{tab:5vpowerbudget}
@@ -335,7 +303,7 @@ It was therefore chosen to use a 100 [nF] ceramic capacitor.
 The initial charge current to the capacitor needs to be limited in order not to exceed the maximum ratings of the diode.
 Therefore a resistor is put in series with the diode.
 The resistor value should not be too big as the voltage drop across it is subtracted from the bootstrap capacitor voltage.
-A 1 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 12 A.
+A 4.7 $\Omega$ resistor was chosen. In this setting, the maximum current through this component is 2.6 A.
 This is clearly above the maximum average forward current of the diode, but the diode can withstand a 8.3 ms single half sine-wave of maximum 30 A \cite{diode_ds}.
 
 The capacitor voltage while charging in a RC circuit is described by equation \ref{eq:cap_charge}, according to \cite{prac_ele_for_inven}.
@@ -351,22 +319,19 @@ Equation \ref{eq:cap_charge} can be used to calculate the time it takes an RC ci
 After one time constant the capacitor is charged 63.2\% and after five time constant the capacitor is approximately fully charged, 99.3\%.
 This knowledge can be used to calculate the time it takes to charge the bootstrap capacitor as shown in \ref{eq:cap_boot_time}.
 \begin{equation}
-T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 0.5 \mu S 
+T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 5\cdot (4.7 \cdot 100 \cdot 10^{-9}) = 2.35 \mu S 
 \label{eq:cap_boot_time}
 \end{equation}
-Meaning that the diode can be exposed to a maximum of 12A for $0.5 \mu S $, which is well below the absolute maximum rating.
-It should also be noted that bootstrap capacitor needs at least $0.5 \mu S $ for the initial charging.
+Meaning that the diode can be exposed to a maximum of 2.6A for $2.35 \mu S $, which is well below the absolute maximum rating.
+It should also be noted that bootstrap capacitor needs at least $2.35 \mu S $ for the initial charging.
 \mikkel{In the application note they state that they include a 400ns bootstrap}
 
 Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
 The time it takes to charge the capacitor the energy that is used in each period is:
 \begin{equation}
-	T_{charge,period} = 5\cdot \tau = 5\cdot (R \cdot C_{boot}) = 5\cdot (1 \cdot  51.6 \cdot 10^{-9}) = 258 nS 
+	T_{charge,period} = 5\cdot \tau = 5\cdot (R \cdot C_{boot}) = 5\cdot (4.7 \cdot  51.6 \cdot 10^{-9}) = 1.21 \mu S 
 \end{equation}
-The 258 nS are equivalent to 0.6\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 99.4\%.
-
-\mikkel{Because of DCDC converter for 12V rail it was decided to use 4 Ohm (4.7Ohm) resistor to limit the charge current. The max dutycycle should be recalculated.}
-
+The $1.21 \mu S$ is equivalent to 2.7\% duty cycle and the maximum duty cycle for the high side MOSFETS is thus 97.3\%.
 % subsection power_board (end)
 
 \subsubsection{Supply Capacitors}
@@ -525,11 +490,34 @@ This is done by adding a resistor and a relay in parallel with the main relay.
 When first powering up the system the secondary relay should be turned on in order to charge the supply capacitors.
 Once charged, the main relay is switched on and afterwards the secondary relay can be switched off.
 This will control the initial inrush current but the system should not be run until the secondary relay is switched off again.
-% section preliminary_testing (end)
 
+\subsubsection{Relay Circuitry} % (fold)
+\label{ssub:relay_circuitry}
+As discussed in sections \ref{ssub:safety_relay} and \ref{ssub:inrush_current}, two relays are necessary in this design.
+The two circuits are functionally similar so only the circuitry related to the inrush relay is shown here and any relevant differences are discussed.
+Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the inrush relay.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/relay_circuit}
+	\caption{Circuitry related to the inrush relay.}
+	\label{fig:relaycircuit}
+\end{figure}
 
+\mikkel{These sections should be merged.}
 
+\thomas{Add circuit showing the safety relay}
+On figure \ref{fig:relay_circuit} is shown the safety circuitry.
+A relay is mounted in series with the supply rail for the motor.
+The default state for this relay should be \texttt{off}.
+Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
+Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
+Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
+One relay that fulfills these requirements is the.
+\\~\\
+The driver circuit for the relay is activated only when all safety conditions are off.
+If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
+Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
 
 
 \subsubsection{Motor Current Sensing}
@@ -626,18 +614,8 @@ As can be seen, the INA286 in this configuration requires only the voltage input
 \end{figure}
 
 % subsubsection designing_the_current_measuring_circuit (end)
-\subsubsection{Relay Circuitry} % (fold)
-\label{ssub:relay_circuitry}
-As discussed in sections \ref{ssub:safety_relay} and \ref{ssub:inrush_current}, two relays are necessary in this design.
-The two circuits are functionally similar so only the circuitry related to the inrush relay is shown here and any relevant differences are discussed.
-Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the inrush relay.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\linewidth]{graphics/relay_circuit}
-	\caption{Circuitry related to the inrush relay.}
-	\label{fig:relaycircuit}
-\end{figure}
+
 
 % subsection relay_circuitry (end)
 
