@@ -343,6 +343,21 @@ As shown by equation \ref{eq:cap_boot_time}, the charging time can be found as
 \begin{equation}
 	T_{charge} = 5\cdot R_{inrush}\cdot C_{supply} = 5\cdot 180\cdot 1320\cdot10^{-6} = 1.188 \text{[S]}
 \end{equation}
+
+Therefore, on bootup, the system will not be able to start running the motors until $\approx$1.2 S have passed.
+This is estimated to be sufficient as this is well below the boot time of the remaining system.
+Figure \ref{fig:relaycircuit} shows the driving circuitry for the inrush relay. 
+The circuitry is identical for the main relay.
+As can be seen, the relay can be switched on and off by a signal to the MOSFET Q18.
+This signal is high only when signals \texttt{INRUSH} and \texttt{EM\_DIS} are high.
+\texttt{EM\_DIS} is the signal from the safety circuitry and \texttt{INRUSH} allows the user to toggle the relay.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.5\linewidth]{graphics/relay_circuit}
+	\caption{Circuitry related to the inrush relay.}
+	\label{fig:relaycircuit}
+\end{figure}
 % subsubsection relay_circuitry (end)
 
 \subsubsection{Safety Relay} % (fold)
