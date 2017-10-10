@@ -327,12 +327,11 @@ Generally the designed features of the circuit was verified using the PLECS mode
 \label{ssub:relay_circuitry}
 Two relays are necessary for the system, the main relay and an inrush relay.
 The main relay should be able to carry and break the total design current, 80A.
-This requirement is met by the LEV100A4ANG.
+This requirement is met by the LEV100A4ANG \cite{lev100}.
 It is capable of carrying up to 100A continuous current and can break significantly more.
 It has a 12V coil which requires $\approx$0.5A to hold in the closed state.
 As mentioned previously the inrush relay is necessary to facilitate the initial charging of the supply capacitors.
-The current to the capacitors is limited only by their ESR.
-A resistor should be added to limit this inrush current.
+The current to the capacitors is limited only by their ESR and a resistor should be added to limit this inrush current.
 Adding the resistor to the main current path would introduce considerable losses and limit the performance of the system.
 The inrush relay is implemented in parallel with the main relay to supply a temporary alternate current path in which the resistor is placed.
 The size of the resistor is somewhat irrelevant so long as it is large enough to protect the circuitry.
@@ -346,71 +345,23 @@ As shown by equation \ref{eq:cap_boot_time}, the charging time can be found as
 
 Therefore, on bootup, the system will not be able to start running the motors until $\approx$1.2 S have passed.
 This is estimated to be sufficient as this is well below the boot time of the remaining system.
+The relay chosen for this application is the G6B-1114P \cite{g6b} with a 12V coil.
+Being a significantly smaller relay, carrying up to 5A, the G6B-1114P requires only 16.7mA to hold in the closed state.\\~\\
 Figure \ref{fig:relaycircuit} shows the driving circuitry for the inrush relay. 
 The circuitry is identical for the main relay.
 As can be seen, the relay can be switched on and off by a signal to the MOSFET Q18.
 This signal is high only when signals \texttt{INRUSH} and \texttt{EM\_DIS} are high.
 \texttt{EM\_DIS} is the signal from the safety circuitry and \texttt{INRUSH} allows the user to toggle the relay.
+Designing the circuit in this manner ensures that the motor will remain disengaged in case of an activated safety condition.
+Finally, A flyback diode is placed in parallel with the inductor in the relay to create an alternate current path when the MOSFET is switched off.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/relay_circuit}
 	\caption{Circuitry related to the inrush relay.}
 	\label{fig:relaycircuit}
 \end{figure}
 % subsubsection relay_circuitry (end)
-
-\subsubsection{Safety Relay} % (fold)
-\label{ssub:safety_relay}
-\thomas{This section and the next needs some numbers on charging time and similar}
-It should be possible to disengage the main power rail from the load in case of an emergency.
-This is done most simply by adding a relay in series with the load.
-The relay must be able to carry and break the full load current, 80A.
-The LEV100A4ANG meets this requirement. 
-It is capable of carrying up to 100A continuous current and can break significantly more.
-Since the supply capacitors are parallel with the load, these will also be disconnected by the relay.
-It has a 12V coil which requires $\approx$0.5A to activate.
-% subsubsection safety_relay (end)
-
-\subsubsection{Inrush Current}
-\label{ssub:inrush_current}
-When the system is initially turned on, the supply capacitors will charge.
-They will draw a huge amount of current as there is only the ESR to limit the current. 
-A resistor should be added to limit this inrush current. 
-Adding the resistor to the main current path would introduce considerable losses and limit the performance of the system.
-An additional current path is added to the circuit.
-This is done by adding a resistor and a relay in parallel with the main relay.
-When first powering up the system the secondary relay should be turned on in order to charge the supply capacitors.
-Once charged, the main relay is switched on and afterwards the secondary relay can be switched off.
-This will control the initial inrush current but the system should not be run until the secondary relay is switched off again.
-
-\subsubsection{Relay Circuitry} % (fold)
-\label{ssub:relay_circuitry}
-As discussed in sections \ref{ssub:safety_relay} and \ref{ssub:inrush_current}, two relays are necessary in this design.
-The two circuits are functionally similar so only the circuitry related to the inrush relay is shown here and any relevant differences are discussed.
-Figure \ref{fig:relaycircuit} is an overview of the circuit created to drive the inrush relay.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=.5\linewidth]{graphics/relay_circuit}
-	\caption{Circuitry related to the inrush relay.}
-	\label{fig:relaycircuit}
-\end{figure}
-
-\mikkel{These sections should be merged.}
-
-\thomas{Add circuit showing the safety relay}
-On figure \ref{fig:relay_circuit} is shown the safety circuitry.
-A relay is mounted in series with the supply rail for the motor.
-The default state for this relay should be \texttt{off}.
-Then, in order to switch the system to the \texttt{on} state, the relay should be closed.
-Should power to the relay coil ever fail i.e. something in the system has broken, power to the motor is cut off.
-Since the relay is in series with the motor, it should also be capable of carrying the full design current, 80A.
-One relay that fulfills these requirements is the.
-\\~\\
-The driver circuit for the relay is activated only when all safety conditions are off.
-If at any point any of the safety conditions are tripped, the driver circuit shuts down, releasing the relay and turning off power to the motor.
-Designing the safety circuit in this manner ensures that the system cannot be started or will shut down if any wires or components in the safety circuit break.
 
 
 \subsubsection{Motor Current Sensing}
