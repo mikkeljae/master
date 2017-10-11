@@ -1,7 +1,12 @@
 %!TEX root = ../main.tex
 \section{Joint Development}
 \label{sec:joint_development}
+In creating a pendulum the mounting point must be able to rotate freely about the mounting axis.
+To achieve this a joint must be designed which can accomodate this motion.
+Throughout this section the analysis, design and implementation of this joint is explored.
 
+\input{sections/joint_board_analysis}
+\input{sections/joint_board_design}
 
 \subsection{Joint Microcontroller}
 \label{sub:joint_microcontroller}
@@ -93,6 +98,14 @@ Lithium-Ion batteries have a very high energy density and it should therefore be
 WE FOUND ONE!!!!!
 3.7 Volt - YES!
 3.7V to 4.2V - ca. =!=!??
+
+\subsection{RS422}
+No termination was used....
+Under 200kbps....
+Short wires...
+minimum power.
+
+See \cite{rs422_texas} page 13.
 
 \subsection{Voltage Rail Generation}
 \label{sub:voltage_rail_generation}

@@ -7,7 +7,7 @@ VDD = 12;               %Supply voltage
 fs = 22000;             %Switching
 V_gsmin = 8             %Minimum allowed gate-source voltage;
 D_min = 0.95;           %Minimum dutycycle
-Q_gate = 117e-9;    %Total gate charge;
+Q_gate = 116e-9;    %Total gate charge;
 I_lkgs = 100e-9;    %Switch gate-source leakage current
 I_lkcap = 0;            %Bootstrap capacitor leakage current. Zero if not electrolytic
 I_qbs = -30e-6;       %Bootstrap circuit quiescent current
@@ -40,13 +40,13 @@ V_boot4 = Q_total / C_boot4
 
 % If C_4 is chosen
 
-R = 1;
+R = 4.7;
 max_amp = VDD/R;                       % Calculate from bootstrap resistor 
 tau = R*C_boot4;                       % time constant
 init_charge_time  = tau *5              %It is usually considered that five time constants are enough to charge a capacitor.
 
 
-tau_period = 1 * C_boot;
+tau_period = R * C_boot;
 period_charge_time = 5*tau_period
 
 period= 1/22000
