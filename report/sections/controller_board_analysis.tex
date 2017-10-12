@@ -72,10 +72,20 @@ The components chosen for the system all impose some requirement as to what volt
 	According to the datasheet this is 80.2A and so the 24V rail should be capable of supplying at least that plus the current draw of any subsequent rails.
 	\item  \textbf{MicroZed:} This board is powered from a 5V rail and requires a 3.3V rail to power the I/O banks of the Zynq-7020 chip.
 	The design of the power delivery for this board was done by the authors in the aforementioned project \cite{isaswarm} and it was found that the MicroZed can draw a maximum of 1.8A from the 5V rail and up to 1A from the 3.3V rail.
-	The 3.3V rail is generated from the 5V rail in that design and the total current draw from the 5V rail resulting from the MicroZed is no larger than 2.5A. 
+	The 3.3V rail is generated from the 5V rail in that design and the total current draw from the 5V rail resulting from the MicroZed is no larger than 2.5A.
+	The 5V rail was designed to be created from a 2S Li-Po battery at 8V and so the maximum input voltage of the DC/DC converter is 18V. 
+	\item \textbf{HIP4081:} This component is the motor driver used in the project.
+	The choice of this component is discussed in more detail in section \ref{ssub:h_bridge}.
+	A 12V rail is required by the HIP4081 to generate the gate signals.
+	This 12V rail will also be used to generate the 5V rail.
+	This overcomes the limitation of limited maximum input voltage of the DC/DC converter of the 5V rail.
+	Due to the choice of using the HIP4081, it is necessary to do bootstrapping (see section \ref{ssub:bootstrap_circuit}). 
+	The current drawn from the bootstrap circuit is decided in large part by the designer and as such the current requirement of the 12V rail is also somewhat flexible.
+	For this reason the current rating of the 12V rail should be as high as is practically and economically possible.
 \end{itemize}
-
-
+A number of additional components are likely to be required on the controller board which will all impose additional current draw on their respective rails.
+These are considered negligible when compared to the major consumers mentioned above.
+ 
 \subsubsection{Motor Current Sensing}
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
 Current measurements are generally done by either hall effect based sensors or shunt resistors. 
