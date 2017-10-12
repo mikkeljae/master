@@ -5,6 +5,45 @@
 In order to develop a controller board capable of controlling a double pendulum, the required functionality of the board needs to be determined. 
 This section will constitute an analysis of this functionality and an analysis of possible solutions to desired functionality.
 
+\subsubsection{Communication} % (fold)
+\label{ssub:communication}
+The controller board should be able to communicate wirelessly with the joints as discussed in section \ref{sec:wireless}.
+\thomas{Some reference to the section where we determine that communication should be wireless.}
+The wireless link should provide sufficient bandwidth that the angular position of the joint can be transmitted sufficiently frequently.
+From section \ref{ssub:encoder} it can be seen that the encoder chosen for the joints allows 7200 counts per revolution.
+This can be represented using 13 bit. 
+Adding a 3 bit identifier makes the payload of a message 16 bit.
+This is a rough estimate and the actual protocol is discussed in more detail in section \ref{} 
+\thomas{section on protocol between joint and controller board.}
+A number of different protocols exist which could be used in this project.
+Three were under consideration for this project:
+\begin{itemize}
+	\item \textbf{TCP/IP over WiFi:} TCP/IP is the defacto standard for communication between computers, both wired and wirelessly.
+	This, along with the very large throughput, makes it an enticing option.
+	Considering the rather small message size this protocol does impose a significant amount of overhead.
+	In addition to the communication overhead, TCP/IP also requires some form of driver, making it difficult to forego the use of Linux in the joints, an OS that increases the requirements to the processing unit in the joint considerably.
+	\item \textbf{Bluetooth:} The Bluetooth protocol is developed specifically for low power, short range data transmission and is used extensively in various applications.
+	As with the previous option, a considerable amount of overhead is required in setting up bluetooth as well as in the transmission of packets, making it less desirable.
+	\item \textbf{Radio Frequency:} While not strictly a protocol, using an RF transceiver eliminates the additional overhead associated with the previously mentioned protocols.
+	RF transceivers come with a number of different interfaces such as SPI or I2C and will simply transmit the data received through that interface.
+	This makes it easy to communicate using this method through bare-metal code or even VHDL.
+\end{itemize}
+Considering the above it was chosen to use an RF transceiver to facilitate the communication between the joints and the controller board.
+% subsubsection communication (end)
+
+\subsubsection{Microcontroller} % (fold)
+\label{ssub:microcontroller}
+The controller board requires some form of microcontroller or other form of processing unit to interface the various signals on the board and implement the control algorithm.
+Since the platform is to be used for research and education purposes, the processing unit should resemble what its users are likely to have prior experience with.
+Many courses on embedded electronics at SDU are built around the Zybo development board\cite{zybo}.
+This board implements a number of features, such as VGA/HDMI and a few audio interfaces, which are not required in this project.
+A similar option which shares the same main chip, a Zynq-7000 series FPGA \cite{zynq}, is the MicroZed \cite{microzed}.
+The MicroZed is created specifically to implemented in a product and as such there are fewer built-in features to the board, resulting in a significantly smaller footprint.
+The authors have designed with the MicroZed in previous projects \cite{isaswarm}.
+Most of the design done in \cite{isaswarm} can be reused with limited modifications.
+For these reasons the MicroZed will be used in this project.
+% subsubsection microcontroller (end)
+
 \subsubsection{Motor Driver}
 It is necessary to device some form of driving circuitry for the motor driving the timing belt.
 The motor should be able to move in both directions. 
@@ -25,8 +64,17 @@ Such a circuit is often comprised of a relay in series with a resistor.
 The design of the circuitry surrounding the inrush relay must be designed.
 
 \subsubsection{Voltage Rails}
-The controller board will have a variety of electronics and there will be a need for different voltage rails as standard digital electronics cannot use the 24V rail that is used to drive the motor.
-Each voltage rail needs to be designed to be able to deliver the power required by the components present on that rail.
+The components chosen for the system all impose some requirement as to what voltage rails should be present on the controller board.
+\begin{itemize}
+	\item \textbf{Maxon 148867 DC Motor:} This motor will be driven from a 24V rail.
+	In addition to supplying the motor the 24V rail will also be used to generate any subsequent rails.
+	The maximum current draw possible the maxon 148867 is its stall current. 
+	According to the datasheet this is 80.2A and so the 24V rail should be capable of supplying at least that plus the current draw of any subsequent rails.
+	\item  \textbf{MicroZed:} This board is powered from a 5V rail and requires a 3.3V rail to power the I/O banks of the Zynq-7020 chip.
+	The design of the power delivery for this board was done by the authors in the aforementioned project \cite{isaswarm} and it was found that the MicroZed can draw a maximum of 1.8A from the 5V rail and up to 1A from the 3.3V rail.
+	The 3.3V rail is generated from the 5V rail in that design and the total current draw from the 5V rail resulting from the MicroZed is no larger than 2.5A. 
+\end{itemize}
+
 
 \subsubsection{Motor Current Sensing}
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
