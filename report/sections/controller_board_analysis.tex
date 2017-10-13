@@ -206,8 +206,19 @@ The review should be done by pointing out the main features of the board and dis
 % section schematic_revision (end)
 
 
-\subsubsection{PCB...} % (fold)
+\subsubsection{PCB Layout} % (fold)
+Some considerations are important when designing high power or switching circuitry, both of which are categories which the controller board fit into.
+When part of the board is exposed to large currents, maintaining signal integrity on the remainder of the board becomes important.
+This is done in large part by controlling grounds in the PCB.
+An unbroken ground plane should be present in the design to ensure a low-impedance current path in the PCB \cite{pcblayoutds}.
+In addition to unbroken ground planes, they should also be seperated based on their role in the circuit.
+Often two, three or even more ground planes exist in circuits.
+A common distribution is an analogue ground, digital ground and power ground.
+Analogue signals are often sensitive to noise and should be shielded from the switching noise of the digital circuitry.
+Similarly, high currents in a ground plane is likely to cause voltage drops across it.
+This may cause issues in the digital circuitry. 
 
+\thomas{more on split grounds and layers}
 
 \subsubsection{Component Selection and Placement} % (fold)
 \label{ssub:component_case_selection_and_placement}
