@@ -63,8 +63,14 @@ For this reason it is necessary to design circuitry which will temporarily limit
 Such a circuit is often comprised of a relay in series with a resistor.
 The design of the circuitry surrounding the inrush relay must be designed.
 
-\subsubsection{HEAT}
-\mikkel{Something here}
+\subsubsection{Power Dissipation and Heat}
+The MOSFETs driving the motor will have to carry and switch a sizeable current.
+Carrying the motor current will result in some amount of power dissipation in the MOSFETs as they have a non zero drain-source \texttt{on} resistance, $R_{ds(on)}$.
+Switching the motor current \texttt{on} and \texttt{off} also represents a source of power dissipation in the MOSFETs.
+The total power dissipation leads to an increase in the temperature of the MOSFETs.
+As the MOSFETs have a maximum operation temperature it is believed that a heat sink should be connected to the MOSFETs in order to achieve a higher cooling effect.
+
+
 
 \subsubsection{Voltage Rails}
 The components chosen for the system all impose some requirement as to what voltage rails should be present on the controller board.
@@ -102,7 +108,6 @@ By adding such a resistor in series with the load, the voltage across the resist
 \subsubsection{Safety} % (fold)
 \label{subsub:safety}
 It is expected that, eventually, an error may occur that causes the cart to move uncontrollably.
-\mikkel{Emergency condition should NOT cut power to MicroZed - Why?}
 A safety system should be constructed in such a way that it will prevent the cart from crashing violently.
 It should be isolated from the remaining system.
 Therefore, if it can at all be avoided, no programming should be involved in determining a safety condition.
@@ -156,6 +161,7 @@ This sensor allows the greatest reliability while being reasonably simple to mou
 \\~\\
 In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
 
+
 \subsubsection{Schematic Revision} % (fold)
 \label{ssub:schematic_revision}
 
@@ -205,10 +211,6 @@ The review should be done by pointing out the main features of the board and dis
 
 % section schematic_revision (end)
 
-
-\subsubsection{PCB...} % (fold)
-
-
 \subsubsection{Component Selection and Placement} % (fold)
 \label{ssub:component_case_selection_and_placement}
 There are limits to the production capabilities of the equipment, both of the manufacturer producing the PCB and the equipment available to the authors at SDU.
@@ -225,6 +227,15 @@ For simplicity theses headers should all be a of the same type.
 The JST ZH-series connectors should be used as they are commonly used at SDU, they are SMT and sufficiently small. 
 
 
+\subsubsection{Testing and Prototyping} % (fold)
+Some of the developed circuits will consist of many components and complex ICs.
+With such complex circuits, errors in a schematics can easily appear.
+Therefore the functionality of the most important parts of the circuit should be tested on prototype PCBs before ordering an expensive PCB.
+\mikkel{Hmmm. Grumble}
+
+\subsubsection{PCB...} % (fold)
+
+
 \subsubsection{Board Layout and Considerations} % (fold)
 \label{ssub:board_layout_and_considerations}
 A number of options are available when considering the general layout of the controller circuitry.
@@ -236,15 +247,10 @@ Similarly, extra copper is likely to be necessary on the power circuit but also 
 Exploring various manufacturing options revealed that the added cost of making a new design significantly outweighs the savings by segregating the thicker copper and extra layers, rather than producing just a single PCB incorporating both extra layers and extra copper.
 For this reason it was decided to produce just a single PCB, housing all of the electronics related to the controller.
 
+\clearpage
 \subsubsection{Requirements}
-<<<<<<< HEAD
-
 
 \paragraph{Functional:}
-=======
-Something something....
-\paragraph{Functional?:}
->>>>>>> 9e3125d202faf2f007b71c01e0854d0a15bb07ac
 \begin{itemize}
 	\item Motor speed and direction should be adjustable through PWM outputs ports of the MicroZed.
 	\begin{itemize}
@@ -261,7 +267,6 @@ Something something....
 
 	\item Voltage rails for the various components in the circuit.
 	\begin{itemize}
-		\item 2.5V.
 		\item 3.3V.
 		\item 5V.
 		\item 12V.
@@ -269,7 +274,7 @@ Something something....
 		\item All voltage rails should be sized appropriately to supply the current necessary for the components on that rail.
 	\end{itemize}
 
-	\item Minimization of voltage transients on voltage rails.
+	\item Voltage transients on voltage rails should be minimized.
 	\begin{itemize}
 		\item Bulk capacitors on 24V rail to supply current to motor.
 		\item Properly sized input and output capacitance of DC/DC power supplies.
@@ -281,20 +286,11 @@ Something something....
 	\begin{itemize}
 		\item The connection between the controller board and the MicroZed should be realized through two Bergstak 100pins headers.
 		\item All signals to the MicroZed should be routed on the PCB to appropriate I/O ports.
+		\item Start-up power sequence and voltage levels should be correct.
 	\end{itemize}
-<<<<<<< HEAD
-=======
-	
-	\item It should possible to debug electronic circuits individually.
-	\begin{itemize}
-		\item Test points should exist for all voltage rails and important signals.
-		\item All test points should be wired to JST ZH-series connectors
-	\end{itemize}
->>>>>>> 9e3125d202faf2f007b71c01e0854d0a15bb07ac
-
 	\item MOSFETs should be cooled to avoid overheating of the board.
 	\begin{itemize}
-		\item A heatsink should be connected to MOSFETs.
+		\item A heatsink should be connected to MOSFETs driving the motor.
 	\end{itemize}
 	\item Wireless communication using RF should be implemented
 \end{itemize}
@@ -302,31 +298,30 @@ Something something....
 
 \paragraph{Design:}
 \begin{itemize}
+	\item Important parts of circuitry should be tested on prototype PCB.
 	\item The PCB layout should be reviewed according to the developed strategy.
 	\begin{itemize}
-		\item Documentation
-		\item General inspection
-		\item Datasheet and report comparison
-		\item Footprint inspection 
-		\item Peer-review
+		\item Documentation.
+		\item General inspection.
+		\item Datasheet and report comparison.
+		\item Footprint inspection.
+		\item Peer-review.
 	\end{itemize}
-<<<<<<< HEAD
 	\item The PCB layout should be designed with debugging in mind.
 	\begin{itemize}
 		\item Test points should exist for all voltage rails and relevant signals.
+		\item All test points should be wired to JST ZH-series connectors.
 	\end{itemize}
-=======
 	\item PCB layout....
 	\begin{itemize}
 		\item Ground plane...
 		\item Avoid through-hole components....
+		\item Power ground and signal ground
 	\end{itemize}
 	\item PCB soldering should be possible at SDUs facilities.
 	\begin{itemize}
-		\item Component casings should be in SOT-23, SOIC or 0805 casing where possible.
+		\item Component casings should be SOT-23, SOIC or 0805 where possible.
 	\end{itemize}
-	\item Important parts of circuitry should be tested on prototype PCB
->>>>>>> 9e3125d202faf2f007b71c01e0854d0a15bb07ac
 \end{itemize}
 
 	
@@ -348,8 +343,9 @@ Something something....
 				\item[$\circ$] Endstops for detecting cart run-away.
 				\item[$\circ$] Emergency signal from the MicroZed.
 			\end{itemize}
-			\item Emergency conditions cannot cut power to the MicroZed
+			\item Emergency conditions cannot cut power to the MicroZed.
 			\item Relay should switch power to motor.
 			\item Relay should be active only when emergency conditions are inactive.
+			\item Power to remaining electronics and MicroZed should not be affected by an emergency condition.
 		\end{itemize}
 \end{itemize}
