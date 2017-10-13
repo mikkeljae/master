@@ -111,15 +111,8 @@ The 5V layer means that any components requiring 5V need only a via to access it
 This layer is also used for routing when routing through the top and bottom layers is infeasible.
 
 % paragraph copper_layout (end)
-\subsubsection{Component Selection and Placement} % (fold)
-\label{ssub:component_case_selection_and_placement}
-There are limits to the production capabilities of the equipment, both of the manufacturer producing the PCB and the equipment available to the authors at SDU.
-For this reason some restrictions are set on the casing of components and their placement on the PCB.
-Generally, throughhole components are avoided where possible since these opstruct not only the layer they are placed on but also every other layer throughout the PCB and so surface mount technology (SMT) components are preferred.
-SMT components come in many sizes and some are simply too small to realistically route and solder with the available equipment.
-Generally, SOT-23, SOIC and 0805 packages and similar sizes are preferred where possible.
-With the equipment available at SDU only components on one side of the PCB can be placed and soldered with the pick-and-place machine and oven.
-Due to this, components are placed only on the top layer when possible.
+
+\mikkel{Homeless text (because most of section was moved to analysis):}
 A few components, such as the large electrolytic capacitors and the RF module, are placed on the bottom layer but are large enough that they are easily handsoldered.
 A choice was made to route a number of signals to headers to allow for easier debugging and monitoring of the circuit.
 These headers are all part of the JST ZH-series connectors, are SMT and sufficiently small to fit on the top-side of the PCB.
