@@ -24,8 +24,55 @@ For this reason, low-friction bearings are to be used in the joint.
 
 \subsubsection{Encoder} % (fold)
 \label{ssub:encoder}
-A multitude of different encoder types exist on the market however one in particular was recommended to the authors.
-Namely the Rolin Rotary Magnetic Encoders.
+Each joint should implement an encoder to enable tracking the angular position of the joint.
+The resolution of each joint should be sufficient to allow for proper control.
+\thomas{Note on the required resolution}
+In addition to resolution, ease of manufacture and design is also an important aspect.
+Many encoders are developed for a specific mounting method or product, such as the HEDS-5540 used on the Maxon Motor.
+One encoder in particular was recommended to the authors; the Rolin Rotary Magnetic Encoders.
+This is a series of encoders which, as the name suggests, utilises magnetic fields in order to determine the angular position of the encoder.
+They consist of a magnetic ring with a number of poles and a PCB sensor.
+The magnetic ring is available in different sizes with different number of poles which, along with the type of PCB sensor decides the resolution of the encoder.
+The specific encoder configuration used in this project allows for 8000 CPR or one count per 0.045\degree.
+The encoder is incremental with an A, B and Z channel where A and B are 90\degree out of phase and Z is a unique reference mark.
+Using the reference mark it is possible to maintain absolute knowledge of the angular position of the joint after the initial encounter with the reference mark.
+This is only possible assuming that there is no drift or slippage in the system, a reasonable assumption considering the mechanical setup.
+Communication with the encoder is done using the RS422 standard.
+This standard describes a method of transmitting digital signals using differential signals and requires specialised hardware to translate between ordinary digital signals and RS422.
 
 % subsubsection encoder (end)
+\subsubsection{Electronics} % (fold)
+\label{ssub:electronics}
+As per the initial requirements listed in this section each joint should be able to track the position of the joint and communicate this information wirelessly to the main controller board.
+In order to accomplish this task some form of microcontroller is required along with the power delivery and the RS422 receiver mentioned previously.
+In addition to this the physical dimensions of all electronics should fit within the joint.
+\paragraph{Power Delivery} % (fold)
+\label{par:power_delivery}
+The required voltage rails on the joint board are dictated by the RF module and the encoder.
+The former requires 3.3V and the latter 5V.
+Since the joints are to be wireless it is necessary to power them from a battery.
+To avoid added complexity there will be no charging circuitry and charging the battery should be done externally to the joint.
+A joint should last for as long as is possible while still fitting within the enclosure.
+This requirement essentially narrows the battery choices to LiPo cells as these generally have the highest energy density of the commercially avaiable battery types.
+1S LiPo cells are rated at 3.7V and so DC/DC converters are required to reach both rails, a buck converter for the 3.3V rail and a boost converter for the 5V rail.
+In order to correctly dimension the converters it is necessary to determine the power draw from each rail:
+\begin{itemize}
+ 	\item \textbf{3.3V:} This rail powers the NRF24 module which has a maximum supply current of 12.3mA \cite{NFR24L01} as well as the ATTiny84 with a maximum power draw of 9mA \cite{attiny84}.
+ 	This yields a total of 21.3mA at 3.3V or 70.3mW.
+ 	Additional digital circuitry placed on this rail is considered negligible in the power budget.
+ 	\item \textbf{5V:} This rail powers the encoder with a maximum supply current of 20mA \cite{RLBD01} as well as the RS422 receiver which has a supply current of 52mA \cite{rs422rec}.
+ 	This yields a total of 72mA at 5V or 360mW.
+ 	Additional digital circuitry placed on this rail is considered negligible in the power budget.
+\end{itemize}
+For a battery to have sufficient capacity to power the joint for a full workday, estimated at 10 hours, it should have at least $\approx4300$mWh
+\thomas{What is the actual power draw from the rs422 receiver? 52mA seems excessive and results in approx 3 hours on-time for the joint.}
+% paragraph power_delivery (end)
+\paragraph{Microcontroller} % (fold)
+\label{par:microcontroller}
+The requirements for the microcontroller used are sparse as its main task is simply counting the current position and, occasionally, transmitting that position back to the controller board.
+It should include support for SPI as well as three I/O pins which support interrupts for the A, B and Z channel of the encoder.
+Since space is at a premium in the joint it should be compact in size and, finally, should be as low power as possible.
+The ATTiny84 \cite{attiny84}
+% paragraph microcontroller (end)
+% subsubsection electronics (end)
 % subsection analysis (end)
