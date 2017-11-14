@@ -1,0 +1,40 @@
+-Set power ON
+    -Switch Off
+        24V present
+    -Switch On
+        No Voltages present.
+            The INHIBIT pin of the PTN78020 is apparently not sufficiently floating. Applying a 3v signal to the pin brings the 12V rail up, followed by the 5 and 3.3V rails.
+            Voltages in data: voltage-rails
+            The PTN78020 has internal pullup to 1.5V while the PTH08080 has internal pullup to 3V on the inhibit pin. This resulted in a conflict since they were connected to the same net (DCDC_EN). Cutting the DCDC_EN track such that the two are effectively on seperate nets fixed the issue.
+            This results in not being able to disable the PTH08080 manually, however this will happen in an acceptable manner by simply turning off the PTN78020.
+    -Verify MicroZed Startup Sequence
+        Voltage rail startup data: voltage-rail-startup
+        MicroZed startup sequence. This is to be tested properly once the MicroZed can be mounted on the PCB since it supplies the VCCIO_EN signal.
+        Current data: microzed-startup
+-Safety Circuitry
+    -Simulate no emergency
+        -Q14 dead, EM_ENDx_OUT signals not tested, set high manually.
+        -Set EM_MCU low
+        -Set EM_BTN High
+            Above combination yields EM_DIS High. Changing state of either signal yields EM_DIS Low.
+            Test successful.
+-Relay Circuitry
+    -Inrush Relay
+        -Make EM_DIS High
+        -Set INRUSH Low
+            PWRIN is low, as expected.
+        -Set INRUSH High
+            Footprint of Main CAP (C16-C19) is inversed. Desoldering caps and resoldering one in the correct orientation yields the expected behaviour from inrush relay.
+            Charging curve data for one cap: inrush-relay-start
+        -Verify R46 thermal performance
+            Cool!
+    -Main Relay
+        -Make EM_DIS High
+        -Set M_RELAY High
+            24V rail present on Main Caps
+            Charging curve data for one cap: main-relay-start
+-Motor Driver
+    -Set DIS High
+    -Apply PWM to Buffer (U3)
+        3.3V at input is correctly converted to 5V at output. Toggling DIS enables/disables gate output of HIP4081. Proper MOSFET configuration is required to verify bootstrapping.
+    
