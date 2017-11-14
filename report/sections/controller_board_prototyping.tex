@@ -1,10 +1,10 @@
 %!TEX root = ../main.tex
 \subsection{Prototyping}
 \label{sub:controller_board_prototyping}
+Something clever about why we made prototypes.
 
 
-
-\subsection{Testing the Power Board}
+\subsubsection{Testing the Power Board}
 It was decided to test the power board before ordering it from a professional PCB manufacturer.
 In order to test it a home-made PCB was made at the University's PCB lab.
 
@@ -18,13 +18,13 @@ Three main functionalities should be verified on the board:
 
 The remaining functionalities has either been tested beforehand or deemed too simple to test. 
 
-\subsubsection{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}
+\par{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}
 The circuit can bee seen in.... \mikkel{Make a figure somewhere}.
 The Schmitt-triggers were tested by varying the input voltage and verifying the switching threshold along with the the hysteresis levels. 
 Testing the \texttt{AND} gate was done by applying different logic levels and verifying the results.
 The complete circuit was found to work as intended.
 
-\subsubsection{PWM Logic Level Shifting and Phase Shifting}
+\par{PWM Logic Level Shifting and Phase Shifting}
 The circuit can bee seen in.... \mikkel{Make a figure somewhere}.
 The functionality of the logic level shifter \texttt{74LVC2G17} was verified by measuring input and output on an oscilloscope. 
 The output of the \texttt{NOT} gate was not as expected as it was noise with a DC offset. 
@@ -32,7 +32,7 @@ The reason behind the problem was not found, but most probably it was a producti
 While investigating the schematic it was found that the gate is not needed as the high side signals to the motor driver can be replaced by \texttt{high} signals, because the driver has a shoot-through protection scheme.
 Therefore the \texttt{NOT} will be omitted in the next version of the board.
 
-\subsubsection{Motor Driver Circuit}
+\par{Motor Driver Circuit}
 The motor driver receives signals from the not functioning \texttt{NOT} gate and could therefore not easily be tested on the produces board.
 Therefore it was decided to develop a small test PCB with the only purpose of testing the motor driver circuit.
 The circuit can bee seen in.... \mikkel{Make a figure somewhere}.

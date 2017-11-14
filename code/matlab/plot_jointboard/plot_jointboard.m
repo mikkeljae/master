@@ -56,8 +56,10 @@ ylabel(fig2(1),'Output Voltage [V]') % left y-axis
 ylabel(fig2(2),'Current Draw [A]') % right y-axis
 
 
-set(fig2(1),'XLim',[-5*10^(-3) 13*10^(-3)])
-set(fig2(2),'XLim',[-5*10^(-3) 13*10^(-3)])
+%set(fig2(1),'XLim',[-5*10^(-3) 13*10^(-3)])
+%set(fig2(2),'XLim',[-5*10^(-3) 13*10^(-3)])
+set(fig2(1),'XLim',[-5*10^(-3) 25*10^(-3)])
+set(fig2(2),'XLim',[-5*10^(-3) 25*10^(-3)])
 set(fig2(1),'YLim',[-0.1 4])
 set(fig2(2),'YLim',[-0.025 1])
 set(fig2(1),'YTick',0:0.5:4)

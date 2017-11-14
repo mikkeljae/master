@@ -1,0 +1,184 @@
+%!TEX root = ../main.tex
+\subsection{Implementation and Verification} % (fold)
+\label{sub:controller_implementation_and_verification}
+
+
+\subsubsection{Verification Methodology} % (fold)
+Something here....
+
+
+\subsubsection{Verification Procedure} % (fold)
+\label{ssub:verification_procedure}
+
+\paragraph{Verify Voltage Rails} % (fold)
+ \label{par:verify_voltage_rails}
+ \mikkel{Remember to tell that this procedure is not 100\% identical to the one in the appendix. Some extra things are tested here and graphs are shown.}
+
+ \begin{itemize}
+ 	\item Apply 24V to \texttt{24V}.
+ 	\item Toggle power button to ON.
+ 	\begin{itemize}
+ 		\item[\cmark] Verify that current draw is within reasonable limits ($<$150 mA).
+ 			\begin{itemize}
+ 				\item[-] The current draw was measured to be less than 100mA on average. 
+ 			\end{itemize}
+ 		\item[\xmark] Verify 12V, 5V, 3.3V and 2.5V voltage rails.
+ 			\begin{itemize}
+ 				\item[-] None of the voltage rails were present, when measuring.
+ 				This lead to an investigation of \texttt{PTN78020}, which should produce the 12V rail. 
+ 				It turned out that the \texttt{PTN78020}s \texttt{inhibit} pin is sufficiently floating.
+ 				It has an internal pull-up resistor which should bring the pin voltage up to 1.5V when the signal is left floating externally, but the pin voltage was approximately 0V.
+ 				Applying a 3V signal to the pin brings the 12V rail up, followed by the 5V and 3.3V rails.
+ 				The issue was found to be that the inhibit pins of \texttt{PTN78020} and \texttt{PTH08080} are connected to the same net, \texttt{DCDC\_EN}.
+ 				It seems that the \texttt{PTN78020} is not able to correctly raise the voltage on its inhibit pin, because of \texttt{PTH08080}. 
+ 				Cutting the DCDC\_EN track such that the two are effectively on separate nets fixed the issue.
+            	This results in not being able to disable the \texttt{PTH08080} manually, however this will happen in an acceptable manner by simply turning off the \texttt{PTN78020}.
+ 			\end{itemize}
+ 	\end{itemize}
+ \end{itemize}
+\paragraph{Verify MicroZed Startup/Shutdown Sequence} % (fold)
+\label{par:verify_microzed_startup_shutdown_sequence}
+\begin{itemize}
+	\item Toggle power button OFF.
+	\item Insert MicroZed into controller board.
+	\item Toggle power button ON.
+	\begin{itemize}
+		\item[\cmark] Verify that the 3.3V rail is not high before \texttt{VCCIO\_EN} during startup. See figure \ref{fig:controllerboardv2_startup} for example of succesful startup sequencing.
+		\begin{itemize}
+			\item[-]
+			All important signals during startup where measured and is plotted in figure \ref{fig:controllerboardv2_startup}.
+			It should be noted that the \texttt{VCCIO\_EN} signal is controlled by the Microzed and not the developed controllerboard. 
+			It can be verified that the voltage on the 3.3V rail does not rise when the voltage of \texttt{VCCIO\_EN} is lower than 1.3V.
+			This level is the high threshold of the comparator that enables the DCDC converter that generates the 3.3V rail.
+			Furthermore, using the work done in \cite{isaswarm}, it can be verified that the measured signals correspond to the ones produced when powering ON the Microzed using Avnets own Microzed carrier card.
+
+ 			\begin{figure}[h]
+				\centering
+			    \input{graphics/controllerboardv2_startup.tex}
+				\caption{Important signals measured doing startup of controllerboard with the Microzed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
+				\label{fig:controllerboardv2_startup}
+			\end{figure}
+
+		\end{itemize}
+	\end{itemize}
+	\item Toggle power button OFF
+	\begin{itemize}
+		\item[\cmark] Verify that signals \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order during shutdown. 
+		\begin{itemize}
+			\item[-] The important signals when shutting down the controllerboard and the Microzed are measured and plotted in figure \ref{fig:controllerboardv2_startup}
+			It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in the correct order. 
+			\begin{figure}[h]
+				\centering
+			    \input{graphics/controllerboardv2_shutdown.tex}
+				\caption{Important signals measured doing shutdown of controllerboard with the Microzed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
+				\label{fig:controllerboardv2_shutdown}
+			\end{figure}
+
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+% paragraph verify_microzed_startup_shutdown_sequence (end)
+\paragraph{Simulate No Emergency} % (fold)
+\label{par:simulate_no_emergency}
+\begin{itemize}
+	\item Apply 5V to \texttt{EM\_END1} and \texttt{EM\_END2}.
+	\begin{itemize}
+		\item[\cmark] Verify that 0V is present on \texttt{EM\_END1\_OUT} and \texttt{EM\_END2\_OUT}.
+	\end{itemize}
+	\item Apply 0V to \texttt{EM\_END1} and \texttt{EM\_END2}.
+	\begin{itemize}
+		\item[\cmark] Verify that 5V is present on \texttt{EM\_END1\_OUT} and \texttt{EM\_END2\_OUT}.
+	\end{itemize}
+	\item Set signals \texttt{EM\_END1}, \texttt{EM\_END2} and \texttt{EM\_MCU} to 0V.
+	\item Ensure \texttt{EM\_BTN} is set to 5V.
+	\begin{itemize}
+		\item[\cmark] Verify that 5V is present on \texttt{EM\_DIS}
+	\end{itemize}
+\end{itemize}
+% paragraph simulate_no_emergency (end)
+\paragraph{Simulate Emergency} % (fold)
+\label{par:simulate_no_emergency}
+\begin{itemize}
+	\item Set signals \texttt{EM\_END1}, \texttt{EM\_END2} and \texttt{EM\_MCU} to 0V.
+	\item Ensure \texttt{EM\_BTN} is set to 5V.
+	\item For each signal, toggle to either 5V or 0V.
+	\begin{itemize}
+		\item[\cmark] Upon toggling one signal, verify that 0V is present on \texttt{EM\_DIS}.
+	\end{itemize}
+\end{itemize}
+% paragraph simulate_no_emergency (end)
+\paragraph{Verify Relay Circuitry Functionality} % (fold)
+\label{par:verify_relay_circuitry}
+\begin{itemize}
+	\item Following the previous step, make \texttt{EM\_DIS} high.
+	\item Apply 0V to \texttt{INRUSH}.
+	\begin{itemize}
+		\item[\cmark] Verify that 0V is present on the output of U5.
+	\end{itemize}
+	\item Apply 5V to \texttt{INRUSH}.
+	\begin{itemize}
+		\item[\cmark] Verify that 5V is present on the output of U5.
+		\item[\xmark] Verify that 24V is present on \texttt{POWER\_IN}
+		\begin{itemize}
+			\item[-]  Measuring the voltage on \texttt{POWER\_IN} did to show the intended 24V, but approximately 6V. 
+			Investigation showed that the footprint of the four $330 \mu F$ electrolytic capacitors is inversed. 
+			Desoldering the capacitors and soldering in the correct orientation yields the expected behaviour and the 24V can be measured at \texttt{POWER\_IN}.
+			The charging curve of the capacitors through the inrush current is shown in figure 
+			\ref{fig:controllerboardv2_inrushcurrent_charge} and it can be seen that the initial charge of the capacitors takes approximately 1s. 
+
+			\begin{figure}[h]
+				\centering
+			    \input{graphics/controllerboardv2_inrushcurrent.tex}
+				\caption{Voltage measured on \texttt{POWER\_IN}, when the inrush relay is conducting. It can be seen that charging the capacitors takes approximately 1s. }
+				\label{fig:controllerboardv2_inrushcurrent_charge}
+			\end{figure}
+ 
+		\end{itemize}
+	\end{itemize}
+	\item Apply 0V to \texttt{M\_RELAY}.
+	\begin{itemize}
+		\item Verify that 0V is present on the output of U6.
+	\end{itemize}
+	\item Apply 5V to \texttt{M\_RELAY}.
+	\begin{itemize}
+		\item Verify that 5V is present on the output of U6.
+	\end{itemize}
+	\item Apply 0V to \texttt{INRUSH}.
+	\begin{itemize}
+		\item Ensure that 24V is still present on \texttt{POWER\_IN}.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_relay_circuitry (end)
+\paragraph{Verify Motor Driver Functionality} % (fold)
+\label{par:verify_motor_driver_functionality}
+\begin{itemize}
+	\item Apply 5V to \texttt{DIS}.
+	\item Apply 3.3V PWM to signals \texttt{PWMA} and \texttt{PWMB}.
+	\begin{itemize}
+		\item Verify corresponding 5V PWM on signals \texttt{PWM\_AL} and \texttt{PWM\_BL}.
+		\item Verify that 0V is present on signals \texttt{MGATE\_BH}, \texttt{MGATE\_BL}, \texttt{MGATE\_AH} and \texttt{MGATE\_AL}
+	\end{itemize}
+	\item Apply 0V to \texttt{DIS}.
+	\item Ensure that 24V is still present on \texttt{POWER\_IN}.
+	\begin{itemize}
+		\item Verify that 12V PWM is present on signals \texttt{MGATE\_AL} and \texttt{MGATE\_BL}.
+		\item Verify that 35V PWM is present on signals \texttt{MGATE\_AH} and \texttt{MGATE\_BH}.
+		\item Verify that deadtime exists between the two channels.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_motor_driver_functionality (end)
+\paragraph{Verify NRF24L01 Module functionality} % (fold)
+\label{par:verify_nrf24l01_module_functionality}
+\begin{itemize}
+	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE}.
+	\begin{itemize}
+		\item Verify that 3.3V is present on the corresponding signals on the NRF24L01 module (component U1).
+	\end{itemize}
+\end{itemize}
+% paragraph verify_nrf24l01_module_functionality (end)
+
+\paragraph{Verify Shunt Amplifier Functionality} % (fold)
+\label{par:verify_shunt_amplifier_functionality}
+
+% paragraph verify_shunt_amplifier_functionality (end)
+% section controller_board_verification_procedure (end)
