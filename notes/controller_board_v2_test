@@ -1,0 +1,56 @@
+-Set power on
+	-Verify Microzed startup sequence
+		Startup sequence correct. 
+		Data: controller_board2-startup
+		Data: controller-board2-microzed-startup
+	-verify Microzed
+-Safety Circuitry
+    -Simulate no emergency
+        -Set EM_ENDx high and low, verify output
+        	Both channels function as expected.
+        -Repeat test with infrared transceiver
+        	Both channels function as expected.
+-Relay Circuitry
+	-Inrush relay
+		Functions as expected. Data for charging curve in file: controller-board2-inrush-charge
+	-Main relay
+
+-Motor Driver
+	MGATE_BL works as intended.
+	MGATE_AL correct pattern, low signal around 4.8V highsignal around 7V
+	MGATE_BH works as intended. No bootstrap without 24V across H-bridge
+	MGATE_AH same pattern as MGATE_AL
+		A short circuit exists between AH and AL, fixing resulted in expected behaviour across all channels.
+		Bootstrapping of channel A: controller-board2-gate-a-no-load
+		Bootstrapping of channel B: controller-board2-gate-b-no-load
+		Bootstrapping of channel A: controller-board2-gate-a-load
+		Bootstrapping of channel B: controller-board2-gate-b-load
+	Adding the motor as load works as intended
+		Current ripple through motor (22kHz 0%/50%): controller-board2-powerrail-gate-22k-50d0d
+			C1 data: voltage across motor.
+		Current ripple through motor (22kHz 0%/50%): controller-board2-motorcurrent-gate-22k-50d0d
+		Current ripple through motor (22kHz 50%/50%): controller-board2-motorcurrent-gate-22k-50d50d
+		Current ripple through motor (22kHz 60%/40%): controller-board2-motorcurrent-gate-22k-60d40d
+
+	Supply current is (mostly) DC
+		Current ripple through motor (22kHz 0%/50%): controller-board2-supplycurrent-gate-22k-50d0d
+		Supply current (22kHz 50%/50%): controller-board2-supplycurrent-gate-22k-50d50d
+		Supply current (22kHz 60%/40%): controller-board2-supplycurrent-gate-22k-60d40d02
+		
+
+	Observations:
+		Setting PWM input on channel A low and controlling the duty cycle on B results in expected behaviour.
+		Controlling Duty cycle on both channels results in high current draw (2A at 40%/60%), leading to speculations on short circuits due to lack of deadtime. Running the system without the motor rebuked this theory as minimal current was drawn as a results.  
+	Maximum Duty cycle:
+		Duty cycle can be pushed to (at least) 99.9% due to internal charge pump of the hip4081.
+-Shunt resistor amplifier circuitry
+	-Synthetic tests:
+		These tests are not possible to do in an acceptable fashion because the signals that can be imposed on the INA286 are done so through debug headers and long wires, corrupting the signals to such an extent that proper measurements are not possible.
+	-Real test:
+		-Apply PWM to one channel
+		-Measure current through motor using current probe (CP150)
+		-Measure resulting signal from INA286
+			data: controller-board2-ina286-gate-22k-50d
+			The data does not seem to represent the current in any way and does not contain the current signal. A pristine analog ground is likely necessary to maintain signal integrity.
+			By setting PWMA to LOW and PWMB to HIGH it is possible to create a direct current path through the H-bridge. A constant load of 3 Ohm is set in place of the motor and a DC current can be measured in place of the intended signal.
+			data: controller-board2-resistordc-current-ina286-gate

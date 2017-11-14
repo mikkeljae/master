@@ -1,0 +1,16 @@
+-Set 3.7V on VBATT
+	3.3V rail functioning.
+	Diode layout inversed, flipping diode and lifting centre legs works around the issue.
+	Lifting VCC of U7 yields functioning 5V rail.
+	During testing the lab supply was current limited to approximately 250mA. This turned out to not be sufficient for U7 to properly boot, yielding what looked like a short circuit in the PCB. 
+	After several hours of debugging, fixing a few production errors and resoldering half a board, the current limit was raised and both voltage rails appeared as expected.
+	Datasets: joint-board-startup-limit/no-limit, shows current spike necessary.
+-Verify voltage stepper functionality
+	Test successful
+-Verify RS422 Circuit
+	Test successful. If P is greater than N, O is high.
+-Verify functionality of ATTiny84
+	Programming is possible. Intermittent issue during running of the program, this is due to the RESET pin being floating. In order to fix this issue a pull-up resistor should be placed between the 3.3V rail and the RESET pin.
+-Current draw
+-Minimum operating voltage 
+-Discharge curve

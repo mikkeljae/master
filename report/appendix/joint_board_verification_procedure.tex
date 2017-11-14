@@ -1,0 +1,62 @@
+%!TEX root = ../main.tex
+\section{Joint Board Verification Procedure} % (fold)
+\label{sec:joint_board_verification_procedure}
+This document holds the verification procedure which, when applied succesfully, ensures the correct functionality of the joint board.
+Each step is to be followed in the order they are shown to avoid previous faults to propegate throughout the process.
+A step consists of an action and the expected outcome of that action.
+Any text written with the \texttt{teletype font} refers to signals and pins on the PCB and can be seen on the schematic.
+The most recent schematic can be seen on (a place).
+\thomas{We need to put schematics and such in a place accesible by everyone}
+\paragraph{Verify Voltage Rails:} % (fold)
+ \label{par:verify_voltage_rails}
+ \begin{itemize}
+ 	\item Apply 3.7V to \texttt{VBATT}.
+ 	\begin{itemize}
+ 		\item[-] Verify that current draw is within reasonable limits ($<$75 mA). Note that the PCB requires a short pulse of approximately 0.89A while booting.
+ 		\item[-] Verify 5V and 3.3V voltage rails.
+ 	\end{itemize}
+ \end{itemize}
+% paragraph verify_voltage_rails_ (end) 
+
+\paragraph{Verify Voltage Level Shifter Functionality} % (fold)
+\label{par:verify_voltage_level_shifter_functionality}
+\begin{itemize}
+	\item Apply 5V to \texttt{SCLK\_H}.
+	\begin{itemize}
+		\item [-] Verify that 3.3V is present on \texttt{SCLK}.
+	\end{itemize}
+	\item Repeat for signals \texttt{MOSI\_H} and \texttt{RESET\_H}.
+	\item Apply 3.3V to \texttt{MISO}.
+	\begin{itemize}
+		\item [-] Verify that 5V is present on \texttt{MISO\_H}.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_voltage_level_shifter_functionality (end)
+
+\paragraph{Verify RS-422 Circuitry Functionality} % (fold)
+\label{par:verify_rs_422_circuitry_functionality}
+\begin{itemize}
+	\item Apply 5V to \texttt{A\_N}, 0V to \texttt{A\_P}.
+	\begin{itemize}
+		\item [-] Verify that 0V is present on \texttt{A\_H}.
+		\item [-] Verify that 0V is present on \texttt{A}.
+	\end{itemize}
+	\item Repeat for signal pairs \texttt{B\_N}, \texttt{B\_P} and \texttt{Z\_N}, \texttt{Z\_P}.
+	\item Apply 0V to \texttt{A\_N}, 5V to \texttt{A\_P}.
+	\begin{itemize}
+		\item [-] Verify that 5V is present on \texttt{A\_H}.
+		\item [-] Verify that 3.3V is present on \texttt{A}.
+	\end{itemize}
+	\item Repeat for signal pairs \texttt{B\_N}, \texttt{B\_P} and \texttt{Z\_N}, \texttt{Z\_P}.
+\end{itemize}
+% paragraph verify_rs_422_circuitry_functionality (end)
+\paragraph{Verify ATTiny84 Functionality} % (fold)
+\label{par:verify_attiny84_functionality}
+\begin{itemize}
+	\item Load the ATTiny84 with the blink software.
+	\begin{itemize}
+		\item [-] Verify that the on-board LED is blinking
+	\end{itemize}
+\end{itemize}
+% paragraph verify_attiny84_functionality (end)
+% section joint_board_verification_procedure (end)
