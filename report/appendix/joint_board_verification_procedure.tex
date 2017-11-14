@@ -12,8 +12,8 @@ The most recent schematic can be seen on (a place).
  \begin{itemize}
  	\item Apply 3.7V to \texttt{VBATT}.
  	\begin{itemize}
- 		\item[-] Verify that current draw is within reasonable limits ($<$75 mA). Note that the PCB requires a short pulse of approximately 0.89A while booting.
- 		\item[-] Verify 5V and 3.3V voltage rails.
+ 		\item Verify that current draw is within reasonable limits ($<$75 mA). Note that the PCB requires a short pulse of approximately 0.89A while booting.
+ 		\item Verify 5V and 3.3V voltage rails.
  	\end{itemize}
  \end{itemize}
 % paragraph verify_voltage_rails_ (end) 
@@ -23,12 +23,12 @@ The most recent schematic can be seen on (a place).
 \begin{itemize}
 	\item Apply 5V to \texttt{SCLK\_H}.
 	\begin{itemize}
-		\item [-] Verify that 3.3V is present on \texttt{SCLK}.
+		\item  Verify that 3.3V is present on \texttt{SCLK}.
 	\end{itemize}
 	\item Repeat for signals \texttt{MOSI\_H} and \texttt{RESET\_H}.
 	\item Apply 3.3V to \texttt{MISO}.
 	\begin{itemize}
-		\item [-] Verify that 5V is present on \texttt{MISO\_H}.
+		\item  Verify that 5V is present on \texttt{MISO\_H}.
 	\end{itemize}
 \end{itemize}
 % paragraph verify_voltage_level_shifter_functionality (end)
@@ -38,14 +38,14 @@ The most recent schematic can be seen on (a place).
 \begin{itemize}
 	\item Apply 5V to \texttt{A\_N}, 0V to \texttt{A\_P}.
 	\begin{itemize}
-		\item [-] Verify that 0V is present on \texttt{A\_H}.
-		\item [-] Verify that 0V is present on \texttt{A}.
+		\item  Verify that 0V is present on \texttt{A\_H}.
+		\item  Verify that 0V is present on \texttt{A}.
 	\end{itemize}
 	\item Repeat for signal pairs \texttt{B\_N}, \texttt{B\_P} and \texttt{Z\_N}, \texttt{Z\_P}.
 	\item Apply 0V to \texttt{A\_N}, 5V to \texttt{A\_P}.
 	\begin{itemize}
-		\item [-] Verify that 5V is present on \texttt{A\_H}.
-		\item [-] Verify that 3.3V is present on \texttt{A}.
+		\item  Verify that 5V is present on \texttt{A\_H}.
+		\item  Verify that 3.3V is present on \texttt{A}.
 	\end{itemize}
 	\item Repeat for signal pairs \texttt{B\_N}, \texttt{B\_P} and \texttt{Z\_N}, \texttt{Z\_P}.
 \end{itemize}
@@ -55,7 +55,7 @@ The most recent schematic can be seen on (a place).
 \begin{itemize}
 	\item Load the ATTiny84 with the blink software.
 	\begin{itemize}
-		\item [-] Verify that the on-board LED is blinking
+		\item  Verify that the on-board LED is blinking
 	\end{itemize}
 \end{itemize}
 % paragraph verify_attiny84_functionality (end)

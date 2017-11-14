@@ -1,0 +1,122 @@
+%!TEX root = ../main.tex
+\section{Controller Board Verification Procedure} % (fold)
+\label{sec:controller_board_verification_procedure}
+This document holds the verification procedure which, when applied succesfully, ensures the correct functionality of the controller board.
+Each step is to be followed in the order they are shown to avoid previous faults to propegate throughout the process.
+A step consists of an action and the expected outcome of that action.
+Any text written with the \texttt{teletype font} refers to signals and pins on the PCB and can be seen on the schematic.
+The most recent schematic can be seen on (a place).
+\paragraph{Verify Voltage Rails:} % (fold)
+ \label{par:verify_voltage_rails}
+ \begin{itemize}
+ 	\item Apply 24V to \texttt{24V}.
+ 	\item Toggle power button to ON.
+ 	\begin{itemize}
+ 		\item[-] Verify that current draw is within reasonable limits ($<$150 mA).
+ 		\item[-] Verify 12V, 5V, 3.3V and 2.5V voltage rails.
+ 	\end{itemize}
+ \end{itemize}
+\paragraph{Verify MicroZed Startup/Shutdown Sequence} % (fold)
+\label{par:verify_microzed_startup_shutdown_sequence}
+\begin{itemize}
+	\item Toggle power button OFF.
+	\item Insert MicroZed into controller board.
+	\item Toggle power button ON.
+	\begin{itemize}
+		\item Verify that the 3.3V rail is not high before \texttt{VCCIO\_EN} during startup. See figure \ref{fig:controllerboardv2_startup} for example of succesful startup sequencing.
+	\end{itemize}
+	\item Toggle power button OFF
+	\begin{itemize}
+		\item Verify that signals \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order during shutdown. See figure \ref{fig:controllerboardv2_startup} for example of succesful startup sequencing.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_microzed_startup_shutdown_sequence (end)
+\paragraph{Simulate No Emergency} % (fold)
+\label{par:simulate_no_emergency}
+\begin{itemize}
+	\item Apply 5V to \texttt{EM\_END1} and \texttt{EM\_END2}.
+	\begin{itemize}
+		\item Verify that 0V is present on \texttt{EM\_END1\_OUT} and \texttt{EM\_END2\_OUT}.
+	\end{itemize}
+	\item Apply 0V to \texttt{EM\_END1} and \texttt{EM\_END2}.
+	\begin{itemize}
+		\item Verify that 5V is present on \texttt{EM\_END1\_OUT} and \texttt{EM\_END2\_OUT}.
+	\end{itemize}
+	\item Set signals \texttt{EM\_END1}, \texttt{EM\_END2} and \texttt{EM\_MCU} to 0V.
+	\item Ensure \texttt{EM\_BTN} is set to 5V.
+	\begin{itemize}
+		\item Verify that 5V is present on \texttt{EM\_DIS}
+	\end{itemize}
+\end{itemize}
+% paragraph simulate_no_emergency (end)
+\paragraph{Simulate Emergency} % (fold)
+\label{par:simulate_no_emergency}
+\begin{itemize}
+	\item Set signals \texttt{EM\_END1}, \texttt{EM\_END2} and \texttt{EM\_MCU} to 0V.
+	\item Ensure \texttt{EM\_BTN} is set to 5V.
+	\item For each signal, toggle to either 5V or 0V.
+	\begin{itemize}
+		\item Upon toggling one signal, verify that 0V is present on \texttt{EM\_DIS}.
+	\end{itemize}
+\end{itemize}
+% paragraph simulate_no_emergency (end)
+\paragraph{Verify Relay Circuitry Functionality} % (fold)
+\label{par:verify_relay_circuitry}
+\begin{itemize}
+	\item Following the previous step, make \texttt{EM\_DIS} high.
+	\item Apply 0V to \texttt{INRUSH}.
+	\begin{itemize}
+		\item Verify that 0V is present on the output of U5.
+	\end{itemize}
+	\item Apply 5V to \texttt{INRUSH}.
+	\begin{itemize}
+		\item Verify that 5V is present on the output of U5.
+		\item Verify that 24V is present on \texttt{POWER\_IN}
+	\end{itemize}
+	\item Apply 0V to \texttt{M\_RELAY}.
+	\begin{itemize}
+		\item Verify that 0V is present on the output of U6.
+	\end{itemize}
+	\item Apply 5V to \texttt{M\_RELAY}.
+	\begin{itemize}
+		\item Verify that 5V is present on the output of U6.
+	\end{itemize}
+	\item Apply 0V to \texttt{INRUSH}.
+	\begin{itemize}
+		\item Ensure that 24V is still present on \texttt{POWER\_IN}.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_relay_circuitry (end)
+\paragraph{Verify Motor Driver Functionality} % (fold)
+\label{par:verify_motor_driver_functionality}
+\begin{itemize}
+	\item Apply 5V to \texttt{DIS}.
+	\item Apply 3.3V PWM to signals \texttt{PWMA} and \texttt{PWMB}.
+	\begin{itemize}
+		\item Verify corresponding 5V PWM on signals \texttt{PWM\_AL} and \texttt{PWM\_BL}.
+		\item Verify that 0V is present on signals \texttt{MGATE\_BH}, \texttt{MGATE\_BL}, \texttt{MGATE\_AH} and \texttt{MGATE\_AL}
+	\end{itemize}
+	\item Apply 0V to \texttt{DIS}.
+	\item Ensure that 24V is still present on \texttt{POWER\_IN}.
+	\begin{itemize}
+		\item Verify that 12V PWM is present on signals \texttt{MGATE\_AL} and \texttt{MGATE\_BL}.
+		\item Verify that 35V PWM is present on signals \texttt{MGATE\_AH} and \texttt{MGATE\_BH}.
+		\item Verify that deadtime exists between the two channels.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_motor_driver_functionality (end)
+\paragraph{Verify NRF24L01 Module functionality} % (fold)
+\label{par:verify_nrf24l01_module_functionality}
+\begin{itemize}
+	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE}.
+	\begin{itemize}
+		\item Verify that 3.3V is present on the corresponding signals on the NRF24L01 module (component U1).
+	\end{itemize}
+\end{itemize}
+% paragraph verify_nrf24l01_module_functionality (end)
+
+\paragraph{Verify Shunt Amplifier Functionality} % (fold)
+\label{par:verify_shunt_amplifier_functionality}
+
+% paragraph verify_shunt_amplifier_functionality (end)
+% section controller_board_verification_procedure (end)
