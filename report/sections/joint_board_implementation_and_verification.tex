@@ -17,11 +17,100 @@ This approach holds a few different benefits.
 Firstly, the technician doing the verification is doing less thinking while verifying, this is likely to decrease the number of mistakes.
 Secondly, a thorough verification procedure will enable students to more easily reproduce the PCB's if necessary.\\~\\
 Each procedure is presented in the report with the results as gathered by the authors.
-A version suitable for future use can be found in appendixes 
+A version suitable for future use can be found in appendixes \ref{sec:controller_board_verification_procedure} and \ref{sec:joint_board_verification_procedure}.
 % subsubsection testing_methodology (end)
 
 \subsubsection{Joint Board Verification Procedure} % (fold)
 \label{ssub:joint_board_verification_methodology}
-The verification procedure can be 
+This is the verification procedure as done by the authors.
+A step is given a checkmark to indicate a succesful test.
+A step is given an x to indicate a test with issues.
+A comment is given to explain the issue as well as the solution to the issue.
+\paragraph{Verify Voltage Rails:} % (fold)
+ \label{par:verify_voltage_rails}
+ \begin{itemize}
+ 	\item Apply 3.7V to \texttt{VBATT}.
+ 	\begin{itemize}
+ 		\item[\xmark] Verify that current draw is within reasonable limits ($<$75 mA). Note that the PCB requires a short pulse of approximately 0.89A while booting.
+ 		\begin{itemize}
+ 			\item[-] A short circuit seemed to exist on the 5V rail.
+ 			See next paragraph.
+ 		\end{itemize}
+ 		\item[\xmark] Verify 5V and 3.3V voltage rails.
+ 		\begin{itemize}
+ 			\item[-] The 3.3V rail functions as intended but the 5V rail is missing.
+ 			From inspection of the circuit it was discovered that the diode D1 has a fault in the footprint.
+ 			The six-pin package can be flipped and the centre legs lifted to resolve the issue.
+ 			During testing the lab supply used to power the board was limited to $\approx$250mA which, due to the required startup current, yielded what looked like a short circuit.
+ 			Figure \ref{fig:joint_curr_limit} shows thecurrent spike and the resulting failure of the 5V rail to rise.
+ 			In an attempt to find the offending component the current limit was raised to $\approx$1A.
+ 			This allowed the 5V rail to properly boot, leading to the discovery of the required startup current.
+ 			The resulting current draw and voltage can be seen in figure \ref{fig:joint_no_curr_limit}.
+ 			\thomas{Why is the 5V rail supposedly only going to 3.6V in figure \ref{fig:joint_no_curr_limit}?}
+ 		\end{itemize}
+ 	\end{itemize}
+ \end{itemize}
+% paragraph verify_voltage_rails_ (end) 
+
+\begin{figure}[h]
+	\centering
+	\input{graphics/joint_board_test_fig1.tex}
+	\caption{Voltage of the 5V rail and current draw of the joint board during startup with current limit of $\approx$ 250mA.}
+	\label{fig:joint_curr_limit}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\input{graphics/joint_board_test_fig2.tex}
+	\caption{Voltage of the 5V rail and current draw of the joint board during startup with current limit of $\approx$ 1A}
+	\label{fig:joint_no_curr_limit}
+\end{figure}
+
+\paragraph{Verify Voltage Level Shifter Functionality} % (fold)
+\label{par:verify_voltage_level_shifter_functionality}
+\begin{itemize}
+	\item Apply 5V to \texttt{SCLK\_H}.
+	\begin{itemize}
+		\item[\cmark]  Verify that 3.3V is present on \texttt{SCLK}.
+	\end{itemize}
+	\item Repeat for signals \texttt{MOSI\_H} and \texttt{RESET\_H}.
+	\item Apply 3.3V to \texttt{MISO}.
+	\begin{itemize}
+		\item[\cmark]  Verify that 5V is present on \texttt{MISO\_H}.
+	\end{itemize}
+\end{itemize}
+% paragraph verify_voltage_level_shifter_functionality (end)
+
+\paragraph{Verify RS-422 Circuitry Functionality} % (fold)
+\label{par:verify_rs_422_circuitry_functionality}
+\begin{itemize}
+	\item Apply 5V to \texttt{A\_N}, 0V to \texttt{A\_P}.
+	\begin{itemize}
+		\item[\cmark] Verify that 0V is present on \texttt{A\_H}.
+		\item[\cmark] Verify that 0V is present on \texttt{A}.
+	\end{itemize}
+	\item Repeat for signal pairs \texttt{B\_N}, \texttt{B\_P} and \texttt{Z\_N}, \texttt{Z\_P}.
+	\item Apply 0V to \texttt{A\_N}, 5V to \texttt{A\_P}.
+	\begin{itemize}
+		\item[\cmark] Verify that 5V is present on \texttt{A\_H}.
+		\item[\cmark] Verify that 3.3V is present on \texttt{A}.
+	\end{itemize}
+	\item Repeat for signal pairs \texttt{B\_N}, \texttt{B\_P} and \texttt{Z\_N}, \texttt{Z\_P}.
+\end{itemize}
+% paragraph verify_rs_422_circuitry_functionality (end)
+\paragraph{Verify ATTiny84 Functionality} % (fold)
+\label{par:verify_attiny84_functionality}
+\begin{itemize}
+	\item Load the ATTiny84 with the blink software.
+	\begin{itemize}
+		\item[\xmark] Verify that the on-board LED is blinking
+		\begin{itemize}
+			\item[-] The software was loaded successfully occasionally but would often fail.
+			This was found to be due to missing pull-up on the \texttt{RESET} pin. 
+			A pull-up resistor of 3.92k$\Omega$ can be placed on signals \texttt{RESET} and \texttt{3.3V} on two vias on the underside of the board directly under the ATTiny84.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+% paragraph verify_attiny84_functionality (end)
 % subsubsection joint_board_verification_methodology (end)
 % subsection implementation_and_verification (end)
