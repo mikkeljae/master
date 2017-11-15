@@ -10,5 +10,5 @@ Vmax = G * I_stall * R
 
 I_max_meas = V_max_meas/(R*G)
  
-Ii = 15;
+Ii = 8;
 Vi = G *Ii * R
