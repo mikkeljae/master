@@ -155,18 +155,36 @@ Something here....
 	\item Apply 5V to \texttt{DIS}.
 	\item Apply 3.3V PWM to signals \texttt{PWMA} and \texttt{PWMB}.
 	\begin{itemize}
-		\item Verify corresponding 5V PWM on signals \texttt{PWM\_AL} and \texttt{PWM\_BL}.
-		\item Verify that 0V is present on signals \texttt{MGATE\_BH}, \texttt{MGATE\_BL}, \texttt{MGATE\_AH} and \texttt{MGATE\_AL}
+		\item[\cmark] Verify corresponding 5V PWM on signals \texttt{PWM\_AL} and \texttt{PWM\_BL}.
+		\item[\cmark] Verify that 0V is present on signals \texttt{MGATE\_BH}, \texttt{MGATE\_BL}, \texttt{MGATE\_AH} and \texttt{MGATE\_AL}
 	\end{itemize}
 	\item Apply 0V to \texttt{DIS}.
 	\item Ensure that 24V is still present on \texttt{POWER\_IN}.
 	\begin{itemize}
-		\item Verify that 12V PWM is present on signals \texttt{MGATE\_AL} and \texttt{MGATE\_BL}.
+		\item[\xmark] Verify that 12V PWM is present on signals \texttt{MGATE\_AL} and \texttt{MGATE\_BL}.
+		\begin{itemize}
+			\item[-] \texttt{MGATE\_BL} works as intended.
+			\texttt{MGATE\_AL} follows the correct switching pattern but is at 4.8V low and 7V high.  
+		\end{itemize}
 		\item Verify that 35V PWM is present on signals \texttt{MGATE\_AH} and \texttt{MGATE\_BH}.
-		\item Verify that deadtime exists between the two channels.
+		\begin{itemize}
+			\item [-] \texttt{MGATE\_BH} works as intended.
+			\texttt{MGATE\_AH} behaves similarly to \texttt{MGATE\_AL}, indicating a short circuit between the two signals.
+			Tracking down and removing the short circuit resulted in the expected behaviour on both channels.
+			See figure \ref{fig:controllerboardv2_gate_b} for a view of the signals on channel B.
+		\end{itemize}
+		\item[\cmark] Verify that deadtime exists between the two channels.
 	\end{itemize}
 \end{itemize}
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/controllerboardv2_gate_b.tex}
+	\caption{Gate signals as produced by the motor driver.}
+	\label{fig:controllerboardv2_gate_b}
+\end{figure}
 % paragraph verify_motor_driver_functionality (end)
+
 \paragraph{Verify NRF24L01 Module functionality} % (fold)
 \label{par:verify_nrf24l01_module_functionality}
 \begin{itemize}
