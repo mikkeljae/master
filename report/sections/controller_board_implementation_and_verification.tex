@@ -137,15 +137,15 @@ Something here....
 	\end{itemize}
 	\item Apply 0V to \texttt{M\_RELAY}.
 	\begin{itemize}
-		\item Verify that 0V is present on the output of U6.
+		\item[\cmark] Verify that 0V is present on the output of U6.
 	\end{itemize}
 	\item Apply 5V to \texttt{M\_RELAY}.
 	\begin{itemize}
-		\item Verify that 5V is present on the output of U6.
+		\item[\cmark] Verify that 5V is present on the output of U6.
 	\end{itemize}
 	\item Apply 0V to \texttt{INRUSH}.
 	\begin{itemize}
-		\item Ensure that 24V is still present on \texttt{POWER\_IN}.
+		\item[\cmark] Ensure that 24V is still present on \texttt{POWER\_IN}.
 	\end{itemize}
 \end{itemize}
 % paragraph verify_relay_circuitry (end)
@@ -190,13 +190,41 @@ Something here....
 \begin{itemize}
 	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE}.
 	\begin{itemize}
-		\item Verify that 3.3V is present on the corresponding signals on the NRF24L01 module (component U1).
+		\item[\cmark] Verify that 3.3V is present on the corresponding signals on the NRF24L01 module (component U1).
 	\end{itemize}
 \end{itemize}
 % paragraph verify_nrf24l01_module_functionality (end)
 
 \paragraph{Verify Shunt Amplifier Functionality} % (fold)
 \label{par:verify_shunt_amplifier_functionality}
+\begin{itemize}
+	\item Apply 10mV to \texttt{POWER\_SHUNT+}.
+	\begin{itemize}
+		\item[\xmark] Verify that 1V is present on \texttt{VADC\_P0}.
+		\begin{itemize}
+			\item[-] When measuring \texttt{VADC\_P0} only noise is present. 
+			The noise might be a product of the poor setup consisting of an extremely low voltage signal applied to a wire connected to the board through a header. 
+			\item[-] Another test was conducted in an attempt to verify the functionality of the \texttt{INA286}.
+			By setting \texttt{PWMA} to \texttt{LOW} and \texttt{PWMB} to \texttt{HIGH} it is possible to create a direct current path through the H-bridge.
+		 	A constant resistive load of 3 Ohm was set in place of the motor and a DC current of 8A through the shunt resistor creating a voltage across it that is amplified by the \texttt{INA286}.
+		 	The output was measured and is shown in figure \ref{fig:controllerboardv2_current_sense}.
+		 	The measured output is approximately 300mV while the expected output is 160mV.
+		 	Furthermore the signal is very noisy with noise spikes as high as 100mV. 
+
+			\begin{figure}[h]
+				\centering
+				\input{graphics/controllerboardv2_current_sense.tex}
+				\caption{....}
+				\label{fig:controllerboardv2_current_sense}
+			\end{figure}
+
+			The conclusion is that a pristine analog ground is likely necessary to maintain signal integrity, but that requires a complete new PCB design. 
+			\item The output of the \texttt{INA286} was also measured while switching the MOSFETS with the motor connected.
+ 			In this setup the data does not seem to represent the current in any way and does not contain the current signal. 
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
 
 % paragraph verify_shunt_amplifier_functionality (end)
 % section controller_board_verification_procedure (end)
