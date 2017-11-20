@@ -28,6 +28,18 @@
 
 \usepackage[final]{pdfpages}
 \usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage{minted}
+\setminted{
+	framesep=2mm,
+	bgcolor=black!5,
+	fontsize=\footnotesize,
+	linenos,
+	obeytabs,
+	tabsize=4,
+	mathescape = true,
+	escapeinside=||
+}
 % Should force tikz to only run once on each included .tex file
 %\usepgfplotslibrary{external} 
 \usetikzlibrary{external}
@@ -83,12 +95,12 @@
 \input{sections/reading_guide}
 \pagenumbering{arabic}
 \input{sections/introduction}
-\input{sections/analysis.tex}
-\input{sections/controller_board}
-\input{sections/joint_development}
+%\input{sections/analysis.tex}
+%\input{sections/controller_board}
+%\input{sections/joint_development}
 \input{sections/software}
-\input{sections/model_development.tex}
-\input{sections/test_platform}
+%\input{sections/model_development.tex}
+%\input{sections/test_platform}
 \clearpage
 \newpage
 \section*{References}

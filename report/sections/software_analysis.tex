@@ -16,6 +16,46 @@ As can be seen from the figure the signals create four unique stages, counting t
 	\caption{Incremental quadrature scheme as implemented on the RL2IC encoder.}
 	\label{fig:quadrature}
 \end{figure}
+
+It is necessary to read \texttt{A}, \texttt{B} and \texttt{Z} using interrupts as missing a cycle or introducing jitter in the counting procedure will cause the position to drift.
+Since the position is to be transmitted at a fixed frequency, there is a risk that an interrupt may occur while this transmission takes place, potentially corrupting the data to be transmitted.
+
+In order to avoid this problem it is necessary to temporarily disable interrupts while ensuring correct transmission.
+This is done by copying the original counter variable into a temporary variable. 
+In effect the resulting code is as seen in code \ref{code:critical_section_c}.
+Disabling interrupts means that any incoming interrupts will not be processed until interrupts are reenabled, as described in the datasheet of the ATtiny84.
+Interrupts can therefore not be disabled for longer than the shortest expected time between two edges on any single signal.
+
+The \texttt{AVR-GCC} compiler has the option to only compile the code, leaving a human readable assembly file.
+The assembly corresponding to code \ref{code:critical_section_c} can be seen in code \ref{code:critical_section_asm}.
+Each of these instructions are described in the datasheet of the microcontroller where the number of cycles required to execute them is specified: \texttt{rcall} 3 cycles, \texttt{\_CLI} 1 cycle, \texttt{ldd} 2 cycles, \texttt{std} 2 cycles, \texttt{\_SEI}, 1 cycle.
+In total 16 clock cycles are spent executing the required commands.
+At 8MHz this is 2 $\mu$s.
+Since the RL2IC produces 7200 ticks per revolution only 3600 edges exist on a single signal per revolution. 
+Using these numbers the theoretical maximum angular velocity possible while still maintaining more than 2 $\mu$s between each edge on a signal is $\approx$135Hz.
+
+\begin{listing}[h]
+\begin{minted}{c}
+	CLI();
+	cnt_temp=cnt;
+	SEI();
+\end{minted}
+\caption{Critical section for copying counter value. C version.}
+\label{code:critical_section_c}
+\end{listing}
+
+\begin{listing}[h]
+\begin{minted}{c}
+	rcall CLI
+	ldd r24,Y+1
+	ldd r25,Y+2
+	std Y+4,r25
+	std Y+3,r24
+	rcall SEI
+\end{minted}
+\caption{Critical section for copying counter value. Assembly version.}
+\label{code:critical_section_asm}
+\end{listing}
 % subsubsection joint_board_software (end)
 
 \subsubsection{Interboard Communication} % (fold)
