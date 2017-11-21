@@ -24,7 +24,7 @@ main.pdf
 *.auxlock
 *.csv#
 OD.tex
-
+*_minted-main
 #sublime
 *.sublime-project
 *.sublime-workspace
