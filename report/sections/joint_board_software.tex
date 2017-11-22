@@ -1,9 +1,9 @@
 %!TEX root = ../main.tex
-\subsection{Software Analysis} % (fold)
-\label{sub:software_analysis}
+\section{Joint Board Software Development} % (fold)
+\label{sub:joint_board_software}
 
-\subsubsection{Joint Board Software} % (fold)
-\label{ssub:joint_board_software}
+\subsection{Analysis} % (fold)
+\label{ssub:joint_board_analysis}
 The joint board is responsible for maintaining knowledge of the position of its joint and transmitting that position to the controller board.
 The RL2IC encoder implements incremental quadrature with three signals: \texttt{A}, \texttt{B} and \texttt{Z}.
 Figure \ref{fig:quadrature} is a depiction of this quadrature scheme.
@@ -108,7 +108,7 @@ Before returning execution to the main loop the current phase is stored.
 	\label{tab:bin_phase}
 \end{table}
 
-\subsubsection{Interboard Communication} % (fold)
+\subsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}
 As mentioned in section \ref{}, communication between the controller board and the joint boards is to happen wirelessly using the nRF24L01 module.
 \thomas{find section where wireless transmission is decided}
@@ -160,70 +160,12 @@ This realisation was made after the controller board was produced and so the add
 In order to simplify communication between the joint boards and the controller board communcation will be one way only.
 This allows the nRF24L01's on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
 The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
-%subsubsection interboard_communication (end)
-%subsection software_analysis (end) 
 
-\subsubsection{Controller Board Software} % (fold)
-\label{ssub:controller_board_software}
-
-\subsubsection{Design} % (fold)
-\label{ssub:design}
+\subsubsection{Requirements} % (fold)
+\label{ssub:joint_software_requirements}
 
 \subsection{Implementation} % (fold)
 \label{sub:implementation}
 
-\paragraph{nRF24L01} % (fold)
-\label{par:nrf24l01}
-~\\
-The \texttt{nRF24L01} is interfaced through a standard SPI connection and a \texttt{CE} pin that is used to activate the chip. 
-It also has a interrupt pin, but it was chosen not to use it and instead poll the device. 
-Configuration of the device is done through SPI.
-
-\subparagraph{Writing to a Register} % (fold)
-\label{subp:writing_to_a_register}
-~\\
-% subparagraph writing_to_a_register (end)
-\mikkel{Put in figure and talk about it}
-
-\begin{listing}[h]
-\begin{minted}{c}
-
-#define W_REGISTER      0b00100000
-#define REGISTER_MASK   0b00011111
-
-void RF_write_register(XSpiPs *SPI_inst, u8 reg, u8 value){
-	u8 output =  (W_REGISTER | ( REGISTER_MASK & reg));
-	u8 output_buffer[] = {output, value};
-	XSpiPs_PolledTransfer(SPI_inst, output_buffer, NULL, 2);
-}
-\end{minted}
-\caption{Implementation of a C function that writes a register value to a specific register on the \texttt{nRF24L01}. Defines are shown for clarity.}
-\label{code:rf_write_register}
-\end{listing}
-
-\mikkel{Put in figure of SPI signals from scope}
-
-
-
-
-\begin{listing}[h]
-\begin{minted}{c}
-#define R_RX_PAYLOAD       0b01100001
-#define PAYLOAD_SIZE       32
-
-void RF_read(XSpiPs *SPI_inst, u8 *buffer){
-	u8 input_buffer[33], output_buffer[PAYLOAD_SIZE+1];
-	output_buffer[0] = R_RX_PAYLOAD;
-	XSpiPs_PolledTransfer(SPI_inst, output_buffer, input_buffer, PAYLOAD_SIZEsdjfoasjdfoasjdopfjasdpofjsdopfjaospdfjopasdjfopasdfjopspodfjoaspdfjopasdfjopasdfjop+1);
-	int i;
-	for(i = 1; i < PAYLOAD_SIZE+1; i++){
-		buffer[i-1] = input_buffer[i];
-	}
-}
-
-
-	signal_1  <= resize((window(0,0)+window(0,1)+window(0,2)+window(1,0) +window(1,1)+window(1,2)+window(2,0)+window(2,1)+window(2,2))/9,8);
-\end{minted}
-\caption{Implementation of a C function that reads 32 bytes payload from the \texttt{nRF24L01}. Defines are shown for clarity.}
-\label{code:rf_write_register}
-\end{listing}
+\subsection{Verification} % (fold)
+\label{sub:verification}

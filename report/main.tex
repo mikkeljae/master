@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
-\setcounter{tocdepth}{3} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
+\setcounter{tocdepth}{2} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -40,6 +40,9 @@
 	mathescape = true,
 	escapeinside=||
 }
+
+\graphicspath{{graphics/}}
+
 % Should force tikz to only run once on each included .tex file
 %\usepgfplotslibrary{external} 
 \usetikzlibrary{external}
@@ -96,9 +99,11 @@
 \pagenumbering{arabic}
 \input{sections/introduction}
 %\input{sections/analysis.tex}
-%\input{sections/controller_board}
-%\input{sections/joint_development}
-\input{sections/software}
+\input{sections/controller_board}
+\input{sections/controller_board_software}
+\input{sections/joint_development}
+\input{sections/joint_board_software}
+%\input{sections/software}
 %\input{sections/model_development.tex}
 %\input{sections/test_platform}
 \clearpage
