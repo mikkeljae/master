@@ -1,7 +1,0 @@
-clear all; close all; clc;
-
-to_tikz = 0;
-
-
-C1_nolimit = csvread('C1joint-board-startup-no-limit00000.txt',5,0);
-C3_nolimit = csvread('C3joint-board-startup-no-limit00000.txt',5,0);
