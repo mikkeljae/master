@@ -36,27 +36,77 @@ Using these numbers the theoretical maximum angular velocity possible while stil
 
 \begin{listing}[h]
 \begin{minted}{c}
-	CLI();
+	_CLI();
 	cnt_temp=cnt;
-	SEI();
+	_SEI();
 \end{minted}
 \caption{Critical section for copying counter value. C version.}
 \label{code:critical_section_c}
 \end{listing}
 
+{\renewcommand\fcolorbox[4][]{\textcolor{cyan}{\strut#4}}
 \begin{listing}[h]
-\begin{minted}{c}
-	rcall CLI
+\begin{minted}{gas}
+	rcall _CLI
 	ldd r24,Y+1
 	ldd r25,Y+2
 	std Y+4,r25
 	std Y+3,r24
-	rcall SEI
+	rcall _SEI
 \end{minted}
 \caption{Critical section for copying counter value. Assembly version.}
 \label{code:critical_section_asm}
 \end{listing}
 % subsubsection joint_board_software (end)
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[b]{0.30\textwidth}
+		\centering
+		\includegraphics[width=.8\linewidth]{graphics/joint_software_diagram}
+		\caption{Main loop.}
+		\label{sfig:joint_main_flowchart}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.69\textwidth}
+		\centering
+		\includegraphics[width=.8\linewidth]{graphics/joint_interrupt}
+		\caption{Interrupt.}
+		\label{sfig:joint_interrupt}
+	\end{subfigure}
+	\caption{Flowchart of the software design for the joint board.}
+	\label{fig:joint_software}
+\end{figure}
+
+The functionality mentioned above is shown as a flowchart in figure \ref{fig:joint_software}.
+As can be seen it is split into two flows.
+\ref{sfig:joint_main_flowchart} is the main loop and runs continuously on the ATtiny84.
+Upon startup the nRF24L01 is setup as explained in section \ref{par:nrf24l01}.
+A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpacket}, is sent every 160$\mu$s.
+Now the copying procedure is started after which the packet is transmitted and the program is idling until 160$\mu$s has passed and the process starts over.
+
+In \ref{sfig:joint_interrupt} the interrupt routine is shown.
+This routine can be engaged at any given time and is engaged whenever an either rising or falling edge appears on \texttt{A} and \texttt{B} or when a rising edge appears on \texttt{Z}.
+
+Initially the signals are read.
+If \texttt{Z} is high the index has been reached and the position counter is reset and execution of the main loop is continued.
+If \texttt{Z} is low \texttt{A} and \texttt{B} are inspected to determine which phase is active.
+Table \ref{tab:bin_phase} shows each phase and the combination of \texttt{A} and \texttt{B} in that phase.
+By comparing with the previous phase it is possible to determine the direction of movement and therefore whether the position counter should be incremented or decremented.
+Before returning execution to the main loop the current phase is stored. 
+
+\begin{table}
+	\centering
+	\begin{tabular}{c | c  c}
+		& \texttt{A} & \texttt{B}\\
+		\hline
+		P1 & 0 & 1\\
+		P2 & 0 & 0\\
+		P3 & 1 & 0\\
+		P4 & 1 & 1
+	\end{tabular}
+	\caption{Binary representation of the phases.}
+	\label{tab:bin_phase}
+\end{table}
 
 \subsubsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}
@@ -92,7 +142,7 @@ According to the datasheet of the nRF24L01 it can be kept in transmit mode for n
 Before entering TX-mode a 130$\mu$s settling period is inferred.
 This means that at least two packets are lost during this time.
 The problem can be overcome by lowering the transmission frequency such that the time between packets is above 130$\mu$s.
-6.5kHz transmission frequency would result in $\approx$154$\mu$s delay, enough time to cycle between the modes between each packet.
+6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
 % paragraph nrf24l01_mode_cycling (end)
 \paragraph{Air Collisions}~\\ % (fold)
 \label{par:air_collisions}
@@ -111,4 +161,4 @@ In order to simplify communication between the joint boards and the controller b
 This allows the nRF24L01's on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
 The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
 %subsubsection interboard_communication (end)
-%subsection software_analysis (end) 
+%subsection software_analysis (end)
