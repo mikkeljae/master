@@ -18,32 +18,83 @@ The \texttt{nRF24L01} is interfaced through a standard SPI connection and a \tex
 It also has a interrupt pin, but it was chosen not to use it and instead poll the device. 
 Configuration of the device is done through SPI.
 
+\paragraph{Setup} % (fold)
+\label{par:setup}
+~\\
+Blablablalbalb.
+Look at the nice flowchart and explain it.....
+\missingfigure{FLOWCHART}
+
 \paragraph{Writing to a Register} % (fold)
 \label{par:writing_to_a_register}
 ~\\
-% subparagraph writing_to_a_register (end)
-\mikkel{Put in figure and talk about it}
+Figure \ref{fig:rw_register} illustrates the bits that are sent to the \texttt{nRF24L01} in order to write a value to a register. 
+The three command bits specify if the action to be done is read or write.
+The five address bits specify address of the register that is to be written to. 
+The next one to five bytes is the value that is to be written to the register.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.3\linewidth]{graphics/rw_register.eps}
+	\caption{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
+	\label{fig:rw_register}
+\end{figure}
+\mikkel{Figure should be updated with 1 byte more....}
+\mikkel{FIX CODE TO NOT USE POLLED MODE - the update listing}
+
+The C code in listing \ref{code:rf_write_register_code} is used to write a value to a register. 
+Line 5 makes sure that a valid address and command is sent, regardless of the inputs.
+Line 6 collects all bits that needs to be sent in one variable. 
+The 2 bytes are sent using SPI in line 7, where it can also be seen that the answer from the \texttt{nRF24L01} is ignored as the \texttt{NULL} pointer is given as the input buffer.  
 
 \begin{listing}[h]
 \begin{minted}{c}
-
 #define W_REGISTER      0b00100000
 #define REGISTER_MASK   0b00011111
 
 void RF_write_register(XSpiPs *SPI_inst, u8 reg, u8 value){
-	u8 output =  (W_REGISTER | ( REGISTER_MASK & reg));
-	u8 output_buffer[] = {output, value};
+	u8 cmd_addr =  (W_REGISTER | ( REGISTER_MASK & reg));
+	u8 output_buffer[] = {cmd_addr, value};
 	XSpiPs_PolledTransfer(SPI_inst, output_buffer, NULL, 2);
 }
 \end{minted}
-\caption{Implementation of a C function that writes a register value to a specific register on the \texttt{nRF24L01}. Defines are shown for clarity.}
-\label{code:rf_write_register}
+\caption{Implementation of a C function that writes a register value to a specific register on the \texttt{nRF24L01}. Macros are shown for clarity.}
+\label{code:rf_write_register_code}
 \end{listing}
 
-\mikkel{Put in figure of SPI signals from scope}
+The corresponding SPI signals are measured and plotted in figure \ref{fig:nrf24_spi}.
+It can be seen that the \texttt{MOSI} signal corresponds to \texttt{0b00100000, 0b00110101}, which means that the value \texttt{0b00110101} is written to the \texttt{RF\_CONFIG} register which has address \texttt{0x00}.
+It can also be noted the data is available on the \texttt{MISO} signal. 
+The \texttt{nRF24L01} always responds with the value of the \texttt{STATUS} when detecting a falling edge on \texttt{SS}.
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/nrf24_spi.tex}
+	\caption{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total.}
+	\label{fig:nrf24_spi}
+\end{figure}
 
 
 
+\paragraph{Reading a Payload} % (fold)
+\label{par:reading_a_payload}
+~\\
+Reading a payload from the \texttt{nRF24L01} is done as shown in figure \ref{fig:rxtx_payload}.
+In general the first byte corresponds to the command given. 
+In this case it would be \texttt{0b01100001} in order to read a payload.
+The payload is the next one to 32 bytes sent by the \texttt{nRF24L01}.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.6\linewidth]{graphics/rxtx_payload.eps}
+	\caption{Bits written to and received from the \texttt{nRF24L01} when reading a payload. \texttt{Command} specifies the command given and \texttt{Payload} is the bits written from the \texttt{nRF24L01}.}
+	\label{fig:rxtx_payload}
+\end{figure}
+
+Listing \ref{code:rf_read_payload} shows how a payload of 32 bytes are read in C code. 
+Line 5 defines the input and output buffers and line 6 assigns the read payload command to the first byte of the output buffer.
+33 bytes of data is sent in line 7, this is needed in order to create the clock signal for the \texttt{nRF24L01}, when it sends the 32 bytes payload.
+The payload is also read and assigned to the input buffer in line 7.
+Line 8-11 extracts the 32 bytes payload and ignores the first byte sent from the \texttt{nRF24L01}, which is the value of the \texttt{STATUS} register.
 
 \begin{listing}[h]
 \begin{minted}{c}
@@ -51,21 +102,19 @@ void RF_write_register(XSpiPs *SPI_inst, u8 reg, u8 value){
 #define PAYLOAD_SIZE       32
 
 void RF_read(XSpiPs *SPI_inst, u8 *buffer){
-	u8 input_buffer[33], output_buffer[PAYLOAD_SIZE+1];
+	u8 input_buffer[PAYLOAD_SIZE+1], output_buffer[PAYLOAD_SIZE+1];
 	output_buffer[0] = R_RX_PAYLOAD;
-	XSpiPs_PolledTransfer(SPI_inst, output_buffer, input_buffer, PAYLOAD_SIZEsdjfoasjdfoasjdopfjasdpofjsdopfjaospdfjopasdjfopasdfjopspodfjoaspdfjopasdfjopasdfjop+1);
+	XSpiPs_PolledTransfer(SPI_inst, output_buffer, input_buffer, PAYLOAD_SIZE+1);
 	int i;
 	for(i = 1; i < PAYLOAD_SIZE+1; i++){
 		buffer[i-1] = input_buffer[i];
 	}
 }
-
-
-	signal_1  <= resize((window(0,0)+window(0,1)+window(0,2)+window(1,0) +window(1,1)+window(1,2)+window(2,0)+window(2,1)+window(2,2))/9,8);
 \end{minted}
-\caption{Implementation of a C function that reads 32 bytes payload from the \texttt{nRF24L01}. Defines are shown for clarity.}
-\label{code:rf_write_register}
+\caption{Implementation of a C function that reads 32 bytes payload from the \texttt{nRF24L01}. Macros are shown for clarity.}
+\label{code:rf_read_payload}
 \end{listing}
+
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
