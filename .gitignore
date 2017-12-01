@@ -45,3 +45,7 @@ build/
 
 #ODS
 *.ods#
+Matlab:
+*.m~
+
+
