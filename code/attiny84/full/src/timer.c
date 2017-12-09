@@ -13,14 +13,5 @@ void setup_timer_intr(void){
 
 ISR(TIM1_COMPA_vect)
 { 
-/*
-  if(i==0){
-    PORTA = (1 << PA5);
-    i = 1;
-  }
-  else{
-    PORTA &= ~(1 << PA5);
-    i = 0;
-  }
-*/
+  timer = 1;
 }

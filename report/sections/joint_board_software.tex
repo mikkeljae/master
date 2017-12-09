@@ -85,7 +85,7 @@ A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpack
 Now the copying procedure is started after which the packet is transmitted and the program is idling until 160$\mu$s has passed and the process starts over.
 
 In \ref{sfig:joint_interrupt} the interrupt routine is shown.
-This routine can be engaged at any given time and is engaged whenever an either rising or falling edge appears on \texttt{A} and \texttt{B} or when a rising edge appears on \texttt{Z}.
+This routine can be engaged at any given time and is engaged whenever an either rising or falling edge appears on \texttt{A} and \texttt{B} or \texttt{Z}.
 
 Initially the signals are read.
 If \texttt{Z} is high the index has been reached and the position counter is reset and execution of the main loop is continued.

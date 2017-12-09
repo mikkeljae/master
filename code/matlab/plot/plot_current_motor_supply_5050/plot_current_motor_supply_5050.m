@@ -46,9 +46,13 @@ time_C3_m = C3_m(:,1) + timeshift + phase;
 data_C3_m = C3_m(:,2);
 
 
-%figure(1)
+figure(1)
 %plot(time_supplycurrent_C4, supplycurrent_C4, time_motorcurrent_C4, motorcurrent_C4,time_C1_m,data_C1_m,time_C1_s,data_C1_s,time_C2_m,data_C2_m,time_C2_s,data_C2_s,time_C3_m,data_C3_m,time_C3_s,data_C3_s)
+plot(time_C2_s,data_C2_s,time_C3_s,data_C3_s)
 
 
 figure(2)
 plot(time_supplycurrent_C4, supplycurrent_C4, time_motorcurrent_C4, motorcurrent_C4)
+
+figure(3)
+plot(time_C1_s,data_C1_s,time_C2_s,data_C2_s,time_C3_s,data_C3_s)
