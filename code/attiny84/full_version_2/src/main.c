@@ -58,11 +58,19 @@ int main(void) {
 
       sprintf(test_str, "%u", i);
       int t = 0;
+      
+      /*
       for(t=0; t<5; t++){
         payload[2+t] = test_str[t];
       }
-
-
+      */
+      for(t=0; t<5; t++){
+        if(test_str[t] > 47 && test_str[t] < 58){
+            payload[2+t] = test_str[t];
+        }else{
+          payload[2+t] = ' ';
+        }
+      }
       sprintf(test_str, "%d", position);
       for(t=0; t<5; t++){
         payload[11+t] = test_str[t];
