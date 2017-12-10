@@ -41,8 +41,9 @@ int main(void) {
   _delay_ms(100);
 
   setup_timer_intr();
-
+  int t = 0;
   i = 0;
+
   while(1){
   	if(i >1000000){
   		  PORTB |= _BV(LED);   //set CE HIGH
@@ -62,8 +63,13 @@ int main(void) {
         payload[0] = 48;
       }
 
+
+      for(t=0; t<6; t++){
+        test_str_i[t] = ' ';
+        test_str_pos[t] = ' ';
+      }
+
       sprintf(test_str_i, "%u", i);
-      int t = 0;
       
       for(t=0; t<6; t++){
         if(test_str_i[t] > 47 && test_str_i[t] < 58){
@@ -80,7 +86,7 @@ int main(void) {
           payload[11+t] = ' ';
         }
 
-
+        payload[17] = ',';
 
       }
 
