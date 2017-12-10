@@ -35,11 +35,10 @@ int main(void) {
  
 
   setup_external_int();
-  _delay_ms(3000);
   PORTB |= _BV(LED);   //set CE HIGH
-  _delay_ms(1000);
+  _delay_ms(3000);
   PORTB &= ~_BV(LED);   //set CE low
-  _delay_ms(250);
+  _delay_ms(100);
 
   setup_timer_intr();
 
