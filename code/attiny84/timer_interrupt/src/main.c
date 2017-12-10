@@ -1,7 +1,7 @@
 #include "timer.h"
+#include <util/delay.h> //DEBUG
+ 
 
-
-int i = 0;
 
 int main (void)
 {
@@ -11,22 +11,26 @@ int main (void)
   setup_timer_intr();
 
   PORTB = (1 << PB2);
+
+  PORTB |= _BV(PB2);   //set CE HIGH
+  _delay_ms(250);
+  PORTB &= ~_BV(PB2);   //set CE low
+  _delay_ms(250);
+
+
   while(1){
+    /*
+    PORTB |= _BV(PB2);   //set CE HIGH
+  _delay_ms(250);
+  PORTB &= ~_BV(PB2);   //set CE low
+  _delay_ms(250);
+*/
+  if(i > 100000){
+      while(1){
+        PORTB |= _BV(PB2);   //set CE HIGH
+      }
+  }
   
   }
   return 1;
 }
-
-/*
-ISR(TIM1_COMPA_vect)
-{ 
-  if(i==0){
-    PORTA = (1 << PA5);
-    i = 1;
-  }
-  else{
-    PORTA &= ~(1 << PA5);
-    i = 0;
-  }
-}
-*/

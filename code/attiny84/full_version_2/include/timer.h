@@ -2,5 +2,5 @@
 #include <avr/interrupt.h>
 
 void setup_timer_intr(void);
-volatile long i ;
-  
+
+volatile char timer;

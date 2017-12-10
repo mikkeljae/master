@@ -4,7 +4,13 @@ void setup_timer_intr(void){
 	cli();                // Disable global interrupts
 	TCCR1A = 0;           // Set TCCR1A to 0x00 (normal op.), p. 108
 	TCCR1B = _BV(WGM12) | _BV(CS10); // Clear Timer on Compare, no pre scaling
+	/*
+	REAL = 160us!!!
 	OCR1A  = 1280;        // Compare value
+	*/
+
+	OCR1A  = 8000; // TEST!!!!!!!!!111	//5ms
+
 	TCNT1  = 0;           // Reset timer1
 	TIMSK1 = _BV(OCIE1A); // Output compare A, interrupt, p. 113
 	sei();                // Enable global interripts	
@@ -13,15 +19,5 @@ void setup_timer_intr(void){
 
 ISR(TIM1_COMPA_vect)
 { 
-  i++;
-/*
-  if(i==0){
-    PORTA = (1 << PA5);
-    i = 1;
-  }
-  else{
-    PORTA &= ~(1 << PA5);
-    i = 0;
-  }
-*/
+  timer = 1;
 }

@@ -40,7 +40,6 @@ int main(void) {
   setup_external_int();
   setup_timer_intr();
 
-int test = 0;
   while(1){
     /*
     if(timer==1){
