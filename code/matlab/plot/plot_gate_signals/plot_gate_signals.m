@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-to_tikz = 1;
+to_tikz = 0;
 
 C1 = csvread('C1controller-board2-gate-b-load00000.txt',5,0);
 C2 = csvread('C2controller-board2-gate-b-load00000.txt',5,0);

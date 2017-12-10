@@ -27,8 +27,8 @@ title('Startup Sequence')
 xlabel('Time [s]')
 ylabel('Voltage [V]')
 
-xlim([0 9e-3])
-ylim([-0.1 7.5])
+%xlim([0 9e-3])
+%ylim([-0.1 7.5])
 
 legend('5V','3.3V','2.5V','VCCIO_{EN}')
 

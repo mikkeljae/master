@@ -1,0 +1,13 @@
+VCCIO:
+	- 3.3 V, when Microzed is not connected.
+	- 4 V, when Microzed is connected.
+	- 0 V, when VCCIO_EN is GND and Microzed is not connected.
+
+
+
+DATA: 
+	- Microzed inserted:
+		TEK0023 - TEK0025
+
+	- Microzed noti nserted
+		TEK0026 - TEK0028

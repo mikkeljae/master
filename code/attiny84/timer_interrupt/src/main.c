@@ -17,9 +17,9 @@ int main (void)
   return 1;
 }
 
+/*
 ISR(TIM1_COMPA_vect)
 { 
-
   if(i==0){
     PORTA = (1 << PA5);
     i = 1;
@@ -29,3 +29,4 @@ ISR(TIM1_COMPA_vect)
     i = 0;
   }
 }
+*/
