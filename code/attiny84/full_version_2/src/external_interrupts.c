@@ -16,7 +16,7 @@ ISR(PCINT0_vect)
 
   // If pin Z is high => reset position
   if((PINA_status & _BV(Z)) == _BV(Z)){
-    position = 0;//4000; ///...???
+    position = 4000; //4000; ///...???
     calibrated = 1;
   }
 

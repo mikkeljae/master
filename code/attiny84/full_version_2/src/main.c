@@ -85,11 +85,7 @@ int main(void) {
         }else{
           payload[11+t] = ' ';
         }
-
-        payload[17] = ',';
-
       }
-
 
      // DEBUG::
       
