@@ -2,8 +2,9 @@
 #include "external_interrupts.h"
 #include "timer.h"
 
-char test_str[5];
 
+char test_str_i[6];
+char test_str_pos[6];
 
 int main(void) {
   //char text[] = "Hi THOMAS! Hi Mikkel! Hi Mikkel!";
@@ -34,6 +35,12 @@ int main(void) {
  
 
   setup_external_int();
+  _delay_ms(3000);
+  PORTB |= _BV(LED);   //set CE HIGH
+  _delay_ms(1000);
+  PORTB &= ~_BV(LED);   //set CE low
+  _delay_ms(250);
+
   setup_timer_intr();
 
   i = 0;
@@ -56,24 +63,26 @@ int main(void) {
         payload[0] = 48;
       }
 
-      sprintf(test_str, "%u", i);
+      sprintf(test_str_i, "%u", i);
       int t = 0;
       
-      /*
-      for(t=0; t<5; t++){
-        payload[2+t] = test_str[t];
-      }
-      */
-      for(t=0; t<5; t++){
-        if(test_str[t] > 47 && test_str[t] < 58){
-            payload[2+t] = test_str[t];
+      for(t=0; t<6; t++){
+        if(test_str_i[t] > 47 && test_str_i[t] < 58){
+            payload[2+t] = test_str_i[t];
         }else{
           payload[2+t] = ' ';
         }
       }
-      sprintf(test_str, "%d", position);
-      for(t=0; t<5; t++){
-        payload[11+t] = test_str[t];
+      sprintf(test_str_pos, "%d", position);
+      for(t=0; t<6; t++){
+        if(test_str_pos[t] > 47 && test_str_pos[t] < 58){
+          payload[11+t] = test_str_pos[t];
+        }else{
+          payload[11+t] = ' ';
+        }
+
+
+
       }
 
 
