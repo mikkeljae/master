@@ -4,7 +4,28 @@
 
 \subsection{Analysis} % (fold)
 \label{sub:analysis}
-
+\subsubsection{VHDL and Coding Practices} % (fold)
+\label{ssub:vhdl_and_coding_practices}
+The low level control is written in VHDL.
+This is done to leverage the hard real time nature of the FPGA to create robust and dependable control of the pendulum.
+As the reader likely knows, programming in VHDL can be a complex venture.
+The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus \ref{sec:axi}.
+In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
+\begin{itemize}
+	\item \textbf{Utilization of Test Benches:} VHDL was developed primarily as a means to simulate hardware.
+	This ability means that any code can be verified in simulation before being synthesised.
+	In simulation the value of any register and signal can be monitored, greatly easing the task of debugging the system.
+	Additionally, each iteration is significantly faster since it foregoes the need for the complete bitstream on every iteration.
+	\item \textbf{Atomic Components:} In the experience of the authors, the complexity of writing VHDL rises rapidly with the number of features of a given component.
+	Writing components in their atomic form, that is, writing components with as few features as is possible, makes it significantly easier to debug and finalise each component.
+	More complex components can then be made up of several smaller, known-to-function components.
+	\item \textbf{Utilization of IP Cores:} Vivado, the development environment for the Zynq platform, relies heavily on the concept of Intellectual Property Cores.
+	VHDL components can be compiled into an IP core which can then be easily distributed amongst multiple users.
+	They also provide a means to more easily build a system by connecting several IP cores of arbitrary complexity.
+\end{itemize}
+In addition to the points made above, it is the expectation that a future project will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
+Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
+% subsubsection vhdl_and_coding_practices (end)
 \subsubsection{Requirements} % (fold)
 \label{ssub:controller_requirements}
 
