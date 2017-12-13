@@ -9,11 +9,10 @@ void setup_timer_intr(void){
 	OCR1A  = 1280;        // Compare value
 	*/
 
-	OCR1A  = 8000; // TEST!!!!!!!!!111	//5ms
-
+	OCR1A  = 7999; // TEST!!!!!!!!!	//1ms
 	TCNT1  = 0;           // Reset timer1
 	TIMSK1 = _BV(OCIE1A); // Output compare A, interrupt, p. 113
-	sei();                // Enable global interripts	
+	sei();                // Enable global interrupts	
 }
 
 

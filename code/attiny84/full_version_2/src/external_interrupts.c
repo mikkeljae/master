@@ -1,11 +1,11 @@
 #include "external_interrupts.h"
 
 void setup_external_int(void){
-   cli();                // Disable global interrupts
-  GIMSK = _BV(PCIE0);   // Enable interrupts on pins PCINT7:0
-  GIFR = _BV(PCIF0);    // Setup pin change interrupt flag 0
+   cli();                 // Disable global interrupts
+  GIMSK = _BV(PCIE0);     // Enable interrupts on pins PCINT7:0
+  GIFR = _BV(PCIF0);      // Setup pin change interrupt flag 0
   PCMSK0 = _BV(A_pin) | _BV(B_pin) | _BV(Z_pin);   // Enable interrupts on PCINT1:3
-  sei();                // Enable global interripts
+  sei();                  // Enable global interripts
  
 }
 

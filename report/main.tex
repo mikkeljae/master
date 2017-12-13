@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
-\setcounter{tocdepth}{2} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
+\setcounter{tocdepth}{3} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -38,7 +38,7 @@
 	obeytabs,
 	tabsize=4,
 	mathescape = true,
-	escapeinside=||
+	escapeinside=@@
 }
 
 \graphicspath{{graphics/}}
@@ -90,7 +90,7 @@
 \newpage
 \tableofcontents
 \newpage
-%\listoftodos
+\listoftodos
 
 \listoffigures
 \listoftables
@@ -98,6 +98,7 @@
 \input{sections/reading_guide}
 \pagenumbering{arabic}
 %\input{sections/introduction}
+\input{sections/system_analysis}
 %%\input{sections/analysis.tex}
 %\input{sections/controller_board}
 %\input{sections/controller_board_software}
@@ -115,7 +116,7 @@
 \printbibliography[heading=none, keyword={data}]
 \newpage
 \appendix
-\input{appendix/joint_board_verification_procedure}
+%\input{appendix/joint_board_verification_procedure}
 \newpage
-\input{appendix/controller_board_verification_procedure}
+%\input{appendix/controller_board_verification_procedure}
 \end{document}

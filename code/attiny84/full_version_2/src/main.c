@@ -43,7 +43,6 @@ int main(void) {
   setup_timer_intr();
   int t = 0;
   i = 0;
-
   while(1){
   	if(i >1000000){
   		  PORTB |= _BV(LED);   //set CE HIGH
@@ -51,9 +50,10 @@ int main(void) {
   		  	//STAY!!!!
   		  }
   	}
-
-    if(timer==1){
+   
+    if(timer==1){ 
       timer = 0;
+
       i++;
       set_CE(LOW);
 

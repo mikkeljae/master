@@ -11,7 +11,7 @@ void set_CE(uint8_t state){
 }
 
 void spi_setup(void){
-  DDRB |= _BV(CSN);     //set the CSN  pin as output
+  DDRB |= _BV(SS);     //set the SS  pin as output
   DDRA |= _BV(SCLK);    //set the SCLK pin as output
   DDRA |= _BV(MOSI);    //set the MOSI pin as output
   DDRA &= ~_BV(MISO);   //set the MISO pin as input
@@ -19,14 +19,14 @@ void spi_setup(void){
   // Set approoriate SPI settings, datasheet p. 126
   USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1 | _BV(USICS0)));
   USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
-  PORTB |= _BV(CSN);
+  PORTB |= _BV(SS);
   _delay_ms(10);
 }
 
-void spi_transfer(uint8_t *data, uint8_t *input, uint8_t bytes){
-  PORTB &= ~_BV(CSN);   //set CSN low
+void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
+  PORTB &= ~_BV(SS);   //set SS low
   int i;
-  for(i = 0; i<bytes; i++){
+  for(i = 0; i<n; i++){
     //Put data in USIDR
     USIDR = data[i];
     //Clear counter and clear counter overflow interrupt flag, datasheet p. 125
@@ -41,7 +41,7 @@ void spi_transfer(uint8_t *data, uint8_t *input, uint8_t bytes){
       input[i] = USIDR;
     }
   }
-  PORTB |= _BV(CSN);    //set CSN high
+  PORTB |= _BV(SS);    //set SS high
 }
 
 void RF_write_register(uint8_t reg, uint8_t value){
