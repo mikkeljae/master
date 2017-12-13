@@ -18,7 +18,7 @@ As can be seen from the figure the signals create four unique stages, counting t
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/quadrature}
-	\caption{Incremental quadrature scheme as implemented on the RL2IC encoder.}
+	\caption[Incremental quadrature scheme RL2IC encoder.]{Incremental quadrature scheme as implemented on the RL2IC encoder.}
 	\label{fig:quadrature}
 \end{figure}
 
@@ -51,7 +51,7 @@ This requires the joint board software to be programmed as real time software, w
 \subsubsection{Software Development}
 \mikkel{Remember to write something in general somewhere about top-down and bottom-up}
 
-\subsection{Requirements}
+\subsection{Requirement} Specification
 
 \paragraph{Functional:}
 \begin{itemize}
@@ -142,7 +142,7 @@ See figure \ref{fig:rfpacket} for a visual representation of the message.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/rf_packet}
-	\caption[Structure of a packet used on the RF transmission between the joint boards and the controller board.]{UPDATE ME!!!!!!!!!!!!!!--  Sructure of a packet used on the RF transmission between the joint boards and the controller board. Bits 0-12 represent the current joint angle and bit 13 represents the state of calibration.}
+	\caption[RF transmission packet used from the joint board.]{UPDATE ME!!!!!!!!!!!!!!--  Sructure of a packet used on the RF transmission between the joint boards and the controller board. Bits 0-12 represent the current joint angle and bit 13 represents the state of calibration.}
 	\label{fig:rfpacket}
 \end{figure}
 
@@ -197,7 +197,7 @@ The full interface between the two is shown in figure \ref{fig:tiny_nrf_com}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.8\linewidth]{graphics/tiny_nrf_com}
-	\caption{Interfacing the \texttt{ATtiny84}s USI and \texttt{nRF24L01}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
+	\caption[Interface between ATtiny84 and nRF24L01.]{Interfacing the \texttt{ATtiny84}s USI and \texttt{nRF24L01}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
 	\label{fig:tiny_nrf_com}
 \end{figure}
 The \texttt{ATtiny84} is used as the SPI master and controls \texttt{MOSI}, \texttt{SCLK}, \texttt{SS} and \texttt{CE} on the \texttt{nRF24L01} module.

@@ -33,7 +33,7 @@ Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
 		$V_{\text{ds}}$ [V] & 100 & - & - \\
 	\hline
 	\end{tabular}
-	\caption{Relevant parameters of the IRF100B202 MOSFET \cite{mosfet} chosen for the full-bridge.
+	\caption[Relevant parameters of the IRF100B202 MOSFET.]{Relevant parameters of the IRF100B202 MOSFET \cite{mosfet} chosen for the full-bridge.
 	Here, \vth is the gate threshold voltage, \ron is the drain-source on resistance, \qg is the total gate charge, \id is the maximum continuous drain current and \vds is the minimum guaranteed drain-source breakdown voltage.}
 	\label{tab:mosfetparameters}
 \end{table}
@@ -45,7 +45,7 @@ Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not ful
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\linewidth]{graphics/mosfet_transfer_characteristic}
-	\caption{Transfer characteristic of the IRF100B202 as per the datasheet.
+	\caption[Transfer characteristic of the IRF100B202.]{Transfer characteristic of the \texttt{IRF100B202} as per the datasheet.
 	Inspecting the graph reveals that the maximum \id of 100A is reached at \vgs$\approx4.2\rightarrow4.5$V.}
 	\label{fig:mosfettransfercharacteristic}
 \end{figure}
@@ -220,7 +220,7 @@ The load current experienced by the supply is also shown in figure \ref{fig:sim_
 \begin{figure}[h]
 	\centering
 	\input{graphics/sim_currents.tex}
-	\caption{Current in the motor and the total load when when simulating a full bridge in PLECS.}
+	\caption[Simulating motor and load currents in Plecs.]{Current in the motor and the total load when when simulating a full bridge in PLECS.}
 	\label{fig:sim_currents}
 \end{figure}
 
@@ -268,7 +268,7 @@ Clearly the total capacitance of 1320$\mu$F is far above the minimum needed of 1
 		$I_r$ RMS @ 10[kHz] & 1.3 [A]  \\ \hline
 		
 	\end{tabular}
-	\caption{Relevant parameters of the \texttt{MAL215099911E3} capacitor \cite{sup_cap}.
+	\caption[Relevant parameters of the \texttt{MAL215099911E3} capacitor.]{Relevant parameters of the \texttt{MAL215099911E3} capacitor \cite{sup_cap}.
 	Here $U_r$ is the rated voltage, $C_r$ is the rated capacitance and $I_r$ is the ripple current.}
 	\label{tab:cap_parameters}
 \end{table}
@@ -302,7 +302,7 @@ The PLECS model is shown in figure \ref{fig:plecs_schem}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1\linewidth]{graphics/plecs_schem.png}
-	\caption{Full bridge circuit with supply capacitors and wire inductance modelled using PLECS. The Motor box consists of an inductor and a resistor in series. All components apart from the MOSFETS have the same values as the chosen components.}
+	\caption[Full bridge circuit modelled in PLECS.]{Full bridge circuit with supply capacitors and wire inductance modelled using PLECS. The Motor box consists of an inductor and a resistor in series. All components apart from the MOSFETS have the same values as the chosen components.}
 	\label{fig:plecs_schem}
 \end{figure}	
 
@@ -317,7 +317,7 @@ It should be noted that in the simulations there are no difference between the t
 \begin{figure}[h]
 	\centering
 	\input{graphics/cap_currents.tex}
-	\caption{Current drawn from the electrolytic and ceramic capacitors, when simulating in PLECS. }
+	\caption[Capacitor current simulation in PLECS.]{Current drawn from the electrolytic and ceramic capacitors, when simulating in PLECS. }
 	\label{fig:cap_currents}
 \end{figure}
 
@@ -574,7 +574,7 @@ The bootstrap circuitry is modified slightly to accomodate the limited supply as
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{graphics/dcdc12v}
-	\caption{The PTN78020H DC/DC converter and the appertaining circuitry.}
+	\caption[PTN78020H DC/DC converter circuitry.]{The \texttt{PTN78020H} DC/DC converter and the appertaining circuitry.}
 	\label{fig:dcdc12v}
 \end{figure}
 

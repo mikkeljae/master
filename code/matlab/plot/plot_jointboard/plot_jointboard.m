@@ -65,6 +65,10 @@ set(fig2(2),'YLim',[-0.025 1])
 set(fig2(1),'YTick',0:0.5:4)
 set(fig2(2),'YTick',0:0.25:1)
 
+%TEST!!
+figure(3)
+plot(time_C1_nolimit,data_C1_nolimit)
+
 if to_tikz == 1
     cleanfigure();
    matlab2tikz('joint_board_test_fig2.tex'); 

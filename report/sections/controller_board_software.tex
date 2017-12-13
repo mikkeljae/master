@@ -26,7 +26,7 @@ In order to minimize the complexity of the VHDL programming task a number of pra
 In addition to the points made above, it is the expectation that a future project will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
 Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
 % subsubsection vhdl_and_coding_practices (end)
-\subsubsection{Requirements} % (fold)
+\subsubsection{Requirement Specification} % (fold)
 \label{ssub:controller_requirements}
 
 \subsection{Implementation} % (fold)
@@ -99,7 +99,7 @@ The next one to five bytes is the value that is to be written to the register.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.3\linewidth]{graphics/rw_register.eps}
-	\caption{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
+	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
 \mikkel{Figure should be updated with 1 byte more....}
@@ -133,7 +133,7 @@ The \texttt{nRF24L01} always responds with the value of the \texttt{STATUS} when
 \begin{figure}[h]
 	\centering
     \input{graphics/nrf24_spi.tex}
-	\caption{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total.}
+	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total.}
 	\label{fig:nrf24_spi}
 \end{figure}
 \mikkel{Make a comment about SPI freq. It was measured using a lower F to make nice plot....}
@@ -148,7 +148,7 @@ The payload is the next one to 32 bytes sent by the \texttt{nRF24L01}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.6\linewidth]{graphics/rxtx_payload.eps}
-	\caption{Bits written to and received from the \texttt{nRF24L01} when reading a payload. \texttt{Command} specifies the command given and \texttt{Payload} is the bits written from the \texttt{nRF24L01}.}
+	\caption[Reading a payload on the nRF24L01.]{Bits written to and received from the \texttt{nRF24L01} when reading a payload. \texttt{Command} specifies the command given and \texttt{Payload} is the bits written from the \texttt{nRF24L01}.}
 	\label{fig:rxtx_payload}
 \end{figure}
 
