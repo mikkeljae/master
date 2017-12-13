@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define CE 			PA7
-#define CSN       	PB0
+#define SS       	PB0
 #define SCLK      	PA4
 #define MOSI      	PA5
 #define MISO      	PA6
