@@ -12,14 +12,58 @@ This list briefly summarizes these requirements
 \end{itemize}
 
 These requirements contain both mechanical and electrical aspects.
-The authors' main focus is on power and embedded design and as such the mechanical design is limited in comparison to the electrical design.
+The authors' main focus is on power and embedded design and as such the design of the mechanics of the system is limited in comparison to the electrical design.
 The mechanical design was developed with help from mechanical engineer at SDU: Jørgen Maagaard.
 
 \subsubsection{Mechanics} % (fold)
 \label{ssub:mechanics}
-While the current project requires only two joints, it is desirable to design the joint in such a way that it is easily expandable, allowing the addition of more joints at a later time.
-In order to minimize influence on the control it is crucial to minimize friction in the joint.
-For this reason, low-friction bearings are to be used in the joint.
+The mechanical design consists of two parts, the joint and the rod connecting two joints.
+This project seeks to create a two-joint pendulum but the project owner has set a few additional requirements to allow for more diverse control tasks in future projects:
+\begin{enumerate}
+	\item It should be possible to mount $n$ joints in series on the pendulum assembly.
+	\item The distance between the joints should be modular.
+\end{enumerate}
+In addition to these two requirements:
+\begin{enumerate}
+	\item [3.] The pendulum assembly should be rigid and allow only movement in the X-Y plane so that it cannot collide with itself.
+\end{enumerate}
+Requirements 1 and 2 would benefit from a modular design, allowing the rod to be dismounted from the joint so that only the rod would require replacement, should the user wish to add joints or vary the distance between joints.
+This is somewhat in conflict with requirement 3 which would benefit from each joint-rod-joint assembly to be one solid piece of material.
+Since such an assembly would be rather expensive to manufacture and would require a new assembly for each desired configuration, a modular design is preferred.
+\\~\\
+The joint should be capable of unrestricted rotation.
+This rotation should be as close to frictionless as possible and so a low friction coupling should be used between the two parts of the joint.
+As will be discussed in section \ref{ssub:encoder} some form of encoder is required in the joint.
+This encoder requires both power and signal wiring.
+Two solutions were considered to solve this problem
+\begin{enumerate}
+  	\item \textbf{Slip Ring:} A slip ring allows wiring to pass through a freely rotating joint.
+  	They are available in versions of various sizes with up to 72 wires, allowing for several series joints before being limited by wire capacity.
+  	Clearly, more wires results in a longer slip ring, imposing additional requirements to the thickness of the joint to accomodate for the slip ring.
+  	The authors were in contact with Rotary Systems and Moog, both industry suppliers of slip rings and similar products, and it was clear that the price of these components was well beyond what is reasonable for this project.
+  	\item \textbf{Wireless:} Several wireless solutions exist which could be employed in this situation.
+  	Using a wireless approach means that all computation and handling of signals must be done on the joint before transmitting to the main controller.
+  	This means that a more complex PCB must be designed and a battery installed to power the pcb.
+  	While this solution does add electrical complexity it is practically free in comparison to the slip ring and allows for a much slimmer joint design.
+  	This is the solution chosen for the joint design.
+\end{enumerate}
+~\\
+As described in section \ref{} the pendulum assembly is viewed as a collection of point-masses connected with massless rods.
+\thomas{Section on maths describing the point mass assumption}
+In order to more accurately uphold this assumption the material of the rods should be significantly lighter than the material of the joints while still maintaining sufficient rigidity.
+In general three materials are easily available to the authors for manufacturing:
+\begin{enumerate}
+	\item \textbf{Metal:} While this is a somewhat vague description that spans a vast number of materials, metals are generally significantly heavier than the following materials.
+	Using metals requires manufacturing techniques and equipment which the authors do not have access to but the SDU Workshop can be hired to manufacture a design.
+	The precision of metal-working is well into the sub-millimeter range.
+	\item \textbf{3D Print:} This method of manufacturing is easily accessible and can be done for free (to the project). 
+	It also allows for creating shapes that are otherwise difficult to manufacture in metals.
+	3D printing at SDU is done in different types of plastics, neither of which is as stiff as would be desired for the pendulum assembly.
+	Additionally, the encoder chosen in the following section sets strict requirements on the placement of the two parts of the encoder (This is discussed in more detail below) and the 3D printers at SDU are known to have problems accurately representing features in the sub-millimeter range.
+	\item \textbf{Carbon:} This material is considered only for the rod as it was suggested as a light material with significant rigidity.
+	Carbon tubes were used previously at SDU Vikings, the SDU Formula Student racing team, as part of the suspension assembly.
+\end{enumerate}
+Given the above materials the joint is to be made of metal while a carbon tube will be procured for the rod.
 % subsubsection mechanics (end)
 
 \subsubsection{Encoder} % (fold)
@@ -28,12 +72,11 @@ Each joint should implement an encoder to enable tracking the angular position o
 The resolution of each joint should be sufficient to allow for proper control.
 \thomas{Note on the required resolution}
 In addition to resolution, ease of manufacture and design is also an important aspect.
-Many encoders are developed for a specific mounting method or product, such as the HEDS-5540 used on the Maxon Motor.
 One encoder in particular was recommended to the authors; the Rolin Rotary Magnetic Encoders.
 This is a series of encoders which, as the name suggests, utilises magnetic fields in order to determine the angular position of the encoder.
 They consist of a magnetic ring with a number of poles and a PCB sensor.
 The magnetic ring is available in different sizes with different number of poles which, along with the type of PCB sensor decides the resolution of the encoder.
-The specific encoder configuration used in this project allows for 8000 CPR or one count per 0.045\degree.
+The specific encoder configuration used in this project allows for 7200 CPR or one count per 0.05\degree.
 The encoder is incremental with an A, B and Z channel where A and B are 90\degree out of phase and Z is a unique reference mark.
 Using the reference mark it is possible to maintain absolute knowledge of the angular position of the joint after the initial encounter with the reference mark.
 This is only possible assuming that there is no drift or slippage in the system, a reasonable assumption considering the mechanical setup.
@@ -45,7 +88,26 @@ This standard describes a method of transmitting digital signals using different
 \label{ssub:electronics}
 As per the initial requirements listed in this section each joint should be able to track the position of the joint and communicate this information wirelessly to the main controller board.
 In order to accomplish this task some form of microcontroller is required along with the power delivery and the RS422 receiver mentioned previously.
-In addition to this the physical dimensions of all electronics should fit within the joint.
+The microcontroller must fulfill the following requirements:
+\begin{enumerate}
+ 	\item Must have support for three interrupt pins, one for each channel of the encoder.
+ 	\item Must have an SPI interface to maintain communication with the nRF24L01 module.
+ 	\item Must have non-volatile memory to store the program through power cycling the board.
+\end{enumerate}
+The ATtiny84 \cite{attiny84} fulfills these requirements and provides sufficient I/O pins for the design.
+The design of the PCB and the layout in general should accomodate the joint design.
+By minimizing the height of the PCB design, the joint can be made thinner, reducing the stress on the pendulum assembly along the Z-axis.
+It should also be noted that any connectors should be placed with the expectation that the border of the PCB is not accessible during normal operation.
+\\~\\
+Since the PCB is powered from a battery the design should be optimized to be reasonably power efficient.
+As is explained in section \ref{par:power_delivery} the design has a 3.3V rail and a 5V rail.
+Generally microcontrollers become more power efficient at lower voltages and as such the ATtiny84 will be driven from the 3.3V rail.
+The authors have immediate access to an AVR programmer which uses 5V signals for the programming.
+The design should be made to accept this voltage when programming.
+This can be done using level-shifting between the two voltage levels.
+\\~\\
+It was chosen to add an LED to the design for debugging purposes.
+Clearly, an LED does require some power and should not be used during normal operation.
 \paragraph{Power Delivery} % (fold)
 \label{par:power_delivery}
 The required voltage rails on the joint board are dictated by the RF module and the encoder.
@@ -57,22 +119,81 @@ This requirement essentially narrows the battery choices to LiPo cells as these 
 1S LiPo cells are rated at 3.7V and so DC/DC converters are required to reach both rails, a buck converter for the 3.3V rail and a boost converter for the 5V rail.
 In order to correctly dimension the converters it is necessary to determine the power draw from each rail:
 \begin{itemize}
- 	\item \textbf{3.3V:} This rail powers the NRF24 module which has a maximum supply current of 12.3mA \cite{NFR24L01} as well as the ATTiny84 with a maximum power draw of 9mA \cite{attiny84}.
- 	This yields a total of 21.3mA at 3.3V or 70.3mW.
+ 	\item \textbf{3.3V:} This rail powers the NRF24 module which has a maximum supply current of 12.3mA \cite{NFR24L01} as well as the ATTiny84.
+ 	According to the datasheet of the ATtiny84 it uses approximately 3.6mA at 3.3V when run at 8MHz.   
+ 	This yields a total of 15.9mA at 3.3V or 52.5mW.
  	Additional digital circuitry placed on this rail is considered negligible in the power budget.
- 	\item \textbf{5V:} This rail powers the encoder with a maximum supply current of 20mA \cite{RLBD01} as well as the RS422 receiver which has a supply current of 52mA \cite{rs422rec}.
- 	This yields a total of 72mA at 5V or 360mW.
+ 	\item \textbf{5V:} This rail powers the encoder with a maximum supply current of 30mA \cite{RLC2IC} as well as the RS422 receiver which has a supply current of 52mA \cite{rs422rec}.
+ 	This yields a total of 82mA at 5V or 410mW.
  	Additional digital circuitry placed on this rail is considered negligible in the power budget.
 \end{itemize}
-For a battery to have sufficient capacity to power the joint for a full workday, estimated at 10 hours, it should have at least $\approx4300$mWh
+For a battery to have sufficient capacity to power the joint for a full workday, estimated at 10 hours, it should have at least $\approx4600$mWh.
+This is infeasible in the required dimensions and a battery should be procured which can provide the most run time given the space available.
 \thomas{What is the actual power draw from the rs422 receiver? 52mA seems excessive and results in approx 3 hours on-time for the joint.}
 % paragraph power_delivery (end)
-\paragraph{Microcontroller} % (fold)
-\label{par:microcontroller}
-The requirements for the microcontroller used are sparse as its main task is simply counting the current position and, occasionally, transmitting that position back to the controller board.
-It should include support for SPI as well as three I/O pins which support interrupts for the A, B and Z channel of the encoder.
-Since space is at a premium in the joint it should be compact in size and, finally, should be as low power as possible.
-The ATTiny84 \cite{attiny84}
-% paragraph microcontroller (end)
 % subsubsection electronics (end)
+
+\subsubsection{Requirements}
+
+\paragraph{Functional:}
+\begin{itemize}
+	\item Joints should be designed in a modular fashion such that $n$ joints can be mounted in series.
+	\item Distance between joints should be adjustable.
+	\item Design of the joint should employ mounting solutions for:
+	\begin{itemize}
+		\item Joint board.
+		\item Encoder.
+		\item Battery. 
+	\end{itemize}
+	\item Friction in the joint should be minimized.
+	\item Weight of rods should be minimized to uphold the point mass assumption.
+	\item Pendulum assembly should allow movement only in the X-Y plane. 
+
+	\item Voltage rails for the various components in the circuit.
+	\begin{itemize}
+		\item At least 100mA at 3.3V.
+		\item At least 200mA at 5V.
+		\item All voltage rails should be sized appropriately to supply the current necessary for the components on that rail.
+	\end{itemize}
+
+	\item Include the nRF24L01 module for communication.
+	\item Correcly interface the RS-422 interface of the RL2IC encoder.
+
+	\item  The microcontroller used should comply with the following requirements:
+	\begin{itemize}
+		\item Must have three interrupt pins, one for each channel of the encoder.
+		\item Has a minimum of nine I/O pins.
+		\item Has an SPI interface.
+		\item Has non-volatile memory.
+		\item Can be supplied from either 3.3V or 5V.
+	\end{itemize}
+	\item The design should allow programming of the microcontroller using 5V SPI.
+	\item An LED should be employed for debugging purposes.
+\end{itemize}
+
+
+\paragraph{Design:}
+\begin{itemize}
+	\item The design of the joint should be done so that it can be manufactured by the SDU workshop.
+	\item The PCB should be designed with the enclosure in mind.
+	\begin{itemize}
+		\item Height of components and general design should be minimized.
+		\item Placement of connectors should accomodate the enclosure.
+		\item Shape of the PCB should allow for easy mounting of the PCB and other components.
+	\end{itemize}
+	\item The PCB layout should be reviewed according to the developed strategy.
+	\begin{itemize}
+		\item Documentation.
+		\item General inspection.
+		\item Datasheet and report comparison.
+		\item Footprint inspection.
+		\item Peer-review.
+	\end{itemize}
+	\item A Battery should be sourced which conforms with the following requirements:
+	\begin{itemize}
+		\item Battery should enable at least 10 hours of continuous use of the joint.
+		\item Battery should fit within the dimensions dictated by the enclosure.
+	\end{itemize}
+	\item Overall power consumption of the design should be minimized.
+\end{itemize}
 % subsection analysis (end)
