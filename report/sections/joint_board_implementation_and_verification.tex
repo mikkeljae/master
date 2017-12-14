@@ -125,12 +125,18 @@ In the programming mode the 74LCX244 is enabled and has control over the affecte
 In running mode the 74LCX244 is disabled and the ATtiny84 is capable of driving the affected nets.
 % paragraph verify_attiny84_functionality (end)
 % subsubsection joint_board_verification_methodology (end)
-\subsubsection{Circuit Power Draw and Runtime} % (fold)
+\subsubsection{Circuit Power Draw and Run-time} % (fold)
 \label{ssub:circuit_power_draw_and_runtime}
 In section \ref{par:power_delivery} it was found that the circuit would require $\approx$462mW when transmitting.
 In testing it was found that the circuit draws 117mA at 3.7V or 432.9mW.
 Since the original numbers were calculated based on maximum values from the datasheets of the components used in the calculation it is reasonable to see a slightly lower number.
 \\~\\
-The battery chosen for this application is 
+The battery chosen for this application has 1600mWH of capacity resulting in a theoretical run-time of $\approx$3:45 hours
+\thomas{insert actual real number.}
+This is clearly not as high as what was desired (10 hours).
+The main reason for this is the unexpectedly large power draw of the encoder and the accompanying RS422 decoder.
+The DS26LS32CM RS422 decoder draws 52mA at 5V.
+The Rolin Encoders are available in versions which output TTL signals meaning that the decoder could be removed. 
+Unfortunately, the encoders with this output do not have a unique reference mark and as such it would not be possible to properly calibrate the joint.
 % subsubsection circuit_power_draw_and_runtime (end)
 % subsection implementation_and_verification (end)

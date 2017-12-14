@@ -1,43 +1,83 @@
 %!TEX root = ../main.tex
 \subsection{Joint Design} % (fold)
 \label{sub:joint_design}
-The design of the pendulum assembly is, as in the analysis, split into an electrical part and a mechanical part.
-This section goes through both.
+The design of the pendulum assembly is, as in the analysis, split into an electrical design and a mechanical design.
 
-\subsubsection{Voltage Rails}
-\label{subs:voltage_rail}
-As found in the analysis a 3.3V rail and a 5V rail is needed. 
-The current consumption on both rails need to be determined in order to specify the requirements for the voltage regulators and the required size of the battery needed.
-\mikkel{There should be a nice introduction to this section about the Joint in general... Battery and so on.}
+\thomas{Proper introduction required}
 
+\subsubsection{Mechanical Design:} % (fold)
+\label{ssub:mechanical_design}
+The mechanical design consists mainly of 3D modelling using Autodesk Inventor.
+The entire design is shown in figure \ref{fig:mechdesign} and is comprised of three parts:
+\paragraph{Magnet Side} % (fold)
+\label{par:magnet_side}
+is shown in figure \ref{sfig:magnetside}. 
+This part has a shallow groove milled for the magnetic disc of the encoder to fit into.
+The centre of the part is milled out to allow for two low-friction ball bearings to be press-fit into.
+% paragraph magnet_side (end)
+\paragraph{Reader Side:} % (fold)
+\label{par:reader_side}
+is shown in figures \ref{sfig:readside} and \ref{sfig:readside_2}.
+The visible sides of \ref{sfig:magnetside} and \ref{sfig:readside} are designed to mate.
+A cutout is made in \ref{sfig:readside} which is positioned such that it can be placed accurately above the magnetic disc.
+The placement of the reader head by pressing it against a feeler gauge blade positioned between it and the magnetic disc before securing it using two bolts.
+This ensures that the reader head is placed parallel with the disc and at the correct distance.
+The axle is milled as part of \ref{sfig:readside}.
+The manufactured version has a bore in the axle to accomodate a bolt which tightens the part to the bearings.
+On the other side of the part, \ref{sfig:readside_2}, most of the material has been bored away to allow for mounting the joint board as shown in the figure.
+A lip has been left on top of the part to allow for mounting a lid.
 
-\paragraph{3.3V:}
-\label{par:3_3v}
-The \texttt{NRF24} module has maximum supply current of 12.3mA \cite{NFR24L01} and the \texttt{ATtiny82} has a maximum of 9mA \cite{attiny84}.
-This totals 21.3mA of current that the 3.3V rail needs to supply.
+\paragraph{Joint Mount} % (fold)
+\label{par:joint_mount}
+is shown in \ref{sfig:jointmount}.
+A hole pattern is added to this part as well as the other two which is used to mount \ref{sfig:jointmount} to \ref{sfig:readside} and \ref{sfig:magnetside}.
+On the top of the part a hole is made to accomodate the joint rod.
+This part is 3D printed since the shape is somewhat complex and would require access to a CNC machine to mill of metal.
+Additionally, making the part from metal would increase its weight significantly, potentially risking the point-mass assumption.
+\\~\\
+These three parts are connected into the pendulum assembly using carbon tubes as shown in \ref{sfig:pendulumassembly}.
+Two parts are present on this design which were not described previously.
+The final disc, known as the dummy disc, is essentially just a solid piece of aluminium used to add some weight to the end of the pendulum assembly.
+The first joint is mounted on a plate which in turn, is to be mounted on the cart.
 
-\paragraph{5V:}
-\label{par:5v}
-The only component drawing current from the 5V rail is the Rolin encoder which has a maximum supply current of 20mA \cite{RLBD01}.
-
-\subsection{Power Consumption} 
-\label{subsub:power_consumption}
-The power consumption at each rail is calculated and 
-
-\begin{table}
-	\centering
-	\begin{tabular}{l|r|r}
-		 Voltage rail 	& Current [mA] 	& Power [mW]\\
-		 \hline
-		 3.3V 			& 15.9			&52.5		\\
-		 5V  			& 20 			&100		\\
-		 \hline
-		 Total 			& 				&152.5		
-	\end{tabular}
-	\caption{Power usage on voltage rails and in total.}
-	\label{tab:power_joint}
-\end{table}
-
+\begin{figure}[H]
+	\begin{minipage}{.45\linewidth}
+		\begin{subfigure}[b]{\linewidth}
+			\centering
+			\includegraphics[width=.85\linewidth]{graphics/pendulum_assembly}
+			\caption{This is a line of text}
+			\label{sfig:pendulumassembly}
+		\end{subfigure}\\
+		\begin{subfigure}[b]{\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/joint_mount}
+			\caption{No one ever reads me... and some more text to fill out the caption}
+			\label{sfig:jointmount}
+		\end{subfigure}	
+	\end{minipage}
+	\begin{minipage}{.4\linewidth}
+		\begin{subfigure}[t]{\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/joint_mag_assembly}
+			\caption{So is this..}
+			\label{sfig:magnetside}
+		\end{subfigure}\\
+		\begin{subfigure}[b]{\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/joint_read_side}
+			\caption{And this!}
+			\label{sfig:readside}
+		\end{subfigure}\\
+		\begin{subfigure}[b]{\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/joint_read_side_2}
+			\caption{Me too! this needs some more text as well. So here it is}
+			\label{sfig:readside_2}
+		\end{subfigure}
+	\end{minipage}
+	\caption{Me be Big-Momma Text!}
+	\label{fig:mechdesign}
+\end{figure}
 \subsection{Battery}
 \label{subsub:battery}
 The physical dimensions of the battery is constrained by the free space in the designed joint.
@@ -53,10 +93,8 @@ Button cell batteries does live up to the physical constraints, but does not hav
 Several of them can be put in series, but they still does not yield the wanted capacity.
 
 \paragraph{Li-Ion Battery}
-Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fit both the physical and capacity constrains.
-WE FOUND ONE!!!!!
-3.7 Volt - YES!
-3.7V to 4.2V - ca. =!=!??
+Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fit both the physical and capacity constraints.
+The joint design
 
 \subsection{RS422}
 No termination was used....
@@ -68,16 +106,15 @@ See \cite{rs422_texas} page 13.
 
 \subsection{Voltage Rail Generation}
 \label{sub:voltage_rail_generation}
-As described in section \ref{sub:voltage_rail}, a 5V and a 3.3V rail is needed. 
+As described in the requirements in section \ref{subs:joint_requirements}, a 5V and a 3.3V rail is needed. 
 
 \subsubsection*{5V}
-Generating 5V can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
-The boost regulator \texttt{SP6641BEK-L-5-0} has an input range of 0.9V to 4.5V and an fixed output of 5V \cite{sp6641b}.
-The circuitry used in this project will be based on the design of the boost converter explained in the datasheet.
-\mikkel{Schematic of boost converter here?}
+Generating the 5V rail can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
+The boost regulator SP6641B \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V \cite{sp6641b}.
+The circuitry used in this project will be based on the reference design shown in the datasheet, with the one difference that the \texttt{SHDN} (shutdown) pin has been pulled permanently high.
 
 \subsubsection*{3.3V}
-The task of generating 3.3V from the battery is complicated by the battery voltage varying from 4.2V down to 3.0V*.
+The task of generating the 3.3V rail is somewhat more complicated since the battery voltage varies from 4.2V down to 3.0V.
 \mikkel{Source needed when we know battery}
 
 Three different solutions appeared after an initial analyse of the task:

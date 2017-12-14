@@ -31,7 +31,26 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 
 \subsection{Implementation} % (fold)
 \label{sub:implementation}
+\subsubsection{VHDL Components} % (fold)
+\label{ssub:vhdl_components}
+A number of VHDL components were designed and implemented for use on the MicroZed.
+An indepth description of each is not necessary and the authors have decided to instead focus on the implementation of just the cart position counter as it provides a good description of the workflow used for each component.
+\\~\\
+\thomas{Part of the text below was required for me to properly write this section. Some of it may be better suited for an analysis.}
+The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
+This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
+Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
+\\~\\
+The component is comprised of two subcomponents.
+The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of the signal.
+A depiction of the state machine can be seen in figure \ref{fig:quadstatemachine}.
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.85\linewidth]{graphics/quad_state_machine}
+	\caption{State machine of the incremental quadrature decoder created for the MicroZed.}
+	\label{fig:quadstatemachine}
+\end{figure}
 
 \subsubsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}

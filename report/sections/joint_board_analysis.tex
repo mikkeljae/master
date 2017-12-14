@@ -129,11 +129,17 @@ In order to correctly dimension the converters it is necessary to determine the 
 \end{itemize}
 For a battery to have sufficient capacity to power the joint for a full workday, estimated at 10 hours, it should have at least $\approx4600$mWh.
 This is infeasible in the required dimensions and a battery should be procured which can provide the most run time given the space available.
-\thomas{What is the actual power draw from the rs422 receiver? 52mA seems excessive and results in approx 3 hours on-time for the joint.}
+\\~\\
+The voltage rails should be designed with sufficient overhead.
+Additionally, the accuracy of each rail is determined from the supply requirements set by the datasheet of the components used in the datasheet.
+The two rails should be specced as follows:
+One rail capable of delivering 200mA at 5V$\pm$0.2V.
+One rail capable of delivering 100mA at 3.3V$\pm$0.2V.
 % paragraph power_delivery (end)
 % subsubsection electronics (end)
 
 \subsubsection{Requirements}
+\label{subs:joint_requirements}
 
 \paragraph{Functional:}
 \begin{itemize}
@@ -149,11 +155,10 @@ This is infeasible in the required dimensions and a battery should be procured w
 	\item Weight of rods should be minimized to uphold the point mass assumption.
 	\item Pendulum assembly should allow movement only in the X-Y plane. 
 
-	\item Voltage rails for the various components in the circuit.
+	\item Voltage rails for the components in the circuit.
 	\begin{itemize}
-		\item At least 100mA at 3.3V.
-		\item At least 200mA at 5V.
-		\item All voltage rails should be sized appropriately to supply the current necessary for the components on that rail.
+		\item At least 100mA at 3.3V$\pm$0.2V.
+		\item At least 200mA at 5V$\pm$0.2V.
 	\end{itemize}
 
 	\item Include the nRF24L01 module for communication.
