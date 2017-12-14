@@ -32,5 +32,4 @@ if to_tikz == 1
     cleanfigure()
     matlab2tikz('test_motor_drive_signals.tex');
     matlab2tikz( 'test.tikz', 'height', '\fheight', 'width', '\fwidth' )
-
 end

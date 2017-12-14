@@ -9,8 +9,7 @@ T_interrupt_us = T_cpu * (OCR1A) *1000000
 T_interrupt = T_cpu * (OCR1A)
 
 T_interrupt_us_w = 160;
-T_interrupt_us_w = 1000;
 OCR1A_w_us = T_interrupt_us_w/(T_cpu*1000000)
 
-T = T_interrupt_us_w /1000000;
+T = T_interrupt_us_w /1000000
 compare = T/T_cpu

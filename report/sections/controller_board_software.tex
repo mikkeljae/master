@@ -29,7 +29,13 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \subsubsection{Requirement Specification} % (fold)
 \label{ssub:controller_requirements}
 
-\subsection{Implementation} % (fold)
+
+
+
+
+
+
+\subsection{Design and Implementation} % (fold)
 \label{sub:implementation}
 
 
@@ -133,10 +139,9 @@ The \texttt{nRF24L01} always responds with the value of the \texttt{STATUS} when
 \begin{figure}[h]
 	\centering
     \input{graphics/nrf24_spi.tex}
-	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total.}
+	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total. The SPI transmission is setup and measured at 625kHz, for readability.}
 	\label{fig:nrf24_spi}
 \end{figure}
-\mikkel{Make a comment about SPI freq. It was measured using a lower F to make nice plot....}
 
 \paragraph{Reading a Payload} % (fold)
 \label{par:reading_a_payload}
@@ -177,6 +182,80 @@ void RF_read(XSpiPs *SPI_inst, u8 *buffer){
 \label{code:rf_read_payload}
 \end{listing}
 
+\subsubsection{PWM Generation} % (fold)
+\label{ssub:pwm_generation}
+In order to generate the two needed PWM signals from the Microzed an IP core must be made in VHDL.
+As described the IP core needs to be able to switch the PWM signal between channel \texttt{A} and \texttt{B} and have a programmable duty cycle.
+It also needs to have a top signal that indicates the center of the PWM pulse.
+The designed PWM generator IP core has three inputs and three outputs as illustrated in figure \ref{fig:pwm_gen_component}.
+
+\mikkel{Make sure this is actually described in the analysis and requirements.}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.4\linewidth]{graphics/pwm_gen_component.png}
+	\caption{Input and output signals of the PWM generator component.}
+	\label{fig:pwm_gen_component}
+\end{figure}
+A counter is incremented to a high limit and decremented to zero using a state machine.
+The high limit for the counter when using the Microzed and a PWM frequency of 22KHz is calculated by:
+\begin{equation}
+	H_{limit} = \frac{F_{Microzed}}{F_{PWM}\cdot 2} = \frac{100\cdot 10^6}{22\cdot 10^6 \cdot 2} = 2272.7 \simeq 2273
+\end{equation}
+Where $H_{limit}$ is the high counting limit, $F_{Microzed}$ and $F_{PWM}$ are the frequencies of the Microzed and the PWM, respectively. 
+The PWM output will be set \texttt{high}, when the counter value is greater than a compare value.
+Using this mechanism the duty cycle of the PWM can be controlled through the compare value.
+The compare value for a 50\% dutycycle should be calculated using:
+\begin{equation}
+	Compare = (1 - D) \cdot H_{limit} = (1 - 0.5) \cdot 2273 = 1136
+\end{equation}
+Where $Compare$ is the compare value and $D$ is the wanted dutycycle ratio.
+
+The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where the top signal is simply set \texttt{high}, when counter reaches is high limit.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \input{graphics/vhdl_pwm_gen_int.tex}
+        \caption{Internal VHDL signals illustrated by a Matlab plot.}
+        \label{sfig:pwm_gen_int}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \input{graphics/vhdl_pwm_gen.tex}
+        \caption{External PWM signal measured using an oscilloscope. }
+        \label{sfig:pwm_gen_ext}
+    \end{subfigure}
+    \caption[Signals associated with the PWM generator IP core]{Internal and external signals associated with the PWM generator IP core. PWM and TOP are logic signals and 2000 represents their \texttt{high} value.}
+    \label{fig:vhdl_pwm_gen}
+\end{figure}
+
+Generating the PWM signal from the counter and compare values is done in lines 5 to 11 of listing \ref{code:vhdl_pwm_gen}.
+Setting the PWM on to the correct channel is done in lines 12 to 16.
+As \texttt{pwm\_a\_l} and \texttt{pwm\_b\_l} are written to in a process, they will only be updated with the last written value, when the process is left.
+
+\begin{listing}[h]
+\begin{minted}{vhdl}
+OUTPUT_DECODE: process (state,counter,dir)
+begin
+	@$\vdots$@
+if (counter > unsigned(comp_value)) then
+		pwm_a_l <= '1';
+		pwm_b_l <= '1';
+	else
+		pwm_a_l <= '0';
+		pwm_b_l <= '0';
+	end if;	
+	if( dir = '1') then 
+		pwm_b_l <= '0';
+	else 
+		pwm_a_l <= '0';	
+	end if;
+end process;		
+\end{minted}
+\caption{VHDL code }
+\label{code:vhdl_pwm_gen}
+\end{listing}
+
+	
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
