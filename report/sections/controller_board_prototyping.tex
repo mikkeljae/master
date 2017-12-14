@@ -12,40 +12,46 @@ Three main functionalities should be verified on the board:
 
 \begin{itemize}
 	\item Schmitt-trigger circuitry and \texttt{AND} gate circuit
-	\item PWM logic level shifting and phase shifting
+	\item PWM logic level shifting
 	\item Motor driver circuit
 \end{itemize}
 
 The remaining functionalities has either been tested beforehand or deemed too simple to test. 
 
 \par{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}
-The circuit can bee seen in.... \mikkel{Make a figure somewhere}.
 The Schmitt-triggers were tested by varying the input voltage and verifying the switching threshold along with the the hysteresis levels. 
 Testing the \texttt{AND} gate was done by applying different logic levels and verifying the results.
 The complete circuit was found to work as intended.
 
-\par{PWM Logic Level Shifting and Phase Shifting}
-The circuit can bee seen in.... \mikkel{Make a figure somewhere}.
+\par{PWM Logic Level Shifting}
 The functionality of the logic level shifter \texttt{74LVC2G17} was verified by measuring input and output on an oscilloscope. 
-The output of the \texttt{NOT} gate was not as expected as it was noise with a DC offset. 
-The reason behind the problem was not found, but most probably it was a production error as the schematic showed no problems.
-While investigating the schematic it was found that the gate is not needed as the high side signals to the motor driver can be replaced by \texttt{high} signals, because the driver has a shoot-through protection scheme.
-Therefore the \texttt{NOT} will be omitted in the next version of the board.
 
 \par{Motor Driver Circuit}
-The motor driver receives signals from the not functioning \texttt{NOT} gate and could therefore not easily be tested on the produces board.
-Therefore it was decided to develop a small test PCB with the only purpose of testing the motor driver circuit.
-The circuit can bee seen in.... \mikkel{Make a figure somewhere}.
-The board was connected to four MOSFETs, a resistor as a load and PWM signals on the inputs. 
+Because of a design error on the developed PCB the motor driver circuit on the PCB could not be tested. 
+Therefore it was decided to develop a small test PCB with the sole purpose of testing the motor driver circuit.
+The circuit can bee seen in \ref{}.......
+\mikkel{Make correct reference}.
+A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{graphics/hipboard_pic}
+	\caption[PCB developed to test functionality of motor driver.]{Picture of PCB developed to test the functionality of the motor drive circuitry.}
+	\label{fig:m_drive_circuit}
+\end{figure}
+The boards gate signals was wired to the gate of four MOSFETs.
+A power resistiro was used as a load and PWM signals was applied to the motor driver input pins. 
 Measuring the gate signals showed strange behaviour and after a thorough inspection of the board and the schematic it was found that the bootstrap diode was facing the wrong direction. 
-The reason behind was an error in the footprint. 
-After correcting the error the functions of the driver and the bootstrap circuit was verified. 
+The source of this was an error in the footprint of the component. 
+After correcting the issue the driver and the bootstrap circuit was found to function as intended. 
 The measured signals are shown in figure \ref{fig:test_hip_signals}.
-\mikkel{More elaboration is needed}
-\mikkel{FIGURE HERE!}
-%\begin{figure}[h]
-%	\centering
-%    \input{graphics/test_motor_drive_signals.tex}
-%	\caption{. }
-%	\label{fig:test_hip_signals}
-%\end{figure}
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/test_motor_drive_signals.tex}
+	\caption[Measured gate and input signals.]{Measured low and high side gate signals along with low side motor driver input signals.}
+	\label{fig:test_hip_signals}
+\end{figure}
+It is verified that the low side gate signal follows the waveform of low side input signal, but with a logic level of $\approx$12V as expected. 
+It is also verified that the high side gate signals are 180$^\circ$ out of phase of the low side signals and are correctly bootstrapped to $\approx$24V.
+

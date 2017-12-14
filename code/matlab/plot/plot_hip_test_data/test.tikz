@@ -11,9 +11,9 @@
 \begin{tikzpicture}
 
 \begin{axis}[%
-width=0.6\linewidth,
-height=2.5in,
-at={(0.758in,0.481in)},
+width=0.951\fwidth,
+height=\fheight,
+at={(0\fwidth,0\fheight)},
 scale only axis,
 xmin=0.0011,
 xmax=0.0028,
@@ -26,7 +26,7 @@ ylabel={Voltage [V]},
 axis background/.style={fill=white},
 title style={font=\bfseries},
 title={Motor Driver Signals},
-legend style={legend cell align=left,  font=\scriptsize, align=left, draw=white!15!black}
+legend style={legend cell align=left, align=left, draw=white!15!black}
 ]
 \addplot [color=mycolor1, forget plot]
   table[row sep=crcr]{%

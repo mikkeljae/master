@@ -51,14 +51,6 @@ Something here....
 			It can be verified that the voltage on the 3.3V rail does not rise when the voltage of \texttt{VCCIO\_EN} is lower than 1.3V.
 			This level is the high threshold of the comparator that enables the DCDC converter that generates the 3.3V rail.
 			Furthermore, using the work done in \cite{isaswarm}, it can be verified that the measured signals correspond to the ones produced when powering ON the Microzed using Avnets own Microzed carrier card.
-
- 			\begin{figure}[h]
-				\centering
-			    \input{graphics/controllerboardv2_startup.tex}
-				\caption{Important signals measured doing startup of controllerboard with the Microzed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
-				\label{fig:controllerboardv2_startup}
-			\end{figure}
-
 		\end{itemize}
 	\end{itemize}
 	\item Toggle power button OFF
@@ -67,16 +59,23 @@ Something here....
 		\begin{itemize}
 			\item[-] The important signals when shutting down the controllerboard and the Microzed are measured and plotted in figure \ref{fig:controllerboardv2_startup}
 			It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in the correct order. 
-			\begin{figure}[h]
-				\centering
-			    \input{graphics/controllerboardv2_shutdown.tex}
-				\caption{Important signals measured doing shutdown of controllerboard with the Microzed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
-				\label{fig:controllerboardv2_shutdown}
-			\end{figure}
-
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\input{graphics/controllerboardv2_startup.tex}
+	\caption[Signals measured doing startup of controllerboard.]{Important signals measured doing startup of controllerboard with the Microzed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
+	\label{fig:controllerboardv2_startup}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/controllerboardv2_shutdown.tex}
+	\caption[Signals measured doing shutdown of controllerboard.]{Important signals measured doing shutdown of controllerboard with the Microzed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
+	\label{fig:controllerboardv2_shutdown}
+\end{figure}
 % paragraph verify_microzed_startup_shutdown_sequence (end)
 \paragraph{Simulate No Emergency} % (fold)
 \label{par:simulate_no_emergency}
@@ -129,7 +128,7 @@ Something here....
 			\begin{figure}[h]
 				\centering
 			    \input{graphics/controllerboardv2_inrushcurrent.tex}
-				\caption{Voltage measured on \texttt{POWER\_IN}, when the inrush relay is conducting. It can be seen that charging the capacitors takes approximately 1s. }
+				\caption[Chargin curve of Capacitor bank.]{Voltage measured on \texttt{POWER\_IN}, when the inrush relay is conducting. It can be seen that charging the capacitors takes approximately 1s. }
 				\label{fig:controllerboardv2_inrushcurrent_charge}
 			\end{figure}
  
@@ -214,7 +213,7 @@ Something here....
 			\begin{figure}[h]
 				\centering
 				\input{graphics/controllerboardv2_current_sense.tex}
-				\caption{....}
+				\caption{Measured output voltage of current sense amplifier.}
 				\label{fig:controllerboardv2_current_sense}
 			\end{figure}
 
@@ -228,15 +227,15 @@ Something here....
 
 \subsubsection{Advanced? Verification}
 As explained, the verification procedure is meant as a check list for future developers producing a new PCB.
-In order to properly verify if all of the requirements for the system are met additional verification is needed.
-This verification is needed to verify the design and it is therefore not important to do it for each PCB, but one time per new design.
+In order to properly verify if all of the requirements for the system are met additional verification is needed.T
+his verification is needed to verify the design and it is therefore not important to do it for each PCB, but one time per new design.
 
 \paragraph{Supply Currents}
 
-
+\mikkel{MAke simulation and write something here.}
 \begin{figure}[h]
 	\centering
     \input{graphics/controllerboardv2_current_motor_supply.tex}
-	\caption{50D 0D.}
+	\caption{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
 	\label{fig:controllerboardv2_}
 \end{figure}

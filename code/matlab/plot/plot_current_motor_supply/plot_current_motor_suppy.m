@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-to_tikz = 1;
+to_tikz = 0;
 
 C1_s = csvread('C1controller-board2-supplycurrent-gate-22k-50d0d00000.txt',5,0);    %TEMP
 C1_m = csvread('C1controller-board2-motorcurrent-gate-22k-50d0d00000.txt',5,0);    %TEMP
