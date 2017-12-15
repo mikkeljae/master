@@ -4,59 +4,48 @@
 
 \subsection{Analysis} % (fold)
 \label{sub:analysis}
-\subsubsection{VHDL and Coding Practices} % (fold)
-\label{ssub:vhdl_and_coding_practices}
-The low level control is written in VHDL.
-This is done to leverage the hard real time nature of the FPGA to create robust and dependable control of the pendulum.
-As the reader likely knows, programming in VHDL can be a complex venture.
-The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus \ref{sec:axi}.
-In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
-\begin{itemize}
-	\item \textbf{Utilization of Test Benches:} VHDL was developed primarily as a means to simulate hardware.
-	This ability means that any code can be verified in simulation before being synthesised.
-	In simulation the value of any register and signal can be monitored, greatly easing the task of debugging the system.
-	Additionally, each iteration is significantly faster since it foregoes the need for the complete bitstream on every iteration.
-	\item \textbf{Atomic Components:} In the experience of the authors, the complexity of writing VHDL rises rapidly with the number of features of a given component.
-	Writing components in their atomic form, that is, writing components with as few features as is possible, makes it significantly easier to debug and finalise each component.
-	More complex components can then be made up of several smaller, known-to-function components.
-	\item \textbf{Utilization of IP Cores:} Vivado, the development environment for the Zynq platform, relies heavily on the concept of Intellectual Property Cores.
-	VHDL components can be compiled into an IP core which can then be easily distributed amongst multiple users.
-	They also provide a means to more easily build a system by connecting several IP cores of arbitrary complexity.
-\end{itemize}
-In addition to the points made above, it is the expectation that a future project will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
-Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
-% subsubsection vhdl_and_coding_practices (end)
-\subsubsection{Requirement Specification} % (fold)
-\label{ssub:controller_requirements}
+This section will seek to analyse the requirements for the software that runs on the Microzed mounted on the controllerboard.
+The software will need to serve as a base system, where control algorithms can be run.....
+\mikkel{More clever words here....}
 
 
+\subsubsection{Cart Position}
+\label{ssub:cart_position}
+In order to control the position of the cart it is important to know its absolute position.
+The \texttt{HEDS5540} encoder mounted on the motor has an \texttt{A}, \texttt{B} and \texttt{Z} incremental quadrature and can be used to measure the relative position of the cart. 
+The absolute position of the cart should be referred to the rail and therefore the \texttt{Z} signal cannot be used to determine the absolute position.
+The endstops have fixed positions on the rail and the signals from them can therefore be used to infer the absolute position.
+Specifically, resetting the position when reaching endstop 1 is a correct method of calibrating the system.
+Hereafter the absolute position can be measured by reading signals \texttt{A} and \texttt{B}.
+
+Implementing this functionality on an FPGA using VHDL has the advantage that all signals can be read simultaneously.
+This means that a correct VHDL design will ensure that no edges on pins can go unnoticed.
+Furthermore it has the advantage that the processor does not need to do any computation and jitter is not introduced, because no interrupts are used. 
+Therefore it was decided to implement the functionality of measuring absolute cart position in a VHDL module.
 
 
+\subsubsection{Controlling the Motor Driver} % (fold)
+\label{ssub:controlling_the_motor_driver}
+The motor driver has three inputs that needs to be produced by the controller board software.
+More Specifically, two PWM inputs and a disable pin that the disables the outputs of the motor driver.
+The PWM signals will be applied to the motor and therefore it was chosen to use a frequency of 22kHz in order to be outside of the audible range.
+It was decided to only apply a PWM signal to one channel in order to reduce the stress and current through the MOSFET and the motor.
+This means that in order to change direction of the motor torque, the PWM signal needs to be switched between the two PWM channels.
+The dutycycle of the PWM needs to be adjustable in order to control the speed of the motor.
+It was decided that it is beneficial to implement the PWM generation on the FPGA part of the Microzed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
+
+\subsubsection{General Peripheral Hardware Control} % (fold)
+\label{ssub:general_peripheral_hardware}
+As described in section \ref{ssub:relay_circuitry}, two relays should be controlled by the controller board software. 
+A inrush relay that allows for safe charging of the capacitor bank and the main relay. 
+Both are controlled by controlling the logic level of a output pin.
+Furthermore the software needs to control the three RGB LEDs on the controller board. 
+In order to utilize the full functionality of the RGB LEDs each channel of the LED should be controlled by a PWM signal.
+Using this method the LED can be illuminated in all colours.
+The frequency of the PWM is not of great concern as long as it is faster than human eye. 
+A higher frequency means a higher loss in the MOSFETs and therefore a frequency of 1kHz was chosen.
 
 
-
-\subsection{Design and Implementation} % (fold)
-\label{sub:implementation}
-\subsubsection{VHDL Components} % (fold)
-\label{ssub:vhdl_components}
-A number of VHDL components were designed and implemented for use on the MicroZed.
-An indepth description of each is not necessary and the authors have decided to instead focus on the implementation of just the cart position counter as it provides a good description of the workflow used for each component.
-\\~\\
-\thomas{Part of the text below was required for me to properly write this section. Some of it may be better suited for an analysis.}
-The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
-This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
-Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
-\\~\\
-The component is comprised of two subcomponents.
-The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of the signal.
-A depiction of the state machine can be seen in figure \ref{fig:quadstatemachine}.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.85\linewidth]{graphics/quad_state_machine}
-	\caption{State machine of the incremental quadrature decoder created for the MicroZed.}
-	\label{fig:quadstatemachine}
-\end{figure}
 
 \subsubsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}
@@ -98,6 +87,112 @@ This realisation was made after the controller board was produced and so the add
 In order to simplify communication between the joint boards and the controller board communcation will be one way only.
 This allows the nRF24L01's on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
 The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
+
+
+\subsubsection{Real Time} % (fold)
+\label{ssub:real_time}
+bla.bla.bla.
+
+
+
+\subsubsection{VHDL and Coding Practices} % (fold)
+\label{ssub:vhdl_and_coding_practices}
+The low level control is written in VHDL.
+This is done to leverage the hard real time nature of the FPGA to create robust and dependable control of the pendulum.
+As the reader likely knows, programming in VHDL can be a complex venture.
+The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus \ref{sec:axi}.
+In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
+\begin{itemize}
+	\item \textbf{Utilization of Test Benches:} VHDL was developed primarily as a means to simulate hardware.
+	This ability means that any code can be verified in simulation before being synthesised.
+	In simulation the value of any register and signal can be monitored, greatly easing the task of debugging the system.
+	Additionally, each iteration is significantly faster since it foregoes the need for the complete bitstream on every iteration.
+	\item \textbf{Atomic Components:} In the experience of the authors, the complexity of writing VHDL rises rapidly with the number of features of a given component.
+	Writing components in their atomic form, that is, writing components with as few features as is possible, makes it significantly easier to debug and finalise each component.
+	More complex components can then be made up of several smaller, known-to-function components.
+	\item \textbf{Utilization of IP Cores:} Vivado, the development environment for the Zynq platform, relies heavily on the concept of Intellectual Property Cores.
+	VHDL components can be compiled into an IP core which can then be easily distributed amongst multiple users.
+	They also provide a means to more easily build a system by connecting several IP cores of arbitrary complexity.
+\end{itemize}
+In addition to the points made above, it is the expectation that a future project will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
+Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
+
+
+\subsubsection{Requirement Specification} % (fold)
+\label{ssub:controller_requirements}
+
+
+\paragraph{Functional:}
+\begin{itemize}
+	\item Correct cart position should be known at all times.
+	\begin{itemize}
+		\item Encoder signals should be used to measure relative position
+		\item Endstop signal should be used to calibrate and infer the absolute position.
+	\end{itemize}
+	\item General peripheral hardware should be controlled
+	\begin{itemize}
+		\item Main relay and inrush relay should be controlled through output pins.
+		\item 3 channel 1kHz PWM with adjustable dutycycle should control each RGB LED.
+	\end{itemize}
+	\item Software should produce correct signals to motor driver that allows for control of speed and direction of the motor.
+	\begin{itemize}
+		\item 22kHz PWM signals on two channels.
+		\item Adjustable dutycycle.
+		\item Control \texttt{DIS} signal.
+ 	\end{itemize}
+	\item Receive joint angle data from the two joint boards using the \texttt{nRF24L01} module
+	\begin{itemize}
+		\item Setup of Microzed as SPI master.
+		\item Setup of \texttt{nRF24L01} settings.
+		\item Receive joint angle at highest possible reliable frequency.
+	\end{itemize}
+	\item Real time behaviour of software.
+\end{itemize}
+
+\paragraph{Design:}
+\begin{itemize}
+	\item VHDL should be designed and implemented using the following practices.
+	\begin{itemize}
+		\item Utilization of Test Benches.
+		\item Atomic Components.
+		\item Utilization of IP Cores.
+	\end{itemize}
+	\item C or VHDL...??????????
+\end{itemize}
+\mikkel{Write something clever about C or VHDL!}
+\paragraph{Safety:}
+\begin{itemize}
+	\item Software should handle emergency situations.
+	\begin{itemize}
+		\item Should detect emergency condition and be able to produce emergency signal.
+	\end{itemize}
+\end{itemize}
+
+
+
+\subsection{Design and Implementation} % (fold)
+\label{sub:implementation}
+\subsubsection{VHDL Components} % (fold)
+\label{ssub:vhdl_components}
+A number of VHDL components were designed and implemented for use on the MicroZed.
+An indepth description of each is not necessary and the authors have decided to instead focus on the implementation of just the cart position counter as it provides a good description of the workflow used for each component.
+\\~\\
+\thomas{Part of the text below was required for me to properly write this section. Some of it may be better suited for an analysis.}
+The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
+This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
+Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
+\\~\\
+The component is comprised of two subcomponents.
+The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of the signal.
+A depiction of the state machine can be seen in figure \ref{fig:quadstatemachine}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.85\linewidth]{graphics/quad_state_machine}
+	\caption{State machine of the incremental quadrature decoder created for the MicroZed.}
+	\label{fig:quadstatemachine}
+\end{figure}
+
 
 \subsubsection{nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
@@ -270,7 +365,7 @@ if (counter > unsigned(comp_value)) then
 	end if;
 end process;		
 \end{minted}
-\caption{VHDL code }
+\caption[VHDL code generating PWM signals.]{VHDL code generating PWM and setting it to the correct channel.}
 \label{code:vhdl_pwm_gen}
 \end{listing}
 
