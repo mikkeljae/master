@@ -21,6 +21,20 @@
     <marker
        inkscape:isstock="true"
        style="overflow:visible;"
+       id="marker4977"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend">
+      <path
+         transform="scale(0.4) rotate(180) translate(10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path4979" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
        id="marker8967"
        refX="0.0"
        refY="0.0"
@@ -274,16 +288,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="181.57078"
-     inkscape:cy="888.54489"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="212.86744"
+     inkscape:cy="918.89988"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="2560"
      inkscape:window-height="1367"
-     inkscape:window-x="494"
-     inkscape:window-y="1107"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -297,7 +311,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -677,7 +691,7 @@
            height="14"
            x="471"
            y="101.36221" /></flowRegion><flowPara
-         id="flowPara5229"></flowPara></flowRoot>    <path
+         id="flowPara5229" /></flowRoot>    <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 356.91791,176.15436 0,24.99999"
        id="path5020-7-6-2"
@@ -803,7 +817,7 @@
            height="13"
            x="185"
            y="140.3622" /></flowRegion><flowPara
-         id="flowPara7839"></flowPara></flowRoot>    <path
+         id="flowPara7839" /></flowRoot>    <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 281,121.3622 0,6 c 0,0 0,5 -5,5 -5,0 -36,0 -36,0"
        id="path8414"
@@ -867,8 +881,8 @@
        id="path8639"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker5835)"
-       d="m 85,67.362205 -10,0 c 0,0 -5,0 -5,5 0,5 0,10 0,10"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker5835)"
+       d="m 95,67.362205 -10,0 c 0,0 -5,0 -5,5 0,5 0,10 0,10"
        id="path8641"
        inkscape:connector-curvature="0" />
     <text
@@ -1005,5 +1019,16 @@
          id="tspan8939-4-4-6"
          x="167.66422"
          y="143.59961">Z=1/</tspan></text>
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path4952"
+       cx="54.984375"
+       cy="66.346588"
+       r="3" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.42471346;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4977)"
+       d="m 55.003952,70.326042 0,12.265944"
+       id="path4969"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

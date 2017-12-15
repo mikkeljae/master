@@ -17,6 +17,8 @@ As can be seen from the figure the signals create four unique stages, counting t
 	\label{fig:quadrature}
 \end{figure}
 
+\thomas{The incremental quadrature explanation is now doubled in the report, needs to be removed from here somehow}
+
 It is necessary to read \texttt{A}, \texttt{B} and \texttt{Z} using interrupts as missing a cycle or introducing jitter in the counting procedure will cause the position to drift.
 Since the position is to be transmitted at a fixed frequency, there is a risk that an interrupt may occur while this transmission takes place, potentially corrupting the data to be transmitted.
 

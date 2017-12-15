@@ -29,12 +29,6 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \subsubsection{Requirement Specification} % (fold)
 \label{ssub:controller_requirements}
 
-
-
-
-
-
-
 \subsection{Design and Implementation} % (fold)
 \label{sub:implementation}
 \subsubsection{VHDL Components} % (fold)
@@ -47,9 +41,97 @@ The cart position counter is, as the name implies, responsible for maintaining k
 This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
 Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
 \\~\\
-The component is comprised of two subcomponents.
+\paragraph{Incremental Quadrature}~\\ % (fold)
+\label{par:incremental_quadrature}
+As mentioned above, the motor provides three signals for incremental quadrature, \texttt{A}, \texttt{B} and \texttt{Z}. 
+Figure \ref{fig:quadrature} is a depiction of this quadrature scheme.
+The two signals \texttt{A} and \texttt{B} are 90$^\circ$ out of phase and their frequency is determined by the angular velocity of the joint.
+As can be seen from the figure the signals create four unique stages, counting these allows knowledge of both the direction, position and, potentially, the velocity of the joint.
+The \texttt{Z} signal is a unique pulse which happens on every revolution of the motor.
+This signal is not used in this VHDL component as the angular position of the motor is irrelevant in relation to the position of the cart.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\linewidth]{graphics/quadrature}
+	\caption{Incremental quadrature scheme as implemented on the Maxon.}
+	\label{fig:quadrature}
+\end{figure}
+% paragraph incremental_quadrature (end)
+
+\paragraph{State Machine Structure}~\\ % (fold)
+\label{par:state_machine_structure}
+Each state machine written for this project is done using a Mealy SM in a three-part structure:
+\begin{enumerate}
+	\item \textbf{Sync Process:} This is the only process which is synchronized with the clock signal.
+	It is used to ensure that state and signals are changed only on the rising edge of the clock.
+	\item \textbf{Output Decode:} In each state the output signals are to be in a specific configuration.
+	Given any state, this process ensures that the signals are in that configuration.
+	\item \textbf{Next State Decode:} In this process the next state is determined based on the current state and the current inputs.
+\end{enumerate}
+Using this structure ensures that each process has one responsibility and will generally result in cleaner, more simple code.
+\\~\\
+The component described in this section is comprised of two subcomponents.
 The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of the signal.
-A depiction of the state machine can be seen in figure \ref{fig:quadstatemachine}.
+A depiction of the state machine (SM) can be seen in figure \ref{fig:quadstatemachine}.
+Note that VHDL notation has been omitted for clarity.
+As can be seen, the SM is comprised of six states.
+\paragraph{st1\_idle:} % (fold)
+Is the initial state and the state that is returned to between edges on the quadrature signal.
+Since the quadrature signal is not synchronous with the driving clock of the system the \texttt{rising\_edge()} and \texttt{falling\_edge()} functions cannot be used to determine edges.
+Listing \ref{code:edge_detection} shows how an edge is detected on a signal. 
+The current value of the signal is continuously compared to the last value, which is saved on every clock cycle.
+If the two values are not equal an edge must have occured within the last clock cycle.
+In this component both rising and falling edges are used and so any difference between the two is registered.
+This code is repeated for all three input signals, with the exception that the \texttt{Z} channel set \texttt{next\_state} to \texttt{st6\_index} instead.
+
+\begin{listing}[h]
+\begin{minted}{vhdl}
+case (state) is
+	when st1_idle =>
+		if A_i /= last_A_i then
+	        next_state <= st2_edge;
+	    end if;
+	    @$\vdots$@
+\end{minted}
+\caption{VHDL code}
+\label{code:edge_detection}
+\end{listing}
+
+\paragraph{st2\_edge:} % (fold)
+Is responsible for determining which phase is currently active.
+The different phases can be seen in figure \ref{fig:quadrature}.
+The phase is found simply by comparing the signals as seen in listing \ref{code:phase_detection}.
+Regardless of the detected phase \texttt{next\_state} is set to \texttt{st3\_dir}.
+\begin{listing}[h]
+\begin{minted}{vhdl}
+when st2_edge =>
+	if A = '1' then
+	    if B = '1' then
+	        phase <= p4;
+	    else
+	        phase <= p3;
+	    end if;
+	    next_state <= st3_dir;
+	    @$\vdots$@
+\end{minted}
+\caption{VHDL code}
+\label{code:phase_detection}
+\end{listing}
+\paragraph{st3\_dir:} % (fold)
+
+\paragraph{st4\_cw:} % (fold)
+\paragraph{st5\_ccw:} % (fold)
+\paragraph{st6\_index:} % (fold)
+
+\begin{itemize}
+	\item \textbf{st1\_idle:} This 
+	
+	\item \textbf{st2\_edge:} 
+	\item \textbf{st3\_dir:} 
+	\item \textbf{st4\_cw:} 
+	\item \textbf{st5\_ccw:} 
+	\item \textbf{st6\_index:} 
+\end{itemize}
 
 \begin{figure}[h]
 	\centering
