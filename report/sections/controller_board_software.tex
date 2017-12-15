@@ -4,6 +4,97 @@
 
 \subsection{Analysis} % (fold)
 \label{sub:analysis}
+This section will seek to analyse the requirements for the software that runs on the Microzed mounted on the controllerboard.
+The software will need to serve as a base system, where control algorithms can be run.....
+\mikkel{More clever words here....}
+
+
+\subsubsection{Cart Position}
+\label{ssub:cart_position}
+In order to control the position of the cart it is important to know its absolute position.
+The \texttt{HEDS5540} encoder mounted on the motor has an \texttt{A}, \texttt{B} and \texttt{Z} incremental quadrature and can be used to measure the relative position of the cart. 
+The absolute position of the cart should be referred to the rail and therefore the \texttt{Z} signal cannot be used to determine the absolute position.
+The endstops have fixed positions on the rail and the signals from them can therefore be used to infer the absolute position.
+Specifically, resetting the position when reaching endstop 1 is a correct method of calibrating the system.
+Hereafter the absolute position can be measured by reading signals \texttt{A} and \texttt{B}.
+
+Implementing this functionality on an FPGA using VHDL has the advantage that all signals can be read simultaneously.
+This means that a correct VHDL design will ensure that no edges on pins can go unnoticed.
+Furthermore it has the advantage that the processor does not need to do any computation and jitter is not introduced, because no interrupts are used. 
+Therefore it was decided to implement the functionality of measuring absolute cart position in a VHDL module.
+
+
+\subsubsection{Controlling the Motor Driver} % (fold)
+\label{ssub:controlling_the_motor_driver}
+The motor driver has three inputs that needs to be produced by the controller board software.
+More Specifically, two PWM inputs and a disable pin that the disables the outputs of the motor driver.
+The PWM signals will be applied to the motor and therefore it was chosen to use a frequency of 22kHz in order to be outside of the audible range.
+It was decided to only apply a PWM signal to one channel in order to reduce the stress and current through the MOSFET and the motor.
+This means that in order to change direction of the motor torque, the PWM signal needs to be switched between the two PWM channels.
+The dutycycle of the PWM needs to be adjustable in order to control the speed of the motor.
+It was decided that it is beneficial to implement the PWM generation on the FPGA part of the Microzed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
+
+\subsubsection{General Peripheral Hardware Control} % (fold)
+\label{ssub:general_peripheral_hardware}
+As described in section \ref{ssub:relay_circuitry}, two relays should be controlled by the controller board software. 
+A inrush relay that allows for safe charging of the capacitor bank and the main relay. 
+Both are controlled by controlling the logic level of a output pin.
+Furthermore the software needs to control the three RGB LEDs on the controller board. 
+In order to utilize the full functionality of the RGB LEDs each channel of the LED should be controlled by a PWM signal.
+Using this method the LED can be illuminated in all colours.
+The frequency of the PWM is not of great concern as long as it is faster than human eye. 
+A higher frequency means a higher loss in the MOSFETs and therefore a frequency of 1kHz was chosen.
+
+
+
+\subsubsection{Interboard Communication} % (fold)
+\label{ssub:interboard_communication}
+....Throughout this section this aspect is explored further.
+Specifically it will be determined what data is required to be sent, and how often it is sent.
+.... It is determined in \ref{ssub:wireless_transmission_of_data} that two bytes are needed to represent the joint angle....
+
+With knowledge of the message size, it is possible to determine the theoretical maximum transmission rate.
+The nRF24L01 module is capable of transmitting up to 2Mbps.
+It uses Enhanced Shockburst, a protocol developed by Nordic Semiconductor specifically for their RF modules.
+This protocol adds an overhead for each packet of 6 bytes, including a CRC check and an address, amongst a few other features.
+Each packet is therefore $\approx$ 8 bytes with only 25\% of the packet being the intended payload.
+This effectively limits the data rate to 0.5Mbps.
+It is therefore possible to transmit a position at a rate of 31250Hz.
+Since the two joints are communicating with the same module on the controller board, this frequency is halved resulting in 15625Hz.
+Transmission at this frequency does entail a few problems, discussed in the following paragraphs.
+\paragraph{nRF24L01 Mode Cycling}~\\ % (fold)
+\label{par:nrf24l01_mode_cycling}
+When transmitting at a rate of 15625Hz a message is to be sent every 64$\mu$s
+According to the datasheet of the nRF24L01 it can be kept in transmit mode for no longer than 4ms, meaning that at the most 62 packets can be sent before cycling to standby-mode and back to TX-mode.
+Before entering TX-mode a 130$\mu$s settling period is inferred.
+This means that at least two packets are lost during this time.
+The problem can be overcome by lowering the transmission frequency such that the time between packets is above 130$\mu$s.
+6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
+% paragraph nrf24l01_mode_cycling (end)
+\paragraph{Air Collisions}~\\ % (fold)
+\label{par:air_collisions}
+There is a risk that two packets will collide if the joints transmit at the same time.
+Due to uneven drift between the two microcontrollers on the joints it is unlikely that collisions will occur indefinitely, however even a few lost packets in a row can cause severe problems in the control of the pendulum.
+The lowered transmission frequency alleviates this issue somewhat, but there is still a risk that multiple packets may be lost.
+Air collisions could be overcome altogether by using the acknowledge feature in the Enhanced Shockburst protocol, this enables the module to resend a message if an ACK message has not been received within 250$\mu$s.
+After 250$\mu$s however, the previous position is outdated and the new position should be sent rather than the lost position.
+Additionally, the ACK message adds 15 bytes to the transmission of each packet, greatly lowering the possible throughput.
+The nRF24L01 is capable of operating on different frequencies.
+By adding a second receiver on the controller board the two joints can communicate on different frequencies, eliminating the risk of air collisions altogether.
+This realisation was made after the controller board was produced and so the additional nRF24L01 has to be retrofitted on the board. 
+% paragraph air_collisions (end)
+\\~\\
+In order to simplify communication between the joint boards and the controller board communcation will be one way only.
+This allows the nRF24L01's on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
+The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
+
+
+\subsubsection{Real Time} % (fold)
+\label{ssub:real_time}
+bla.bla.bla.
+
+
+
 \subsubsection{VHDL and Coding Practices} % (fold)
 \label{ssub:vhdl_and_coding_practices}
 The low level control is written in VHDL.
@@ -25,9 +116,56 @@ In order to minimize the complexity of the VHDL programming task a number of pra
 \end{itemize}
 In addition to the points made above, it is the expectation that a future project will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
 Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
-% subsubsection vhdl_and_coding_practices (end)
+
+
 \subsubsection{Requirement Specification} % (fold)
 \label{ssub:controller_requirements}
+
+\paragraph{Functional:}
+\begin{itemize}
+	\item Correct cart position should be known at all times.
+	\begin{itemize}
+		\item Encoder signals should be used to measure relative position
+		\item Endstop signal should be used to calibrate and infer the absolute position.
+	\end{itemize}
+	\item General peripheral hardware should be controlled
+	\begin{itemize}
+		\item Main relay and inrush relay should be controlled through output pins.
+		\item 3 channel 1kHz PWM with adjustable dutycycle should control each RGB LED.
+	\end{itemize}
+	\item Software should produce correct signals to motor driver that allows for control of speed and direction of the motor.
+	\begin{itemize}
+		\item 22kHz PWM signals on two channels.
+		\item Adjustable dutycycle.
+		\item Control \texttt{DIS} signal.
+ 	\end{itemize}
+	\item Receive joint angle data from the two joint boards using the \texttt{nRF24L01} module
+	\begin{itemize}
+		\item Setup of Microzed as SPI master.
+		\item Setup of \texttt{nRF24L01} settings.
+		\item Receive joint angle at highest possible reliable frequency.
+	\end{itemize}
+	\item Real time behaviour of software.
+\end{itemize}
+
+\paragraph{Design:}
+\begin{itemize}
+	\item VHDL should be designed and implemented using the following practices.
+	\begin{itemize}
+		\item Utilization of Test Benches.
+		\item Atomic Components.
+		\item Utilization of IP Cores.
+	\end{itemize}
+	\item C or VHDL...??????????
+\end{itemize}
+\mikkel{Write something clever about C or VHDL!}
+\paragraph{Safety:}
+\begin{itemize}
+	\item Software should handle emergency situations.
+	\begin{itemize}
+		\item Should detect emergency condition and be able to produce emergency signal.
+	\end{itemize}
+\end{itemize}
 
 \subsection{Design and Implementation} % (fold)
 \label{sub:implementation}
@@ -140,46 +278,6 @@ when st2_edge =>
 	\label{fig:quadstatemachine}
 \end{figure}
 
-\subsubsection{Interboard Communication} % (fold)
-\label{ssub:interboard_communication}
-....Throughout this section this aspect is explored further.
-Specifically it will be determined what data is required to be sent, and how often it is sent.
-.... It is determined in \ref{ssub:wireless_transmission_of_data} that two bytes are needed to represent the joint angle....
-
-With knowledge of the message size, it is possible to determine the theoretical maximum transmission rate.
-The nRF24L01 module is capable of transmitting up to 2Mbps.
-It uses Enhanced Shockburst, a protocol developed by Nordic Semiconductor specifically for their RF modules.
-This protocol adds an overhead for each packet of 6 bytes, including a CRC check and an address, amongst a few other features.
-Each packet is therefore $\approx$ 8 bytes with only 25\% of the packet being the intended payload.
-This effectively limits the data rate to 0.5Mbps.
-It is therefore possible to transmit a position at a rate of 31250Hz.
-Since the two joints are communicating with the same module on the controller board, this frequency is halved resulting in 15625Hz.
-Transmission at this frequency does entail a few problems, discussed in the following paragraphs.
-\paragraph{nRF24L01 Mode Cycling}~\\ % (fold)
-\label{par:nrf24l01_mode_cycling}
-When transmitting at a rate of 15625Hz a message is to be sent every 64$\mu$s
-According to the datasheet of the nRF24L01 it can be kept in transmit mode for no longer than 4ms, meaning that at the most 62 packets can be sent before cycling to standby-mode and back to TX-mode.
-Before entering TX-mode a 130$\mu$s settling period is inferred.
-This means that at least two packets are lost during this time.
-The problem can be overcome by lowering the transmission frequency such that the time between packets is above 130$\mu$s.
-6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
-% paragraph nrf24l01_mode_cycling (end)
-\paragraph{Air Collisions}~\\ % (fold)
-\label{par:air_collisions}
-There is a risk that two packets will collide if the joints transmit at the same time.
-Due to uneven drift between the two microcontrollers on the joints it is unlikely that collisions will occur indefinitely, however even a few lost packets in a row can cause severe problems in the control of the pendulum.
-The lowered transmission frequency alleviates this issue somewhat, but there is still a risk that multiple packets may be lost.
-Air collisions could be overcome altogether by using the acknowledge feature in the Enhanced Shockburst protocol, this enables the module to resend a message if an ACK message has not been received within 250$\mu$s.
-After 250$\mu$s however, the previous position is outdated and the new position should be sent rather than the lost position.
-Additionally, the ACK message adds 15 bytes to the transmission of each packet, greatly lowering the possible throughput.
-The nRF24L01 is capable of operating on different frequencies.
-By adding a second receiver on the controller board the two joints can communicate on different frequencies, eliminating the risk of air collisions altogether.
-This realisation was made after the controller board was produced and so the additional nRF24L01 has to be retrofitted on the board. 
-% paragraph air_collisions (end)
-\\~\\
-In order to simplify communication between the joint boards and the controller board communcation will be one way only.
-This allows the nRF24L01's on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
-The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
 
 \subsubsection{nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
@@ -352,7 +450,7 @@ if (counter > unsigned(comp_value)) then
 	end if;
 end process;		
 \end{minted}
-\caption{VHDL code }
+\caption[VHDL code generating PWM signals.]{VHDL code generating PWM and setting it to the correct channel.}
 \label{code:vhdl_pwm_gen}
 \end{listing}
 
