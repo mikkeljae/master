@@ -264,7 +264,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 \subsubsection{Requirement Specification}
 
 \paragraph{Functional:}
-\begin{itemize}
+\begin{enumerate}[resume]
 	\item Motor speed and direction should be adjustable through PWM outputs ports of the MicroZed.
 	\begin{itemize}
 		\item H-bridge of MOSFETs capable of switching motor current direction.
@@ -306,11 +306,11 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 		\item A heatsink should be connected to MOSFETs driving the motor.
 	\end{itemize}
 	\item Wireless communication using RF should be implemented
-\end{itemize}
+\end{enumerate}
 
 
 \paragraph{Design:}
-\begin{itemize}
+\begin{enumerate}[resume]
 	\item Important parts of circuitry should be tested on prototype PCB.
 	\item The PCB layout should be reviewed according to the developed strategy.
 	\begin{itemize}
@@ -335,11 +335,11 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\begin{itemize}
 		\item Component casings should be SOT-23, SOIC or 0805 where possible.
 	\end{itemize}
-\end{itemize}
+\end{enumerate}
 
 	
 \paragraph{Safety:}
-\begin{itemize}
+\begin{enumerate}[resume]
 	\item Should not break if misused.
 	\begin{itemize}
 		\item Endstops capable of stopping moving cart.
@@ -361,4 +361,4 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 			\item Relay should be active only when emergency conditions are inactive.
 			\item Power to remaining electronics and MicroZed should not be affected by an emergency condition.
 		\end{itemize}
-\end{itemize}
+\end{enumerate}

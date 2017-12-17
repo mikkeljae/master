@@ -11,6 +11,7 @@
 \usepackage{rsfso} %Add the fancy L used in lagrange
 \usepackage{siunitx}
 \usepackage{pgfplots}
+\usepackage{enumitem}	% to make enumerate numbering automatically resume
 \pgfplotsset{compat=1.13} 
 \usepackage{letltxmacro}
 \usepackage{tikz}
@@ -95,7 +96,7 @@
 \listoffigures
 \listoftables
 \clearpage
-\input{sections/reading_guide}
+%\input{sections/reading_guide}
 \pagenumbering{arabic}
 %\input{sections/introduction}
 %\input{sections/system_analysis}
@@ -104,7 +105,7 @@
 \input{sections/controller_board_software}
 %\input{sections/joint_development}
 \clearpage
-%\input{sections/joint_board_software}
+\input{sections/joint_board_software}
 %%\input{sections/software}
 %\input{sections/model_development.tex}
 %%\input{sections/test_platform}
@@ -116,7 +117,7 @@
 \printbibliography[heading=none, keyword={data}]
 \newpage
 \appendix
-%\input{appendix/joint_board_verification_procedure}
+\input{appendix/joint_board_verification_procedure}
 \newpage
-%\input{appendix/controller_board_verification_procedure}
+\input{appendix/controller_board_verification_procedure}
 \end{document}
