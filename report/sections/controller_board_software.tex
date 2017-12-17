@@ -194,19 +194,31 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 
 \subsection{Design and Implementation} % (fold)
 \label{sub:implementation}
-\subsubsection{VHDL Components} % (fold)
+\subsubsection{Implementation of Cart Position Counter} % (fold)
 \label{ssub:vhdl_components}
 A number of VHDL components were designed and implemented for use on the MicroZed.
 An indepth description of each is not necessary and the authors have decided to instead focus on the implementation of just the cart position counter as it provides a good description of the workflow used for each component.
+\\~\\
+The majority of VHDL components in this project are written as state machines, SM's.
+Each SM is done using a Mealy SM in a three-part structure:
+\begin{enumerate}
+	\item \textbf{Sync Process:} This is the only process which is synchronized with the clock signal.
+	It is used to ensure that state and signals are changed only on the rising edge of the clock.
+	\item \textbf{Output Decode:} In each state the output signals are to be in a specific configuration.
+	Given any state, this process ensures that the signals are in that configuration.
+	\item \textbf{Next State Decode:} In this process the next state is determined based on the current state and the current inputs.
+\end{enumerate}
+Using this structure ensures that each process has only one responsibility and will generally result in cleaner, more simple code.
 \\~\\
 \thomas{Part of the text below was required for me to properly write this section. Some of it may be better suited for an analysis.}
 The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
 This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
 Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
-\\~\\
-\paragraph{Incremental Quadrature}~\\ % (fold)
+The decoding task is done by a seperate component which is then instansiated in the counting component.
+
+\paragraph{Incremental Quadrature Decoding}~\\ % (fold)
 \label{par:incremental_quadrature}
-As mentioned above, the motor provides three signals for incremental quadrature, \texttt{A}, \texttt{B} and \texttt{Z}. 
+The motor provides three signals for incremental quadrature, \texttt{A}, \texttt{B} and \texttt{Z}. 
 Figure \ref{fig:quadrature} is a depiction of this quadrature scheme.
 The two signals \texttt{A} and \texttt{B} are 90$^\circ$ out of phase and their frequency is determined by the angular velocity of the joint.
 As can be seen from the figure the signals create four unique stages, counting these allows knowledge of both the direction, position and, potentially, the velocity of the joint.
@@ -219,7 +231,6 @@ This signal is not used in this VHDL component as the angular position of the mo
 	\caption{Incremental quadrature scheme as implemented on the Maxon.}
 	\label{fig:quadrature}
 \end{figure}
-% paragraph incremental_quadrature (end)
 
 \paragraph{State Machine Structure}~\\ % (fold)
 \label{par:state_machine_structure}
@@ -235,9 +246,16 @@ Using this structure ensures that each process has one responsibility and will g
 \\~\\
 The component described in this section is comprised of two subcomponents.
 The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of the signal.
-A depiction of the state machine (SM) can be seen in figure \ref{fig:quadstatemachine}.
+A depiction of the SM responsible for decoding the incremental quadrature can be seen in figure \ref{fig:quadstatemachine}.
+On this figure \texttt{A}, \texttt{B} and \texttt{Z} are the quadrature signals, \texttt{p} and \texttt{pl} are the \texttt{phase} and \texttt{last\_phase} variables, \texttt{T\_i}, \texttt{D\_i} and \texttt{I\_i} are the \texttt{tick}, \texttt{direction} and \texttt{index} variables.
 Note that VHDL notation has been omitted for clarity.
-As can be seen, the SM is comprised of six states.
+As can be seen, the SM is comprised of six states, explained in more detail in the following paragraphs.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.85\linewidth]{graphics/quad_state_machine}
+	\caption{State machine of the incremental quadrature decoder created for the MicroZed.}
+	\label{fig:quadstatemachine}
+\end{figure}
 \paragraph{st1\_idle:} % (fold)
 Is the initial state and the state that is returned to between edges on the quadrature signal.
 Since the quadrature signal is not synchronous with the driving clock of the system the \texttt{rising\_edge()} and \texttt{falling\_edge()} functions cannot be used to determine edges.
@@ -281,28 +299,98 @@ when st2_edge =>
 \label{code:phase_detection}
 \end{listing}
 \paragraph{st3\_dir:} % (fold)
-
+Determines the current direction of travel.
+This can be seen by comparing the current phase to the last phase.
+Listing \ref{code:determine_direction} shows the structure of the code responsible for this step.
+\begin{listing}[h]
+\begin{minted}{vhdl}
+when st3_dir =>
+	if last_phase /= p0 then
+	    if phase = p1 then
+	        if last_phase = p4 then
+	            next_state <= st5_ccw;
+	        end if;
+	        if last_phase = p2 then
+	            next_state <= st4_cw;
+	        end if;
+	        next_last_phase <= p1;
+	    end if;
+	    if phase = p2 then
+	    @$\vdots$@
+    else
+        next_last_phase <= phase;
+        next_state <= st1_idle;
+    end if;
+\end{minted}
+\caption{VHDL code}
+\label{code:determine_direction}
+\end{listing}
+As can be seen in the code there is a reference to phase 0.
+This is required since the initial phase is unknown.
+During the first run the direction-determination is mostly skipped and \texttt{last\_phase} is initialized to phase.
+On every subsequent run, depending on the direction, \texttt{next\_state} is set to either \texttt{st4\_cw} or \texttt{st5\_ccw}.
 \paragraph{st4\_cw:} % (fold)
+The SM is in this state for one clock cycle to allow for the outputs to be adjusted and a tick to be generated.
 \paragraph{st5\_ccw:} % (fold)
+The SM is in this state for one clock cycle to allow for the outputs to be adjusted and a tick to be generated.
 \paragraph{st6\_index:} % (fold)
+The SM is in this state for one clock cycle when the \texttt{Z} input goes high and generates a signal to indicate that the index has been reached.
+While this feature is unused in the cart position counter as it currently exists, it was decided to include it to allow future developers to use it if the need arises.
 
-\begin{itemize}
-	\item \textbf{st1\_idle:} This 
-	
-	\item \textbf{st2\_edge:} 
-	\item \textbf{st3\_dir:} 
-	\item \textbf{st4\_cw:} 
-	\item \textbf{st5\_ccw:} 
-	\item \textbf{st6\_index:} 
-\end{itemize}
+\paragraph{Cart Position Counter}~\\ % (fold)
+\label{par:cart_position_counter}
+This component maintains a counter which is incremented or decremented at every tick generated by the incremental quadrature decoder depending on the state of direction signal.
+If either of the end signals are set high the counter is set to zero.
+Upon booting the system the cart should be moved to the rightmost end-stop in order to calibrate the system.
+Moving the cart will now increment the position with leftward motion and decrement with rightward motion.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.85\linewidth]{graphics/quad_state_machine}
-	\caption{State machine of the incremental quadrature decoder created for the MicroZed.}
-	\label{fig:quadstatemachine}
+	\includegraphics[width=.75\linewidth]{graphics/count_state_machine}
+	\caption{State machine of the cart position counter created for the MicroZed.}
+	\label{fig:countstatemachine}
 \end{figure}
 
+The SM of the system can be seen in figure \ref{fig:countstatemachine}.
+It should be noted that the end signal is treated as a reset signal and as such is not part of the actual SM.
+Since it is essentially a reset signal handling of it is placed in the sync process to avoid an asynchronous reset of the values.
+The code in question can be seen in listing \ref{code:cart_sync_proc}.
+
+\begin{listing}[h]
+\begin{minted}{vhdl}
+SYNC_PROC:  process(clk)
+		        begin
+		            if rising_edge(clk) then
+		                if emend = '0' then
+		                    counter_i <= (others => '0');
+		                    state <= st1_idle;
+		                    cal_i <= '1';
+		                else
+		                    state <= next_state;
+		                    counter_i <= next_counter_i;
+		                    last_T_i <= T_i;
+		                end if;
+		            end if;
+		        end process;
+\end{minted}
+\caption{VHDL code}
+\label{code:cart_sync_proc}
+\end{listing}
+
+The SM has only three simple states.
+\texttt{st1\_idle} which is the state where the SM waits for a rising edge on the tick signal, \texttt{T}.
+If the direction signal, \texttt{D} is low when a tick arrives the SM proceeds to \texttt{st2\_cw} if the opposite is true it proceeds to \texttt{st3\_ccw}.
+In those states the position variable, \texttt{C} is either decremented or incremented.
+
+\paragraph{Test Benches} % (fold)
+\label{par:test_benches}
+A part of developing these components has been to develop and use test benches to verify code as it is being written.
+VHDL was originally thought as a language to describe and simulate hardware and logic and has later been used as the programming language used to create FPGA designs.
+All of the original features of the language are still present and as such it is possible to create a component which fully exercises whichever compoment is under development, the unit-under-test or UUT.
+\\~\\
+The test bench written for the cart position counter is comprised of three processes, the \texttt{clk\_proc} which is responsible for generating the driving clock for the component, \texttt{quad\_proce\_ccw} or \texttt{quad\_proce\_cw} for simulating the quadrature signal in either the counter-clockwise or the clockwise direction and finally the \texttt{stim\_proc} which is responsible for exercising any of the input signals.
+\\~\\
+The UUT
 
 \subsubsection{nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
