@@ -343,7 +343,7 @@ The SM has only three simple states.
 If the direction signal, \texttt{D} is low when a tick arrives the SM proceeds to \texttt{st2\_cw} if the opposite is true it proceeds to \texttt{st3\_ccw}.
 In those states the position variable, \texttt{C} is either decremented or incremented.
 
-\paragraph{Test Benches} % (fold)
+\paragraph{Test Benches}~\\ % (fold)
 \label{par:test_benches}
 A part of developing these components has been to develop and use test benches to verify code as it is being written.
 VHDL was originally thought as a language to describe and simulate hardware and logic and has later been used as the programming language used to create FPGA designs.
@@ -351,7 +351,24 @@ All of the original features of the language are still present and as such it is
 \\~\\
 The test bench written for the cart position counter is comprised of three processes, the \texttt{clk\_proc} which is responsible for generating the driving clock for the component, \texttt{quad\_proce\_ccw} or \texttt{quad\_proce\_cw} for simulating the quadrature signal in either the counter-clockwise or the clockwise direction and finally the \texttt{stim\_proc} which is responsible for exercising any of the input signals.
 \\~\\
-The UUT
+The UUT is instantiated as a component in the test bench and Vivado provides tools for investigating the flow of execution.
+An excerpt illustrating the functionality can be seen in figure \ref{fig:testbench}.
+As can be seen \texttt{B\_i} is leading \texttt{A\_i}, resulting in \texttt{D\_i} going high.
+Since \texttt{emend\_i} is high the component starts counting on every rising edge of \texttt{T\_i}.
+When \texttt{emend\_i} goes low the counter is reset and future ticks are ignored until \texttt{emend\_i} returns to high.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{graphics/test_bench_narrow}
+	\caption{State machine of the cart position counter created for the MicroZed.}
+	\label{fig:testbench}
+\end{figure}
+
+\thomas{A mention of Vivado, should we refer to it somehow?}
+
+\paragraph{IP Cores and the AXI Bus}~\\ % (fold)
+\label{par:ip_cores}
+Once the component is confirmed 
 
 \subsubsection{nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
