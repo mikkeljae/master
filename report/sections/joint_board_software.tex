@@ -56,6 +56,7 @@ This requires the joint board software to be programmed as real time software, w
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Correct joint angle should be known at all times.
+	\label{enum:correct_angles}
 	\begin{itemize}
 		\item Encoder signals \texttt{A}, \texttt{B} and \texttt{Z} should be interfaced using interrupts.
 		\item \texttt{A}, \texttt{B} should be used to measure the relative angle.
@@ -74,6 +75,7 @@ This requires the joint board software to be programmed as real time software, w
 	\item Real time behaviour of software.
 \end{enumerate}
 
+Hi see this \ref{enum:correct_angles}.
 \subsection{Design and Implementation} % (fold)
 \label{sub:design_and_implementation}
 
