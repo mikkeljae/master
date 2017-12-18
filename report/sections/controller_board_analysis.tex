@@ -330,17 +330,20 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 		\item Peer-review.
 	\end{itemize}
 	\item The PCB layout should be designed with debugging in mind.
+	\label{enum:pcb_debugging}
 	\begin{itemize}
 		\item Test points should exist for all voltage rails and relevant signals.
 		\item All test points should be wired to JST ZH-series connectors.
 	\end{itemize}
 	\item PCB layout....
+	\label{enum:pcb_layout}
 	\begin{itemize}
 		\item Ground plane...
 		\item Avoid through-hole components....
 		\item Power ground and signal ground
 	\end{itemize}
 	\item PCB soldering should be possible at SDUs facilities.
+	\label{enum:pcb_soldering}
 	\begin{itemize}
 		\item Component casings should be SOT-23, SOIC or 0805 where possible.
 	\end{itemize}
@@ -350,6 +353,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 \paragraph{Safety:}
 \begin{enumerate}[resume]
 	\item Should not break if misused.
+	\label{enum:not_break_mis}
 	\begin{itemize}
 		\item Endstops capable of stopping moving cart.
 		\item Components should be able to handle stall current for xx seconds.
@@ -358,6 +362,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 
 	\item Any triggered emergency condition should halt the cart.
+	\label{enum:any_trigger_em}
 		\begin{itemize}
 			\item Emergency conditions should be implemented.
 			\begin{itemize}

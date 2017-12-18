@@ -37,7 +37,7 @@ A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\linewidth]{graphics/hipboard_pic}
-	\caption[Prototype PCB developed to test functionality of motor driver.]{Picture of PCB developed to test the functionality of the motor drive circuitry.}
+	\caption[Prototype PCB with motor driver.]{Picture of PCB developed to test the functionality of the motor drive circuitry.}
 	\label{fig:m_drive_circuit}
 \end{figure}
 The boards gate signals was wired to the gate of four MOSFETs.
@@ -340,7 +340,7 @@ more...
 \begin{figure}[h]
 	\centering
     \input{graphics/controllerboardv2_current_motor_supply.tex}
-	\caption{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
+	\caption[Measured supply and load currents.]{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
 	\label{fig:controllerboardv2_}
 \end{figure}
 
@@ -388,3 +388,33 @@ Time and money was saved this way, by correcting the errors before ordering the 
 \subsubsection{Requirement \ref{enum:pcb_strategy}} % (fold)
 \label{ssub:requirement_enum:pcb_strategy}
 According to requirement \ref{enum:pcb_strategy} the PCB layout should be reviewed according to the five steps of the developed strategy.
+Using this method a PCB layout was produced with significantly less errors than the previous experience of the authors.
+The fact that the final PCB contained errors indicates that the steps were not followed thoroughly enough or that the method is flawed.
+Two of the errors originated in a difference between a components footprint and the symbol in the schematic.
+Therefore it should be added to the footprint inspection step that it should be checked for all components if their footprint is in accordance with the symbol in the schematic.
+The conclusion on the rest of the errors was that the steps should have been followed more thoroughly.
+Especially it would have been beneficial to use the peer-review step more comprehensively.
+
+\subsubsection{Requirement \ref{enum:pcb_debugging}} % (fold)
+\label{ssub:requirement_enum:pcb_debugging}
+Requirement \ref{enum:pcb_debugging} specifies that the PCB layout should be designed with debugging in mind.
+This was done by adding six debugging headers with a total of 55 signals to the PCB design.
+The debugging headers were used extensively in the debugging process.
+
+\subsubsection{Requirement \ref{enum:pcb_layout}} % (fold)
+\label{ssub:requirement_enum:pcb_layout}
+blabla.....
+WE ALSO NEED ANALOG GROUND
+
+\subsubsection{Requirement \ref{enum:pcb_soldering}} % (fold)
+\label{ssub:requirement_enum:pcb_soldering}
+According to requirement \ref{enum:pcb_soldering} all PCB soldering should be possible at SDUs facilities, which it successfully was.
+
+
+\subsubsection{Requirement \ref{enum:not_break_mis}} % (fold)
+\label{ssub:requirement_enum:not_break_mis}
+\mikkel{Help me, please!}
+
+\subsubsection{Requirement \ref{enum:any_trigger_em}} % (fold)
+\label{ssub:requirement_enum:any_trigger_em}
+\mikkel{Help me, please! Also here!}
