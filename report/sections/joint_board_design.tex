@@ -97,12 +97,19 @@ Lithium-Ion batteries have a very high energy density and it should therefore be
 The joint design
 
 \subsection{RS422}
-No termination was used....
-Under 200kbps....
-Short wires...
-minimum power.
+The \texttt{RL2IC} uses the RS422 standard for its output.
+This means that each \texttt{A}, \texttt{B} or \texttt{Z} channel consists of a two wire differential signal.
+A line tranceiver is needed in order to translate the RS422 signals to logic inputs that the ATtiny84 can read.
+The \texttt{DS26LS32CM} is a quad differential line receiver that complies with the RS422 standard.  
+When using RS422 there are different termination methods, with no termination being the simplest.
+The RS422 Standard Overview \cite{rs422_texas} describes that signal integrity is maintained in a setup of \approx 30m wires carrying data at a signal rate of 200kbps without termination.
+The intended setup on the joint board requires wires not longer than 10 cm.
+The maximum expected data rate can be calculated using the maximum expected angular velocity of the joint of 20Hz and the edges on one channel per revolution.
+\begin{equation}
+Datarate_{max}	= 20 \cdot 3600 = 72kbps
+\end{equation}
+This datarate is clearly below the 200kbps and it was there decided to use no line termination, which also has the advantage that a minimum amount of current is needed from the \texttt{RL2IC}.
 
-See \cite{rs422_texas} page 13.
 
 \subsection{Voltage Rail Generation}
 \label{sub:voltage_rail_generation}
