@@ -109,11 +109,23 @@ Inherently real time....
 \paragraph{Sequential Computing} % (fold)
 \label{par:sequential_computing}
 
-\paragraph{The AXI Bus} % (fold)
+\paragraph{The AXI Bus and IP Cores} % (fold)
 \label{par:the_axi_bus}
-
-% paragraph the_axi_bus (end)
-
+The AXI, Advance eXtensible Interface, standard is part of Arm AMBA, an industry standard for communication between components on SoC's.
+AXI4 has been co-developed with Xilinx in an effort to tailor it for use in FPGA's.
+Perhaps not surprisingly, Xilinx uses this protocol extensively in their IP, Intellectual Property.
+It increases portability by allowing a single interface between different components.
+The use of IP allows companies to share functionality without disclosing the underlying code, but also simplifies the connection of various components since every component can be verified independently of the others and can be easily connected using the Block Design feature of Vivado.
+AXI is a memory-mapped interface, meaning that communication through the bus is essentially a controlled sharing of specific memory.
+Communication between PS and PL requires the use of the AXI bus.
+\\~\\
+There are three different implementations of the AXI bus:
+\begin{itemize}
+	\item \textbf{AXI4-Full:} This implementation enables burst transmissions, allowing multiple data transmissions per interaction.
+	\item \textbf{AXI4-Lite:} This implementation is lower bandwidth than the above implementation but is especially useful for setting control registers and transmitting low volumes of data.
+	\item \textbf{AXI4-Stream:} This implementation foregoes the use of addresses and allows a continuous stream of data.
+\end{itemize}
+Since the data exchanged between PL and PS in this project is mostly the setting of control registers and reading cart positions at a steady rate the simpler AXI4-Lite implementation is going to be used for the components created in this project.
 \subsubsection{Real Time} % (fold)
 \label{ssub:real_time}
 bla.bla.bla.
@@ -382,7 +394,7 @@ The SM has only three simple states.
 If the direction signal, \texttt{D} is low when a tick arrives the SM proceeds to \texttt{st2\_cw} if the opposite is true it proceeds to \texttt{st3\_ccw}.
 In those states the position variable, \texttt{C} is either decremented or incremented.
 
-\paragraph{Test Benches} % (fold)
+\paragraph{Test Benches}~\\ % (fold)
 \label{par:test_benches}
 A part of developing these components has been to develop and use test benches to verify code as it is being written.
 VHDL was originally thought as a language to describe and simulate hardware and logic and has later been used as the programming language used to create FPGA designs.
@@ -390,7 +402,122 @@ All of the original features of the language are still present and as such it is
 \\~\\
 The test bench written for the cart position counter is comprised of three processes, the \texttt{clk\_proc} which is responsible for generating the driving clock for the component, \texttt{quad\_proce\_ccw} or \texttt{quad\_proce\_cw} for simulating the quadrature signal in either the counter-clockwise or the clockwise direction and finally the \texttt{stim\_proc} which is responsible for exercising any of the input signals.
 \\~\\
-The UUT
+The UUT is instantiated as a component in the test bench and Vivado provides tools for investigating the flow of execution.
+An excerpt illustrating the functionality can be seen in figure \ref{fig:testbench}.
+As can be seen \texttt{B\_i} is leading \texttt{A\_i}, resulting in \texttt{D\_i} going high.
+Since \texttt{emend\_i} is high the component starts counting on every rising edge of \texttt{T\_i}.
+When \texttt{emend\_i} goes low the counter is reset and future ticks are ignored until \texttt{emend\_i} returns to high.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{graphics/test_bench_narrow}
+	\caption{State machine of the cart position counter created for the MicroZed.}
+	\label{fig:testbench}
+\end{figure}
+
+\thomas{A mention of Vivado, should we refer to it somehow?}
+
+\paragraph{Packaging an AXI-Enabled IP Core}~\\ % (fold)
+\label{par:ip_cores}
+Once the component is confirmed functioning as intended, the component is packaged as an IP core capable of AXI communication.
+Vivado provides an IP packager which auto-generates the files required for instantiating the components for AXI-communication.
+The user can choose the number and width of the registers to be available in the instantiated AXI component.
+In the generated files the user is expected to add their own code and alter existing code such that it correctly implements the desired functionality.
+\\~\\
+In relation to the components created in this project, the \texttt{.vhd} code files are imported to the project and the component instantiated.
+Every user-defined port is brought out through the AXI component so that they can be constrained correctly in the \texttt{.xdc} constraint file.
+Since every component is made as an IP core the system can be created using a block design.
+For illustration purposes the block design of the full system has been included in figure \ref{fig:blockdesign}.
+The rightmost blocks include three of the authors' designs and a Xilinx \texttt{axi\_gpio} block.
+The GPIO block is used to handle hardware signals for creating an emergency state, enabling the motor driver and similar tasks.
+As can be seen, a simple RGB LED controller has been written to handle the debug LEDs on the board.
+By creating the component to control just a single LED, that code can be instantiated as many times as is required by the application and in any application.
+In common for all of these blocks is that they require at least some of their input from the AXI bus.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{graphics/block_design}
+	\caption{Vivado block design of the complete system.}
+	\label{fig:blockdesign}
+\end{figure}
+
+\paragraph{Communication Through the AXI Bus}~\\ % (fold)
+\label{par:communication_through_the_axi_bus}
+In this project the AXI bus is used to communicate between PS and PL.
+Doing this requires setup in both domains.
+In PL registers are generated which the user can input data to.
+An example of how this is set up can be seen in listing \ref{code:axiconnection}.
+Individual bits in a register can be set to different variables and the remaining bits left unchanged.
+
+\begin{listing}[h]
+\begin{minted}{vhdl}
+cart_counter_inst : cart_counter
+        port map(
+            clk => clk,
+            A => A,
+            B => B,
+            Z => Z,
+            emend => emend,
+            cal => slv_reg0(1),
+            dir => slv_reg0(0),
+            pos => slv_reg1
+        );
+\end{minted}
+\caption{Code showing the connection of AXI registers to the cart position counter signals.}
+\label{code:axiconnection}
+\end{listing}
+
+In PS these registers can be accessed using the \texttt{Xil\_In32()} and \texttt{Xil\_Out32()}.
+These functions require an address and in the case of the output function, a payload to write to the register.
+Each device in the design is given a base address which can be found in the \texttt{xparameters.h} header file which is generated for each hardware design.
+Accessing a parameter is then done by adding the appropriate offset.
+The offset is determined by the width of the registers.
+In this case registers are 32 bits wide and so every offset is \texttt{0x04} bytes.
+In code this is handled as seen in listing \ref{code:axiconnectionps}
+
+\begin{listing}[h]
+\begin{minted}{c}
+#define CART_BASEADDR XPAR_ZYBO_CART_COUNTER_V1_0_0_BASEADDR
+
+#define CAL_ADDR		0x00
+#define DIR_ADDR		0x00
+#define POS_ADDR		0x04
+	
+#define CALIBRATED		0x01
+		@$\vdots$@
+	
+void get_position(uint32_t *position)
+{
+	if(is_calibrated() == CALIBRATED)
+	{
+		*position = Xil_In32(CART_BASEADDR+POS_ADDR);
+	}
+	else
+	{
+		position = NULL;
+	}
+}
+
+		@$\vdots$@
+void cart_task(void)
+{
+	uint32_t* pos = NULL;
+	if(get_position(pos) != NULL)
+	{
+		//Do Something
+	}
+		@$\vdots$@
+}
+\end{minted}
+\caption[Excerpt from the code written to handle the communication with the cart position counter.]{Excerpt from the code written to handle the communication with the cart position counter. \texttt{is\_calibrated() returns the status of calibration.}}
+\label{code:axiconnectionps}
+\end{listing}
+
+Here a wrapper function for \texttt{Xil\_In32()} is shown.
+A number of these are written to simplify the code and reduce the risk of errors.
+In this case the position is only valid if the calibration bit is set high.
+When it is not, a null pointer is returned.
+Rather than checking both the calibration status and the position, both can be done using a single function call.
 
 \subsubsection{nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
