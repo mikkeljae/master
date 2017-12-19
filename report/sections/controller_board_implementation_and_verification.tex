@@ -68,12 +68,14 @@ Something here....
 
 \subsubsection{General Verification Procedure} % (fold)
 \label{ssub:verification_procedure}
-
+This procedure is created in an effort to allow for an easier debugging procedure of a newly produced controller board.
+A blank version appropriate for printing can be found in appendix \ref{sec:controller_board_verification_procedure}.
+It should be noted that the version seen below is not identical to the one found in the appendix.
+This is because some of the tests performed below are done to verify that the design is done correctly, rather than ensuring that production has been done correctly.
 \paragraph{Verify Voltage Rails} % (fold)
- \label{par:verify_voltage_rails}
- \mikkel{Remember to tell that this procedure is not 100\% identical to the one in the appendix. Some extra things are tested here and graphs are shown.}
+\label{par:verify_voltage_rails}
 
- \begin{itemize}
+\begin{itemize}
  	\item Apply 24V to \texttt{24V}.
  	\item Toggle power button to ON.
  	\begin{itemize}
@@ -288,11 +290,15 @@ The gate signals for channel \texttt{B} are shown in figure \ref{fig:controllerb
 
 \subsubsection{Requirement \ref{enum:motor_current}} % (fold)
 \label{ssub:requrement_enum:motor_current_}
-Requirement \ref{enum:motor_current} specifies that it should be possible to make motor current measurements through ADC input on the MicroZed.
+This requirement specifies that it should be possible to measure the current through the motor usint the ADCs on the MicroZed.
 A 200$\mu \Omega$ shunt resistor was placed in a low-side H-bridge configuration with a current sense amplifier with a gain of 100.
 This ensures that currents up to 40A can be measured and the maximum current of 80A does not harm the Microzed.
 
 \paragraph{Test}~\\
+Place a resistive load across the motor terminals.
+Set \texttt{PWMA} to \texttt{LOW} and \texttt{PWMB} to \texttt{HIGH}.
+This will create a direct current path through the H-bridge and therefore through the shunt resistor.
+
 An attempt to verify the requirement was done by conducting the following test procedure.
 By setting \texttt{PWMA} to \texttt{LOW} and \texttt{PWMB} to \texttt{HIGH} it is possible to create a direct current path through the H-bridge.
 A constant resistive load of 3 Ohm was set in place of the motor and a DC current of 8A through the shunt resistor was created.
