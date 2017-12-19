@@ -35,21 +35,40 @@ It is estimated that the maximum angular velocity is  $\approx$20Hz, which means
 \mikkel{It would be nice with some sort of reasoning/reference.}
 
 \subsubsection{Wireless Transmission of Data}
-As mentioned in section \ref{}, communication between the controller board and the joint boards is to happen wirelessly using the \texttt{nRF24L01} module.
-\thomas{find section where wireless transmission is decided}
+As mentioned in section \ref{ssub:interboard_communication}, communication between the controller board and the joint boards is to happen wirelessly using the \texttt{nRF24L01} module and a period between packets of more than 130$\mu$s.
 The software needs to communicate with the \texttt{nRF24L01} through a SPI connection with the \texttt{ATtiny} as the master.
 The \texttt{nRF24L01} has a number of options that needs to be set according to the wanted functionality.
-As described in \ref{ssub:interboard_communication}, it was found that the two joints needs to send on two separate frequency bands to avoid air collisions. 
+As described in \ref{ssub:interboard_communication}, it was found that the two joints needs to send using two separate frequency bands to avoid air collisions. 
 This needs to be set up individually in each \texttt{nRF24L01} module. 
 Latency should be minimized by reducing overhead in transmitted packages and sending the smallest possible payload that correctly conveys the joint data.
-Data should be transmitted every 160$\mu$s, as explained in \ref{ssub:interboard_communication}. 
+The data sheet describes that the \texttt{nRF24L01} can operate at air rates of 250kbps, 1Mbps and 2Mbpthat.
+The transmission tests in \ref{} ....
+a transmission rate of 1Mbps was chosen.. 
+
+\paragraph{Transmission Rate} % (fold)
+\label{par:transmission_rate}~\\
+The datasheet of the \texttt{nRF24L01} module specifies that there is a settling time of 130$\mu$s when entering the transmit state.
+Several aspects should be considered in order to determine the required period time associated with transmission of one data packet. 
+Transmission of a two byte payload through SPI takes $\approx$ 36 $\mu$s as will be shown in \ref{}.
+The \texttt{CE} should be high for at least 10$\mu$s in order for the transition to transmit mode is initiated.
+Hereafter the settling time of 130$\mu$s is inferred.
+Then the \texttt{nRF24L01} will transmit the two byte payload in a eight byte data packet, which will take 68$\mu$s using a air transmission rate of 1Mbps.
+This totals 244$\mu$s, in which the computation time needed is not included.
+Therefore it was decided to use a period time of 333$\mu$s, which yields 89$\mu$s to computation and a sampling frequency of $\approx$3kHz.
+The period is shown in figure \ref{fig:tiny_period}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\linewidth]{graphics/tiny_period}
+	\caption[Period of wireless transmission]{Period associated with transmission of one data packet.}
+	\label{fig:tiny_period}
+\end{figure}
+
+
 
 \subsubsection{Real Time Software}
 In order to produce reliable data for the controller board the joint angle should be sampled and transmitted at a constant rate.
 This requires the joint board software to be programmed as real time software, where deadlines should be met.
-
-\subsubsection{Software Development}
-\mikkel{Remember to write something in general somewhere about top-down and bottom-up}
 
 \subsection{Requirement Specification} 
 
@@ -70,7 +89,7 @@ This requires the joint board software to be programmed as real time software, w
 	\begin{itemize}
 		\item Setup of the \texttt{ATtiny} as a SPI master.
 		\item Setup of \texttt{nRF24L01} settings and individually frequency bands.
-		\item Transmit data every 160$\mu$s.
+		\item Transmit data every 333$\mu$s.
 		\item Minimize latency.
 	\end{itemize}
 	\item Real time behaviour of software.
@@ -100,9 +119,9 @@ This requires the joint board software to be programmed as real time software, w
 \end{figure}
 A software design was made based on the requirements for the joint board software.
 The main functionality of the software is illustrated in the flowchart of figure \ref{sfig:joint_main_flowchart}.
-Upon startup the nRF24L01 is setup as explained in section \ref{par:nrf24l01}.
-A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpacket}, is sent every 160$\mu$s.
-Now the copying procedure is started after which the packet is transmitted and the program is idling until 160$\mu$s has passed and the process starts over.
+Upon startup the \texttt{nRF24L01} is setup as explained in section \ref{par:nrf24l01}.
+A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpacket}, is sent every 333$\mu$s.
+Now the copying procedure is started after which the packet is transmitted and the program is idling until 333$\mu$s has passed and the process starts over.
 An interrupt can happen at any given time and the ISR, will update the measured joint angle. 
 The coming sections will elaborate on the different elements of the software.
 
@@ -246,12 +265,12 @@ This functions enables setup of the \texttt{nRF24L01}, which is done with the sa
 \label{ssub:software_timer}
 The timer shown in figure \ref{sfig:joint_main_flowchart}, is implemented on the \texttt{ATtiny84} using \texttt{Counter 1}, which is a 16 bit timer capable of generating software interrupts.
 \texttt{Counter 1} is setup by setting a prescaler to the CPU clock and a compare value.
-Using a prescaler of 1, the compare value for setting up a interrupt each 160$\mu$s is calculated as: 
+Using a prescaler of 1, the compare value for setting up a interrupt each 333$\mu$s is calculated as: 
 \begin{equation}
-	Comp = \frac{T}{T_{cpu}} = \frac{160 \cdot 10^{-6}}{1.25\cdot 10^{-7}} = 1280
+	Comp = \frac{T}{T_{cpu}} = \frac{333 \cdot 10^{-6}}{1.25\cdot 10^{-7}} = 2664
 \end{equation}
 Where $Comp$ is the compare value, $T$ is the wanted period time and $T_{cpu}$ is the cpu clock period.
-Setting up \texttt{Counter 1} with this compare value and the flag to clear the counter when reaching the compare value, results in interrupts on \texttt{TIM1\_COMPA\_vect} each 160$\mu$s.
+Setting up \texttt{Counter 1} with this compare value and the flag to clear the counter when reaching the compare value, results in interrupts on \texttt{TIM1\_COMPA\_vect} each 333$\mu$s.
 
 \begin{listing}[h] 
 \begin{minted}{c}
@@ -271,7 +290,7 @@ The variable is declared as \texttt{volatile} to tell the compiler that its valu
 It is declared as a \texttt{char}, because this is the smallest datatype available on the \texttt{ATtiny84} and it only takes up one byte. 
 In the main loop of the software, the \texttt{timer} variable is used determine if the process of transmitting data should be initiated.
 This mechanism provides real time performance of the software when the code used to transmit data is executed before the next deadline, which is the next \texttt{counter 1} interrupt.
-This means that the transmitting code needs to be executed in less than 160$\mu$s to ensure real time performance.
+This means that the transmitting code needs to be executed in less than 333$\mu$s to ensure real time performance.
 
 \begin{listing}[h] 
 \begin{minted}{c}
@@ -295,14 +314,21 @@ The two assembly instructions that will be used to access the value of \texttt{t
 \label{sub:verification}
 
 
-\subsubsection{ Requirement \ref{enum:joint_correct_angles}} % (fold)
+\subsubsection{Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
-Verifying the requirement that the correct joint angle should be know at all times cannot be done without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
-A test was conducted where the joint angle information was sent to the controllerboard and printed n to a serial console. 
-By visual inspection the functionality was verified.
+Requirement \ref{enum:joint_correct_angles} specifies that the correct joint angle should be know at all times.
+This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
+
 \texttt{A}, \texttt{B} and \texttt{Z} signals were interfaced through interrupts and the code was written to ensure no data will be corrupted by interrupts.
 Calculations showed that no interrupts will go unnotieced with a angular velocity of less than 135Hz. 
+
+\paragraph{Test}~\\
+A test was conducted where the joint angle information was sent to the controllerboard and printed to a serial console. 
+By visual inspection the functionality was verified.
 
 \subsubsection{Requirement \ref{enum:joint_transmit} and \ref{enum:joint_real_time}} % (fold)
 \label{ssub:requirement_enum:joint_transmit}
 
+\paragraph{Test}~\\
+
+\paragraph{Result}~\\

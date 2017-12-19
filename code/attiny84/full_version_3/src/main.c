@@ -36,17 +36,29 @@ int main(void) {
 
   i = 0;
   while(1){
+  /*
   	if(i >10000){
   		  PORTB |= _BV(LED);   //set CE HIGH
   		  while(1){
   		  	//STAY!!!!
   		  }
   	}
-   
+  */ 
     if(timer==1){ 
       timer = 0;
       i++;  
-      set_CE(LOW);
+      PORTB |= _BV(PB2);   //set CE HIGH
+    /*  if(i%2){
+        PORTB |= _BV(PB2);   //set CE HIGH
+      }else{
+        PORTB &= ~_BV(PB2);   //set CE low 
+      }
+    */
+      //set_CE(LOW);
+
+      // WAIT IS REMOVED FROM write_payload function
+      // REMEMBER THIS AND TEST!!!!
+      // !!!!!!!!!!!!!!!!!!!!!!!!!
 
       payload[0] = (i >> 8) & 0xFF;
       payload[1] = i & 0xFF;
@@ -58,10 +70,12 @@ int main(void) {
        // payload[0] |= CAL_BIT;
       }
 
+      payload[0] = 'Q';
+      payload[1] = '!';
       RF_write_payload(payload, 2);
 
-      set_CE(HIGH);
-      
+      //set_CE(HIGH);
+      PORTB &= ~_BV(PB2);   //set CE low 
       // Then wait. 130us according to datasheet p. 22
     }
   }

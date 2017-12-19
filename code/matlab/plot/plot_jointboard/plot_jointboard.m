@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-to_tikz = 0;
+to_tikz = 1;
 
 % NO CURRENT LIMIT DATA
 C1_nolimit = csvread('C1joint-board-startup-no-limit00000.txt',5,0);
@@ -18,10 +18,11 @@ data_C3_nolimit = C3_nolimit(:,2);
 C1_limit = csvread('C1joint-board-startup-w-limit00000.txt',5,0);
 C3_limit = csvread('C3joint-board-startup-w-limit00000.txt',5,0);
 
-time_C1_limit = C1_limit(:,1);
+timeshift = 4e-3;
+time_C1_limit = C1_limit(:,1)+timeshift;
 data_C1_limit = C1_limit(:,2);
 
-time_C3_limit = C3_limit(:,1);
+time_C3_limit = C3_limit(:,1)+timeshift;
 data_C3_limit = C3_limit(:,2);
 
 figure(1)
@@ -34,8 +35,8 @@ ylabel(fig1(1),'Output Voltage [V]') % left y-axis
 ylabel(fig1(2),'Current Draw [A]') % right y-axis
 
 
-set(fig1(1),'XLim',[-5*10^(-3) 13*10^(-3)])
-set(fig1(2),'XLim',[-5*10^(-3) 13*10^(-3)])
+set(fig1(1),'XLim',[0 8*10^(-3)])
+set(fig1(2),'XLim',[0 8*10^(-3)])
 set(fig1(1),'YLim',[-0.1 4])
 set(fig1(2),'YLim',[-0.025 1])
 set(fig1(1),'YTick',0:0.5:4)
