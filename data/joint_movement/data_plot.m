@@ -13,9 +13,9 @@ data = [data_underflow ; data_overflow];
 figure();
 scatter(data(:,1),data(:,2),'.');
 
-figure();
-%scatter(data(:,1),ones(size(data(:,1))),'.')
-%data_diff = diff(data(:,1));
-%data_diff = sort(data_diff);
-%hist(data_diff,1000);
-%plot(data_diff)
+% figure();
+% scatter(data(:,1),ones(size(data(:,1))),'.')
+% data_diff = diff(data(:,1));
+% data_diff = sort(data_diff);
+% hist(data_diff,1000);
+% plot(data_diff)
