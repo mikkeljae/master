@@ -1,13 +1,72 @@
 %!TEX root = ../main.tex
-\subsection{Implementation and Verification} % (fold)
-\label{sub:controller_implementation_and_verification}
+\subsection{Implementation} % (fold)
+\label{sub:controller_implementation}
+\mikkel{Something here}
 
+\subsubsection{Prototyping}
+\label{sub:controller_board_prototyping}
+In order to test important parts of the controller board a home-made prototype PCB was made at the University's PCB lab.
 
-\subsubsection{Verification Methodology} % (fold)
+Three main functionalities should be verified on the board:
+
+\begin{itemize}
+	\item Schmitt-trigger circuitry and \texttt{AND} gate circuit
+	\item PWM logic level shifting
+	\item Motor driver circuit
+\end{itemize}
+
+The remaining functionalities has either been tested beforehand or deemed too simple to test. 
+
+\par{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}
+The Schmitt-triggers were tested by varying the input voltage and verifying the switching threshold along with the the hysteresis levels. 
+Testing the \texttt{AND} gate was done by applying different logic levels and verifying the results.
+The complete circuit was found to work as intended.
+
+\par{PWM Logic Level Shifting}
+The functionality of the logic level shifter \texttt{74LVC2G17} was verified by measuring input and output on an oscilloscope. 
+
+\par{Motor Driver Circuit}
+By measuring the outputs of the \texttt{74LVC2G17} it was concluded that there was a design error in the way the component was used, because it output signals were invalid.
+A thorough investigation of the schematic showed that the component could be omitted, without changing the functionality of the board.
+The motor driver circuit on the PCB could not be tested because of this design error on the developed PCB .
+Therefore it was decided to develop a small prototype PCB with the sole purpose of testing the motor driver circuit.
+The circuit can bee seen in \ref{}.......
+\mikkel{Make correct reference}
+A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{graphics/hipboard_pic}
+	\caption[Prototype PCB with motor driver.]{Picture of PCB developed to test the functionality of the motor drive circuitry.}
+	\label{fig:m_drive_circuit}
+\end{figure}
+The boards gate signals was wired to the gate of four MOSFETs.
+A power resistor was used as a load and PWM signals were applied to the motor driver input pins. 
+Measuring the gate signals showed strange behaviour and after a thorough inspection of the board and the schematic it was found that the bootstrap diode was facing the wrong direction. 
+The source of this was an error in the footprint of the component. 
+After correcting the issue the driver and the bootstrap circuit was found to function as intended. 
+The measured signals are shown in figure \ref{fig:test_hip_signals}.
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/test_motor_drive_signals.tex}
+	\caption[Measured gate and input signals.]{Measured low and high side gate signals along with low side motor driver input signals.}
+	\label{fig:test_hip_signals}
+\end{figure}
+It is verified that the low side gate signal follows the waveform of low side input signal, but with a logic level of $\approx$12V as expected. 
+It is also verified that the high side gate signals are 180$^\circ$ out of phase of the low side signals and are correctly bootstrapped to $\approx$24V.
+
+\subsubsection{Controller Board} % (fold)
+\label{ssub:controller_board}
+Something should be written here about implementing/producing the controller board.
+A picture should be shown.
+
+\subsection{Verification} % (fold)
+\label{ssub:verifaction}
+
 Something here....
 
-
-\subsubsection{Verification Procedure} % (fold)
+\subsubsection{General Verification Procedure} % (fold)
 \label{ssub:verification_procedure}
 
 \paragraph{Verify Voltage Rails} % (fold)
@@ -203,39 +262,159 @@ Something here....
 		\begin{itemize}
 			\item[-] When measuring \texttt{VADC\_P0} only noise is present. 
 			The noise might be a product of the poor setup consisting of an extremely low voltage signal applied to a wire connected to the board through a header. 
-			\item[-] Another test was conducted in an attempt to verify the functionality of the \texttt{INA286}.
-			By setting \texttt{PWMA} to \texttt{LOW} and \texttt{PWMB} to \texttt{HIGH} it is possible to create a direct current path through the H-bridge.
-		 	A constant resistive load of 3 Ohm was set in place of the motor and a DC current of 8A through the shunt resistor creating a voltage across it that is amplified by the \texttt{INA286}.
-		 	The output was measured and is shown in figure \ref{fig:controllerboardv2_current_sense}.
-		 	The measured output is approximately 300mV while the expected output is 160mV.
-		 	Furthermore the signal is very noisy with noise spikes as high as 100mV. 
-
-			\begin{figure}[h]
-				\centering
-				\input{graphics/controllerboardv2_current_sense.tex}
-				\caption{Measured output voltage of current sense amplifier.}
-				\label{fig:controllerboardv2_current_sense}
-			\end{figure}
-
-			The conclusion is that a pristine analog ground is likely necessary to maintain signal integrity, but that requires a complete new PCB design. 
-			\item The output of the \texttt{INA286} was also measured while switching the MOSFETS with the motor connected.
- 			In this setup the data does not seem to represent the current in any way and does not contain the current signal. 
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
 
+%As explained, the verification procedure is meant as a check list for future developers producing a new PCB.
+%In order to properly verify if all of the requirements for the system are met additional verification is needed.T
+%his verification is needed to verify the design and it is therefore not important to do it for each PCB, but one time per new design.
 
-\subsubsection{Advanced? Verification}
-As explained, the verification procedure is meant as a check list for future developers producing a new PCB.
-In order to properly verify if all of the requirements for the system are met additional verification is needed.T
-his verification is needed to verify the design and it is therefore not important to do it for each PCB, but one time per new design.
+\subsubsection{Requirement \ref{enum:motor_speed_direction}} % (fold)
+\label{subs:requirement_enum:motor_speed_direction}
+Requirement \ref{enum:motor_speed_direction} specifies that motor speed and direction should be adjustable through PWM outputs
+ports of the MicroZed.
 
-\paragraph{Supply Currents}
+\paragraph{Test}~\\
+Verification of the requirement is done by applying a \texttt{low} level signal to \texttt{DIS} and \texttt{PWM\_B} while applying a PWM signal to the \texttt{PWM\_A} pin.
+Gate signals should be measured and it should be verified that the motor is turning.
+Hereafter the dutycycle should be altered and the motor speed should change.
+Finally the test should be performed on the \texttt{PWM\_B} channel as well.
 
+\paragraph{Conclusion}~\\
+The test was done on both channels and it was verified that direction and speed can be controlled through PWM signals on channel \texttt{A} and \texttt{B}.
+The gate signals for channel \texttt{B} are shown in figure \ref{fig:controllerboardv2_gate_b}, where it can be seen that the high side gate signals are correctly bootstrapped.
+
+
+\subsubsection{Requirement \ref{enum:motor_current}} % (fold)
+\label{ssub:requrement_enum:motor_current_}
+Requirement \ref{enum:motor_current} specifies that it should be possible to make motor current measurements through ADC input on the MicroZed.
+A 200$\mu \Omega$ shunt resistor was placed in a low-side H-bridge configuration with a current sense amplifier with a gain of 100.
+This ensures that currents up to 40A can be measured and the maximum current of 80A does not harm the Microzed.
+
+\paragraph{Test}~\\
+An attempt to verify the requirement was done by conducting the following test procedure.
+By setting \texttt{PWMA} to \texttt{LOW} and \texttt{PWMB} to \texttt{HIGH} it is possible to create a direct current path through the H-bridge.
+A constant resistive load of 3 Ohm was set in place of the motor and a DC current of 8A through the shunt resistor was created.
+The voltage across it that should then be amplified by the \texttt{INA286}.
+
+\paragraph{Conclusion}~\\
+The output was measured and is shown in figure \ref{fig:controllerboardv2_current_sense}.
+The measured output is approximately 300mV while the expected output is 160mV.
+Furthermore the signal is very noisy with noise spikes as high as 100mV. 
+
+\begin{figure}[h]
+\centering
+\input{graphics/controllerboardv2_current_sense.tex}
+\caption{Measured output voltage of current sense amplifier.}
+\label{fig:controllerboardv2_current_sense}
+\end{figure}
+
+It should be noted that no switching of the MOSFETs takes place in the measurement.
+Other test revealed that the further noise is introduced, when the MOSFETs are switched.
+
+The conclusion is that a pristine analog ground is likely necessary to maintain signal integrity, but that requires a completely new PCB design. 
+The output of the \texttt{INA286} was also measured while switching the MOSFETS with the motor connected.
+In this setup the data does not seem to represent the current in any way and does not contain the current signal. 
+
+
+
+\subsubsection{Requirement \ref{enum:voltage_rails}} % (fold)
+\label{ssub:requirement_enum:voltage_rails}
+More....
+
+\paragraph{Test}~\\
+
+\paragraph{Conclusion}~\\
+
+
+\subsubsection{Requirement \ref{enum:voltage_transients}} % (fold)
+\label{ssub:requirement_enum:voltage_transients}
+more...
+
+\paragraph{Test}~\\
+
+\paragraph{Conclusion}~\\
+\mikkel{Measure voltage transient on rails}
 \mikkel{MAke simulation and write something here.}
 \begin{figure}[h]
 	\centering
     \input{graphics/controllerboardv2_current_motor_supply.tex}
-	\caption{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
+	\caption[Measured supply and load currents.]{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
 	\label{fig:controllerboardv2_}
 \end{figure}
+
+
+\subsubsection{Requirement \ref{enum:microzed_interface}} % (fold)
+\label{ssub:requirement_enum:microzed_interface}
+According to requirement  \ref{enum:microzed_interface}, the Microzed should be interfaced correctly.
+Connecting the Microzed to the controller boad pcb is done through two Bergstak 100pins headers, where all appropriate signals are routed to.
+The circuitry for powering up and powering down the Microzed is reused from an earlier project.
+
+\paragraph{Test}~\\
+It was tested if the board complies with the correct power on and power off sequence, by measuring the important signals when turning the board \texttt{on} and \texttt{off}.
+
+\paragraph{Conclusion}~\\
+The measured signals on figure \ref{fig:controllerboardv2_shutdown} and \ref{fig:controllerboardv2_startup} show that the implementation on the controllerboard complies with the correct sequence as specified by Microzed.
+
+
+\subsubsection{Requirement \ref{enum:cool_mosfets}} % (fold)
+\label{ssub:requirement_ref_enum:cool_mosfets}
+Requirement \ref{enum:cool_mosfets} specifies that MOSFETs should be cooled to avoid overheating of the board. 
+The design of the controllerboard included a large heatsink connected to all MOSFETs. 
+During production of the board an error in the footprint of the MOSFETs was found, causing the solution with the large common heatsink to be unachievable.
+Therefore individual standard TO-220 heatsinks were connected to each MOSFET.
+
+\paragraph{Test}~\\
+MOSFETs should run the motor for several minutes at a high velocity. 
+During the test, the MOSFETs should not get hot.
+
+\paragraph{Conclusion}~\\
+The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting hot.
+It was concluded that the MOSFETs are sufficiently cooled.
+
+\subsubsection{Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
+\label{ssub:requirement_enum:hardware_for_wireless_implemented}
+Requirement \ref{enum:hardware_for_wireless_implemented} specifies that hardware for wireless communication using RF should be implemented on the controllerboard.
+The \texttt{nRF24L01} was chosen and placed on the board with a SPI connection to the Microzed.
+
+\subsubsection{Requirement \ref{enum:important_prototype}} % (fold)
+\label{ssub:requirement_enum:important_prototype}
+Requirement \ref{enum:important_prototype} specifies that important parts of the circuitry should be tested on prototype PCB.
+This was done by making two prototype PCBs which lead to correction of two errors and verification of the rest of the functionality.
+Time and money was saved this way, by correcting the errors before ordering the full board from a professional PCB vendor at a higher cost and a long delivery time.
+
+
+\subsubsection{Requirement \ref{enum:pcb_strategy}} % (fold)
+\label{ssub:requirement_enum:pcb_strategy}
+According to requirement \ref{enum:pcb_strategy} the PCB layout should be reviewed according to the five steps of the developed strategy.
+Using this method a PCB layout was produced with significantly less errors than the previous experience of the authors.
+The fact that the final PCB contained errors indicates that the steps were not followed thoroughly enough or that the method is flawed.
+Two of the errors originated in a difference between a components footprint and the symbol in the schematic.
+Therefore it should be added to the footprint inspection step that it should be checked for all components if their footprint is in accordance with the symbol in the schematic.
+The conclusion on the rest of the errors was that the steps should have been followed more thoroughly.
+Especially it would have been beneficial to use the peer-review step more comprehensively.
+
+\subsubsection{Requirement \ref{enum:pcb_debugging}} % (fold)
+\label{ssub:requirement_enum:pcb_debugging}
+Requirement \ref{enum:pcb_debugging} specifies that the PCB layout should be designed with debugging in mind.
+This was done by adding six debugging headers with a total of 55 signals to the PCB design.
+The debugging headers were used extensively in the debugging process.
+
+\subsubsection{Requirement \ref{enum:pcb_layout}} % (fold)
+\label{ssub:requirement_enum:pcb_layout}
+blabla.....
+WE ALSO NEED ANALOG GROUND
+
+\subsubsection{Requirement \ref{enum:pcb_soldering}} % (fold)
+\label{ssub:requirement_enum:pcb_soldering}
+According to requirement \ref{enum:pcb_soldering} all PCB soldering should be possible at SDUs facilities, which it successfully was.
+
+
+\subsubsection{Requirement \ref{enum:not_break_mis}} % (fold)
+\label{ssub:requirement_enum:not_break_mis}
+\mikkel{Help me, please!}
+
+\subsubsection{Requirement \ref{enum:any_trigger_em}} % (fold)
+\label{ssub:requirement_enum:any_trigger_em}
+\mikkel{Help me, please! Also here!}

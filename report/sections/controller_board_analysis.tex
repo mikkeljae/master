@@ -266,6 +266,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Motor speed and direction should be adjustable through PWM outputs ports of the MicroZed.
+	\label{enum:motor_speed_direction}
 	\begin{itemize}
 		\item H-bridge of MOSFETs capable of switching motor current direction.
 		\item H-bridge driver translating logic signals to gate signals.
@@ -273,12 +274,14 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 
 	\item Motor current measurement through ADC input on the MicroZed.
+	\label{enum:motor_current}
 	\begin{itemize}
 		\item Shunt resistor to measure the motor current.
 		\item Amplification of shunt voltage into voltage measurable by the MicroZed. 
 	\end{itemize}
 
 	\item Voltage rails for the various components in the circuit.
+	\label{enum:voltage_rails}	
 	\begin{itemize}
 		\item 3.3V.
 		\item 5V.
@@ -288,6 +291,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 
 	\item Voltage transients on voltage rails should be minimized.
+	\label{enum:voltage_transients}	
 	\begin{itemize}
 		\item Bulk capacitors on 24V rail to supply current to motor.
 		\item Properly sized input and output capacitance of DC/DC power supplies.
@@ -296,23 +300,28 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 
 	\item The MicroZed should be correctly interfaced.
+	\label{enum:microzed_interface}
 	\begin{itemize}
 		\item The connection between the controller board and the MicroZed should be realized through two Bergstak 100pins headers.
 		\item All signals to the MicroZed should be routed on the PCB to appropriate I/O ports.
 		\item Start-up power sequence and voltage levels should be correct.
 	\end{itemize}
 	\item MOSFETs should be cooled to avoid overheating of the board.
+	\label{enum:cool_mosfets}
 	\begin{itemize}
 		\item A heatsink should be connected to MOSFETs driving the motor.
 	\end{itemize}
-	\item Wireless communication using RF should be implemented
+	\item Hardware for wireless communication using RF should be implemented.
+	\label{enum:hardware_for_wireless_implemented}
 \end{enumerate}
 
 
 \paragraph{Design:}
 \begin{enumerate}[resume]
 	\item Important parts of circuitry should be tested on prototype PCB.
+	\label{enum:important_prototype}
 	\item The PCB layout should be reviewed according to the developed strategy.
+	\label{enum:pcb_strategy}
 	\begin{itemize}
 		\item Documentation.
 		\item General inspection.
@@ -321,17 +330,20 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 		\item Peer-review.
 	\end{itemize}
 	\item The PCB layout should be designed with debugging in mind.
+	\label{enum:pcb_debugging}
 	\begin{itemize}
 		\item Test points should exist for all voltage rails and relevant signals.
 		\item All test points should be wired to JST ZH-series connectors.
 	\end{itemize}
 	\item PCB layout....
+	\label{enum:pcb_layout}
 	\begin{itemize}
 		\item Ground plane...
 		\item Avoid through-hole components....
 		\item Power ground and signal ground
 	\end{itemize}
 	\item PCB soldering should be possible at SDUs facilities.
+	\label{enum:pcb_soldering}
 	\begin{itemize}
 		\item Component casings should be SOT-23, SOIC or 0805 where possible.
 	\end{itemize}
@@ -341,6 +353,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 \paragraph{Safety:}
 \begin{enumerate}[resume]
 	\item Should not break if misused.
+	\label{enum:not_break_mis}
 	\begin{itemize}
 		\item Endstops capable of stopping moving cart.
 		\item Components should be able to handle stall current for xx seconds.
@@ -349,6 +362,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 
 	\item Any triggered emergency condition should halt the cart.
+	\label{enum:any_trigger_em}
 		\begin{itemize}
 			\item Emergency conditions should be implemented.
 			\begin{itemize}

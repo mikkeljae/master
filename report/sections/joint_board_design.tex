@@ -78,45 +78,48 @@ The first joint is mounted on a plate which in turn, is to be mounted on the car
 	\caption{Me be Big-Momma Text!}
 	\label{fig:mechdesign}
 \end{figure}
-\subsection{Battery}
+\subsubsection{Battery Type}
 \label{subsub:battery}
+\mikkel{This stuff is apparently also described in the analysis}
 The physical dimensions of the battery is constrained by the free space in the designed joint.
 It needs to be able to fit in a cylinder with a diameter of 57mm and height of 9mm.
-Furthermore needs to have enough capacity to power the circuit for a full workday of a student, which is estimated to be 10 hours.
-\mikkel{10 hours workday?}
-
-\paragraph{9V Battery}
+Furthermore needs to have enough capacity to power the circuit for a full workday of a student, which is, based on the authours experience, estimated to be 10 hours.}
+\paragraph{9V Battery}~\\
 Batteries in the standard 9V package can purchased with with enough capacity, but the physical size disqualifies it.
 
-\paragraph{Button Cell Battery}
+\paragraph{Button Cell Battery}~\\
 Button cell batteries does live up to the physical constraints, but does not have the wanted capacity. 
 Several of them can be put in series, but they still does not yield the wanted capacity.
 
-\paragraph{Li-Ion Battery}
-Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fit both the physical and capacity constraints.
-The joint design
+\paragraph{Li-Ion Battery}~\\
+Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fits both the physical and capacity constraints.
+It was decided to use a Li-Ion battery for the joint. 
+Before choosing a battery the power needed to run the electronics should be analysed.
 
-\subsection{RS422}
-No termination was used....
-Under 200kbps....
-Short wires...
-minimum power.
+\subsubsection{RS422}
+The \texttt{RL2IC} uses the RS422 standard for its output.
+This means that each \texttt{A}, \texttt{B} or \texttt{Z} channel consists of a two wire differential signal.
+A line tranceiver is needed in order to translate the RS422 signals to logic inputs that the ATtiny84 can read.
+The \texttt{DS26LS32CM} is a quad differential line receiver that complies with the RS422 standard.  
+When using RS422 there are different termination methods, with no termination being the simplest.
+The RS422 Standard Overview \cite{rs422_texas} describes that signal integrity is maintained in a setup of \approx 30m wires carrying data at a signal rate of 200kbps without termination.
+The intended setup on the joint board requires wires not longer than 10 cm.
+The maximum expected data rate can be calculated using the maximum expected angular velocity of the joint of 20Hz and the edges on one channel per revolution.
+\begin{equation}
+Datarate_{max}	= 20 \cdot 3600 = 72kbps
+\end{equation}
+This datarate is clearly below the 200kbps and it was there decided to use no line termination, which also has the advantage that a minimum amount of current is needed from the \texttt{RL2IC}.
 
-See \cite{rs422_texas} page 13.
 
-\subsection{Voltage Rail Generation}
-\label{sub:voltage_rail_generation}
-As described in the requirements in section \ref{subs:joint_requirements}, a 5V and a 3.3V rail is needed. 
-
-\subsubsection*{5V}
+\subsubsection{5V}
+As described in the requirements in section \ref{subs:joint_requirements}, a 5V rail is needed on the joint board.
 Generating the 5V rail can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
 The boost regulator SP6641B \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V \cite{sp6641b}.
 The circuitry used in this project will be based on the reference design shown in the datasheet, with the one difference that the \texttt{SHDN} (shutdown) pin has been pulled permanently high.
 
-\subsubsection*{3.3V}
-The task of generating the 3.3V rail is somewhat more complicated since the battery voltage varies from 4.2V down to 3.0V.
-\mikkel{Source needed when we know battery}
-
+\subsubsection{3.3V}
+A 3.3V rail is needed according to section \ref{subs:joint_requirements}.
+The task of generating the 3.3V rail is somewhat complicated since the battery voltage of a typical Li-Ion battery varies from 4.2V down to 3.0V.
 Three different solutions appeared after an initial analyse of the task:
 
 \begin{itemize}
@@ -175,7 +178,7 @@ Therefore the efficiency is proportional to ratio between the output and input v
 	\label{eq:eff_lin}
 \end{equation}
 
-The battery voltage varies from 4.2?? to 3.3V, but the nominal voltage is 3.7V and this will be used as an estimate of the mean voltage of the battery.
+The voltage of a Li-Ion battery varies from 4.2 to 3.0V, but the nominal voltage is 3.7V and this will be used as an estimate of the mean voltage of the battery.
 Using this the mean efficiency can be estimated as shown in equation \ref{eq:eff_lin_val}.
 
 \begin{equation}
@@ -235,3 +238,7 @@ The circuit is shown in figure \ref{fig:tps62220_circuit}.
 	\label{fig:tps62220_circuit}
 \end{figure}
 % subsection joint_design (end)
+
+\subsubsection{Choosing a Battery} % (fold)
+\label{ssub:choosing_a_battery}
+\mikkel{Hmmm}

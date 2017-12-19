@@ -56,16 +56,17 @@ This requires the joint board software to be programmed as real time software, w
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Correct joint angle should be known at all times.
-	\label{enum:correct_angles}
-	\begin{itemize}
+	\label{enum:joint_correct_angles}
+	\begin{enumerate}
 		\item Encoder signals \texttt{A}, \texttt{B} and \texttt{Z} should be interfaced using interrupts.
 		\item \texttt{A}, \texttt{B} should be used to measure the relative angle.
 		\item \texttt{Z} should be used to infer the absolute angle. 
 		\item Determine movement and direction of movement based on encoder signals.
 		\item Ensure no data is corrupted by interrupts.
 		\item Ensure no interrupts lost at angular frequencies below 20Hz.
-	\end{itemize}
+	\end{enumerate}
 	\item Transmit joint angle using the \texttt{nRF24L01} module.
+	\label{enum:joint_transmit}
 	\begin{itemize}
 		\item Setup of the \texttt{ATtiny} as a SPI master.
 		\item Setup of \texttt{nRF24L01} settings and individually frequency bands.
@@ -73,9 +74,9 @@ This requires the joint board software to be programmed as real time software, w
 		\item Minimize latency.
 	\end{itemize}
 	\item Real time behaviour of software.
+	\label{enum:joint_real_time}
 \end{enumerate}
 
-Hi see this \ref{enum:correct_angles}.
 \subsection{Design and Implementation} % (fold)
 \label{sub:design_and_implementation}
 
@@ -292,3 +293,16 @@ The two assembly instructions that will be used to access the value of \texttt{t
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
+
+
+\subsubsection{ Requirement \ref{enum:joint_correct_angles}} % (fold)
+\label{ssub:requirement_enum:correct_angles}
+Verifying the requirement that the correct joint angle should be know at all times cannot be done without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
+A test was conducted where the joint angle information was sent to the controllerboard and printed n to a serial console. 
+By visual inspection the functionality was verified.
+\texttt{A}, \texttt{B} and \texttt{Z} signals were interfaced through interrupts and the code was written to ensure no data will be corrupted by interrupts.
+Calculations showed that no interrupts will go unnotieced with a angular velocity of less than 135Hz. 
+
+\subsubsection{Requirement \ref{enum:joint_transmit} and \ref{enum:joint_real_time}} % (fold)
+\label{ssub:requirement_enum:joint_transmit}
+
