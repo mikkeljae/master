@@ -16,7 +16,7 @@ OBJECTS := $(SOURCES:%.c=%.o)
 
 # for ATTiny84
 # see http://www.engbedded.com/fusecalc/
-FUSES       =-U lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m 
+FUSES       =-U lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m
 AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
 #COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)

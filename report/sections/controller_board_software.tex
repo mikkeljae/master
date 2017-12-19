@@ -70,8 +70,9 @@ According to the datasheet of the nRF24L01 it can be kept in transmit mode for n
 Before entering TX-mode a 130$\mu$s settling period is inferred.
 This means that at least two packets are lost during this time.
 The problem can be overcome by lowering the transmission frequency such that the time between packets is above 130$\mu$s.
-6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
-% paragraph nrf24l01_mode_cycling (end)
+%6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
+
+
 \paragraph{Air Collisions}~\\ % (fold)
 \label{par:air_collisions}
 There is a risk that two packets will collide if the joints transmit at the same time.
@@ -180,7 +181,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 	\begin{itemize}
 		\item Setup of Microzed as SPI master.
 		\item Setup of \texttt{nRF24L01} settings.
-		\item Receive joint angle data form joint boards every 160$\mu$s.
+		\item Receive joint angle data form joint boards.
 	\end{itemize}
 	\item Real time behaviour of software.
 \end{enumerate}

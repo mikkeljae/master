@@ -16,21 +16,14 @@ int main (void)
   _delay_ms(250);
   PORTB &= ~_BV(PB2);   //set CE low
   _delay_ms(250);
-
-
-  while(1){
-    /*
-    PORTB |= _BV(PB2);   //set CE HIGH
-  _delay_ms(250);
-  PORTB &= ~_BV(PB2);   //set CE low
-  _delay_ms(250);
-*/
-  if(i > 100000){
-      while(1){
-        PORTB |= _BV(PB2);   //set CE HIGH
-      }
-  }
+  // TEST
   
+  while(1){
+    if(i%2){
+      PORTB |= _BV(PB2);   //set CE HIGH
+    }else{
+     PORTB &= ~_BV(PB2);   //set CE low 
+    }
   }
   return 1;
 }

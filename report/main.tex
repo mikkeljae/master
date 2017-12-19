@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
-\usepackage[utf8]{inputenc}
-\setcounter{tocdepth}{2} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
+%\usepackage[utf8]{inputenc}
+\usepackage[utf8]{luainputenc}		%This should be used with lualatex
+\setcounter{tocdepth}{3} %Only show sections and subsections in toc. // NOW ALL THREE - SHOULD BE CHANGED
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -96,13 +97,13 @@
 \listoffigures
 \listoftables
 \clearpage
-\input{sections/reading_guide}
+%\input{sections/reading_guide}
 \pagenumbering{arabic}
-\input{sections/introduction}
-\input{sections/system_analysis}
+%\input{sections/introduction}
+%\input{sections/system_analysis}
 %%\input{sections/analysis.tex}
 %\input{sections/controller_board}
-%\input{sections/controller_board_software}
+\input{sections/controller_board_software}
 %\input{sections/joint_development}
 \clearpage
 %\input{sections/joint_board_software}
