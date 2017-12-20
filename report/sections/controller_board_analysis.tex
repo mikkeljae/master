@@ -109,7 +109,7 @@ The 2.5V rail is used only as a reference voltage and therefore does not have a 
 	\begin{tabular}{r | r | r | r | r | r}
 		Rail [V] & 24 & 12 & 5 & 3.3 & 2.5\\
 		Accuracy [V] & $\pm$1 & $\pm$1 & $\pm$0.5 & $\pm$0.25 & $\pm$0.03\\
-		Current [A] & 85 & - & 3 & 1 & -
+		Current [A] & 85 & - & 2.5 & 1 & -
 	\end{tabular}
 	\caption{Voltage rails to be created on the controller board and their specification.}
 	\label{tab:powerrails}
@@ -303,11 +303,11 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\item Voltage rails for the various components in the circuit.
 	\label{enum:voltage_rails}	
 	\begin{itemize}
-		\item 3.3V.
-		\item 5V.
-		\item 12V.
-		\item 24V.
-		\item All voltage rails should be sized appropriately to supply the current necessary for the components on that rail.
+		\item 2.5V$\pm$0.03V.
+		\item 3.3V$\pm$0.25V, 1A.
+		\item 5V$\pm$0.5V, 2.5A.
+		\item 12V$\pm$1V, The amperage of this rail should be as high as economically and practically viable.
+		\item 24V$\pm$1V, 85A.
 	\end{itemize}
 
 	\item Voltage transients on voltage rails should be minimized.
