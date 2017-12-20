@@ -41,9 +41,8 @@ The \texttt{nRF24L01} has a number of options that needs to be set according to 
 As described in \ref{ssub:interboard_communication}, it was found that the two joints needs to send using two separate frequency bands to avoid air collisions. 
 This needs to be set up individually in each \texttt{nRF24L01} module. 
 Latency should be minimized by reducing overhead in transmitted packages and sending the smallest possible payload that correctly conveys the joint data.
-The data sheet describes that the \texttt{nRF24L01} can operate at air rates of 250kbps, 1Mbps and 2Mbpthat.
-The transmission tests in \ref{} ....
-a transmission rate of 1Mbps was chosen.. 
+The data sheet describes that the \texttt{nRF24L01} can operate at air rates of 250kbps, 1Mbps and 2Mbps.
+Based on the somewhat unstable transmission explained in section \ref{subs:wireless_transmission_joint} it was chosen to use a transmission rate of 1Mbps, as it is more noise resistance than when using 2Mbps.
 
 \paragraph{Transmission Rate} % (fold)
 \label{par:transmission_rate}~\\
@@ -76,14 +75,14 @@ This requires the joint board software to be programmed as real time software, w
 \begin{enumerate}[resume]
 	\item Correct joint angle should be known at all times.
 	\label{enum:joint_correct_angles}
-	\begin{enumerate}
+	\begin{itemize}
 		\item Encoder signals \texttt{A}, \texttt{B} and \texttt{Z} should be interfaced using interrupts.
 		\item \texttt{A}, \texttt{B} should be used to measure the relative angle.
 		\item \texttt{Z} should be used to infer the absolute angle. 
 		\item Determine movement and direction of movement based on encoder signals.
 		\item Ensure no data is corrupted by interrupts.
 		\item Ensure no interrupts lost at angular frequencies below 20Hz.
-	\end{enumerate}
+	\end{itemize}
 	\item Transmit joint angle using the \texttt{nRF24L01} module.
 	\label{enum:joint_transmit}
 	\begin{itemize}
@@ -260,6 +259,23 @@ void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
 
 This functions enables setup of the \texttt{nRF24L01}, which is done with the same settings as explained in section \ref{ssubs:nrf24l01}.
 
+\subsubsection{Wireless Transmission}
+\label{subs:wireless_transmission_joint}
+During implementation of the software for the \texttt{nRF24L01} a lot of testing was done to verify that the developed code worked.
+Initially two \texttt{nRF24L01} modules were wired up to two arduinos running example code from the internet. 
+This was done to verify wiring and functionality of the \texttt{nRF24L01} modules.
+Afterwards an Arduino was programmed to receive data and the software was written to the \texttt{ATtiny84} to transmit data using the \texttt{nRF24L01}.
+The functionality of the joint board software was verified by transmitting data from the \texttt{ATtiny84} to a Arduino successfully.
+Afterwards a \texttt{nRF24L01} was wired to the Microzed and the software was written.
+The transmission of data between the \texttt{ATtiny84} and the Microzed was verified by transmitting data from the joint board \texttt{nRF24L01} to a \texttt{nRF24L01} module in free air connected to the Microzed.
+The transmission was successful.
+\\
+The same software was used to to test the \texttt{nRF24L01} module wired on the controllerboard. 
+Tests showed that no data was received in this setup.
+Thoroughly inspection of the schematic and PCB revealed no mistakes. 
+Further testing with a \texttt{nRF24L01} module in free air connected to the Microzed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRF24L01}.
+The problem is believed to be due to the large amount of copper in the controller board PCB.
+The error was fixed by soldering the \texttt{nRF24L01} off and wiring it with longer wires.
 
 \subsubsection{Software Timer}
 \label{ssub:software_timer}
@@ -349,7 +365,7 @@ The number of received packets can be seen in table \ref{tab:received_still}.
 \hline
 7046 & 7245 & 7272 & 7241 & 7232 & 7212 & 7160 & 7217 & 7241 & 7221 \\ \hline
 \end{tabular}
-\caption{Number of received packets out of 10000 transmitted. The pendulum was held still during the test.}
+\caption[Number of received packets without movement.]{Number of received packets out of 10000 transmitted. The pendulum was held still during the test.}
 \label{tab:received_still}
 \end{table}
 The average number of received packets is 7208 which corresponds to $\approx$ 72\% of the transmitted packages.
@@ -364,7 +380,7 @@ The average number of received packets is 7191 which corresponds to $\approx$ 72
 \hline
 7148 & 7215 & 7208 & 7173 & 7221 & 7165 & 7138 & 7187 & 7274 & 7186 \\ \hline
 \end{tabular}
-\caption{Number of received packets out of 10000 transmitted. The pendulum was moved during the test.}
+\caption[Number of received packets with movement.]{Number of received packets out of 10000 transmitted. The pendulum was moved during the test.}
 \label{tab:received_moved}
 \end{table}
 By looking at the to test results it can be determined that movement of the pendulum has no significant affect on the success rate of transmission.
@@ -377,22 +393,31 @@ An excerpt of the data is shown in figure \ref{fig:received_packets}.
 \begin{figure}[h]
 	\centering
     \input{graphics/received_packets.tex}
-	\caption{IDs of received packages plotted. ID corresponds to the number of milliseconds passed since program start.}
+	\caption[IDs of received packages plotted.]{IDs of received packages plotted. ID corresponds to the number of milliseconds passed since program start. No pattern was identified.}
 	\label{fig:received_packets}
 \end{figure}
 
 \subsubsection{Requirement \ref{enum:joint_real_time}} % (fold)
 \label{ssub:requirement_enum_joint_real_time}
+This requirement specifies that the software must exhibit real time behaviour, which means that the software must meet its deadlines.
 
 \paragraph{Test}~\\
+It should be tested if the software meets its deadline, which is the next transmission of a packet.
+This means that it should be shown that the software executes everything related to sending a packet within the period of 333$\mu$s.
+This can be tested by setting an output pin \texttt{high} as the first part of the code responsible for the transmission and setting it \texttt{low} as the last line of code.
+It should then be verified \texttt{on} time of this pin is less than 333$\mu$s.
 
 \paragraph{Conclusion}~\\
-
-
+The described test was performed with the output pin and SPI clock measured by an oscilloscope. 
+The measured signals are shown in figure \ref{fig:runtime_joint_software}.
 
 \begin{figure}[h]
 	\centering
     \input{graphics/runtime_joint_software.tex}
-	\caption{...}
+	\caption[Runtime of joint board software]{Measured signals associated with the runtime of the joint board software.}
 	\label{fig:runtime_joint_software}
 \end{figure}
+
+It can be seen that the \texttt{on} time of the output pin is $\approx$75$\mu$s, which leaves 258$\mu$s before the deadline.
+It should be noted that following the SPI transmission another 213$\mu$s are required for the \texttt{nRF24L01} to go to TX mode and transmit the data.
+
