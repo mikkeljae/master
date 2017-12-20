@@ -10,6 +10,14 @@ data = [data_underflow ; data_overflow];
 figure();
 scatter(data(:,1),data(:,2),'.');
 
+<<<<<<< HEAD
+% figure();
+% scatter(data(:,1),ones(size(data(:,1))),'.')
+% data_diff = diff(data(:,1));
+% data_diff = sort(data_diff);
+% hist(data_diff,1000);
+% plot(data_diff)
+=======
 figure();
 scatter(data(:,2),ones(size(data(:,1))),'.');
 
@@ -20,3 +28,4 @@ scatter(data(:,1),ones(size(data(:,1))),'.')
 %data_diff = sort(data_diff);
 %hist(data_diff,1000);
 %plot(data_diff)
+>>>>>>> 595b07a9cf32a242d1d7a8870edbfcdd2c4c4434

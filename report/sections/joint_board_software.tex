@@ -316,19 +316,39 @@ The two assembly instructions that will be used to access the value of \texttt{t
 
 \subsubsection{Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
-Requirement \ref{enum:joint_correct_angles} specifies that the correct joint angle should be know at all times.
+This requirement specifies that the correct joint angle should be know at all times.
 This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
 
 \texttt{A}, \texttt{B} and \texttt{Z} signals were interfaced through interrupts and the code was written to ensure no data will be corrupted by interrupts.
 Calculations showed that no interrupts will go unnotieced with a angular velocity of less than 135Hz. 
 
-\paragraph{Test}~\\
+\paragraph{Test and Conclusion}~\\
 A test was conducted where the joint angle information was sent to the controllerboard and printed to a serial console. 
 By visual inspection the functionality was verified.
 
-\subsubsection{Requirement \ref{enum:joint_transmit} and \ref{enum:joint_real_time}} % (fold)
+\subsubsection{Requirement \ref{enum:joint_transmit}} % (fold)
 \label{ssub:requirement_enum:joint_transmit}
+This requirement specifies that the joint angle should be transmitted using the nRF24L01 module.
 
 \paragraph{Test}~\\
 
-\paragraph{Result}~\\
+\paragraph{Conclusion}~\\
+
+
+
+
+\subsubsection{Requirement \ref{enum:joint_real_time}} % (fold)
+\label{ssub:requirement_enum_joint_real_time}
+
+\paragraph{Test}~\\
+
+\paragraph{Conclusion}~\\
+
+
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/runtime_joint_software.tex}
+	\caption{...}
+	\label{fig:runtime_joint_software}
+\end{figure}
