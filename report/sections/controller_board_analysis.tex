@@ -75,25 +75,45 @@ As the MOSFETs have a maximum operation temperature it is believed that a heat s
 \subsubsection{Voltage Rails}
 The components chosen for the system all impose some requirement as to what voltage rails should be present on the controller board.
 \begin{itemize}
-	\item \textbf{Maxon 148867 DC Motor:} This motor will be driven from a 24V rail.
-	In addition to supplying the motor the 24V rail will also be used to generate any subsequent rails.
+	\item \textbf{Maxon 148867 DC Motor:} This motor is rated at a nominal voltage of 24V.
+	Therefore a 24V rail will be created to supply the motor.
+	In addition to the motor, the 24V rail will also be used to generate any subsequent rails.
 	The maximum current draw possible the maxon 148867 is its stall current. 
-	According to the datasheet this is 80.2A and so the 24V rail should be capable of supplying at least that plus the current draw of any subsequent rails.
+	According to the datasheet this is 80.2A.
+	The authors wish for the system to be able to handle the stall current so the 24V rail should be capable of supplying at least that plus the current draw of any subsequent rails.
 	\item  \textbf{MicroZed:} This board is powered from a 5V rail and requires a 3.3V rail to power the I/O banks of the Zynq-7020 chip.
 	The design of the power delivery for this board was done by the authors in the aforementioned project \cite{isaswarm} and it was found that the MicroZed can draw a maximum of 1.8A from the 5V rail and up to 1A from the 3.3V rail.
 	The 3.3V rail is generated from the 5V rail in that design and the total current draw from the 5V rail resulting from the MicroZed is no larger than 2.5A.
-	The 5V rail was designed to be created from a 2S Li-Po battery at 8V and so the maximum input voltage of the DC/DC converter is 18V. 
+	An additional 2.5V rail is created in that design which is used only to facilitate the correct startup of the Zynq chip.
+	The 5V rail was designed to be created from a 2S Li-Po battery at 8V and the maximum input voltage of the DC/DC converter is 18V.
+	To reuse this design it is necessary to generate a rail lower than the 24V rail for the 5V rail to be generated from.
 	\item \textbf{HIP4081:} This component is the motor driver used in the project.
 	The choice of this component is discussed in more detail in section \ref{ssub:h_bridge}.
-	A 12V rail is required by the HIP4081 to generate the gate signals.
+	A 12V rail will be used to power this component. 
+	This voltage is used by the HIP4081 to generate the gate signals.
 	This 12V rail will also be used to generate the 5V rail.
 	This overcomes the limitation of limited maximum input voltage of the DC/DC converter of the 5V rail.
 	Due to the choice of using the HIP4081, it is necessary to do bootstrapping (see section \ref{ssub:bootstrap_circuit}). 
-	The current drawn from the bootstrap circuit is decided in large part by the designer and as such the current requirement of the 12V rail is also somewhat flexible.
+	The current drawn from the bootstrap circuit is decided in large part by the designer and as such the current requirement of the 12V rail is somewhat flexible.
 	For this reason the current rating of the 12V rail should be as high as is practically and economically possible.
 \end{itemize}
 A number of additional components are likely to be required on the controller board which will all impose additional current draw on their respective rails.
 These are considered negligible when compared to the major consumers mentioned above.
+\\~\\
+The required accuracy of each rail is determined by the most sensitive component on that rail and is presented in table \ref{tab:powerrails}.
+Since the 24V and 12V rails do not have any strict requirements imposed on them and so a $\pm$1V requirement is set. 
+The 2.5V rail is used only as a reference voltage and therefore does not have a formal current requirement.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{r | r | r | r | r | r}
+		Rail [V] & 24 & 12 & 5 & 3.3 & 2.5\\
+		Accuracy [V] & $\pm$1 & $\pm$1 & $\pm$0.5 & $\pm$0.25 & $\pm$0.03\\
+		Current [A] & 85 & - & 3 & 1 & -
+	\end{tabular}
+	\caption{Voltage rails to be created on the controller board and their specification.}
+	\label{tab:powerrails}
+\end{table}
  
 \subsubsection{Motor Current Sensing}
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
