@@ -5,11 +5,11 @@ The design of the pendulum assembly is, as in the analysis, split into an electr
 
 \thomas{Proper introduction required}
 
-\subsubsection{Mechanical Design:} % (fold)
+\subsubsection{Mechanical Design} % (fold)
 \label{ssub:mechanical_design}
 The mechanical design consists mainly of 3D modelling using Autodesk Inventor.
 The entire design is shown in figure \ref{fig:mechdesign} and is comprised of three parts:
-\paragraph{Magnet Side} % (fold)
+\paragraph{Magnet Side:} % (fold)
 \label{par:magnet_side}
 is shown in figure \ref{sfig:magnetside}. 
 This part has a shallow groove milled for the magnetic disc of the encoder to fit into.
@@ -27,9 +27,10 @@ The manufactured version has a bore in the axle to accomodate a bolt which tight
 On the other side of the part, \ref{sfig:readside_2}, most of the material has been bored away to allow for mounting the joint board as shown in the figure.
 A lip has been left on top of the part to allow for mounting a lid.
 
-\paragraph{Joint Mount} % (fold)
+\paragraph{Joint Mount:} % (fold)
 \label{par:joint_mount}
 is shown in \ref{sfig:jointmount}.
+This component was made to mate the joint with the joint rod.
 A hole pattern is added to this part as well as the other two which is used to mount \ref{sfig:jointmount} to \ref{sfig:readside} and \ref{sfig:magnetside}.
 On the top of the part a hole is made to accomodate the joint rod.
 This part is 3D printed since the shape is somewhat complex and would require access to a CNC machine to mill of metal.
@@ -38,8 +39,9 @@ Additionally, making the part from metal would increase its weight significantly
 These three parts are connected into the pendulum assembly using carbon tubes as shown in \ref{sfig:pendulumassembly}.
 Two parts are present on this design which were not described previously.
 The final disc, known as the dummy disc, is essentially just a solid piece of aluminium used to add some weight to the end of the pendulum assembly.
-The first joint is mounted on a plate which in turn, is to be mounted on the cart.
+The second part is a plate which the first joint is mounted on which is to be mounted on the cart.
 
+\thomas{fix figure text below}
 \begin{figure}[H]
 	\begin{minipage}{.45\linewidth}
 		\begin{subfigure}[b]{\linewidth}
@@ -78,49 +80,32 @@ The first joint is mounted on a plate which in turn, is to be mounted on the car
 	\caption{Me be Big-Momma Text!}
 	\label{fig:mechdesign}
 \end{figure}
-\subsubsection{Battery Type}
-\label{subsub:battery}
-\mikkel{This stuff is apparently also described in the analysis}
-The physical dimensions of the battery is constrained by the free space in the designed joint.
-It needs to be able to fit in a cylinder with a diameter of 57mm and height of 9mm.
-Furthermore needs to have enough capacity to power the circuit for a full workday of a student, which is, based on the authours experience, estimated to be 10 hours.
-\paragraph{9V Battery}~\\
-Batteries in the standard 9V package can purchased with with enough capacity, but the physical size disqualifies it.
-
-\paragraph{Button Cell Battery}~\\
-Button cell batteries does live up to the physical constraints, but does not have the wanted capacity. 
-Several of them can be put in series, but they still does not yield the wanted capacity.
-
-\paragraph{Li-Ion Battery}~\\
-Lithium-Ion batteries have a very high energy density and it should therefore be possible to find a battery that fits both the physical and capacity constraints.
-It was decided to use a Li-Ion battery for the joint. 
-Before choosing a battery the power needed to run the electronics should be analysed.
 
 \subsubsection{RS422}
 The \texttt{RL2IC} uses the RS422 standard for its output.
 This means that each \texttt{A}, \texttt{B} or \texttt{Z} channel consists of a two wire differential signal.
-A line tranceiver is needed in order to translate the RS422 signals to logic inputs that the ATtiny84 can read.
+A line receiver is needed in order to translate the RS422 signals to logic inputs that the ATtiny84 can read.
 The \texttt{DS26LS32CM} is a quad differential line receiver that complies with the RS422 standard.  
 When using RS422 there are different termination methods, with no termination being the simplest.
 The RS422 Standard Overview \cite{rs422_texas} describes that signal integrity is maintained in a setup of \approx 30m wires carrying data at a signal rate of 200kbps without termination.
-The intended setup on the joint board requires wires not longer than 10 cm.
+The intended setup on the joint board requires wires no longer than 5cm.
 The maximum expected data rate can be calculated using the maximum expected angular velocity of the joint of 20Hz and the edges on one channel per revolution.
 \begin{equation}
 Datarate_{max}	= 20 \cdot 3600 = 72kbps
 \end{equation}
-This datarate is clearly below the 200kbps and it was there decided to use no line termination, which also has the advantage that a minimum amount of current is needed from the \texttt{RL2IC}.
+This datarate is clearly below the 200kbps and it was therefore decided to use no line termination, which also has the advantage that a minimum amount of current is needed from the \texttt{RL2IC}.
 
 
 \subsubsection{5V}
 As described in the requirements in section \ref{subs:joint_requirements}, a 5V rail is needed on the joint board.
 Generating the 5V rail can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
-The boost regulator SP6641B \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V \cite{sp6641b}.
+The boost regulator \texttt{SP6641B} \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V.
 The circuitry used in this project will be based on the reference design shown in the datasheet, with the one difference that the \texttt{SHDN} (shutdown) pin has been pulled permanently high.
 
 \subsubsection{3.3V}
-A 3.3V rail is needed according to section \ref{subs:joint_requirements}.
+A 3.3V rail is needed according to the requirement specification.
 The task of generating the 3.3V rail is somewhat complicated since the battery voltage of a typical Li-Ion battery varies from 4.2V down to 3.0V.
-Three different solutions appeared after an initial analyse of the task:
+Three different solutions appeared after an initial analysis of the task:
 
 \begin{itemize}
 	\item Buck converter
@@ -130,7 +115,7 @@ Three different solutions appeared after an initial analyse of the task:
 
 The qualities and drawbacks of the three solutions are presented here.
 
-\paragraph{Buck Converter}
+\paragraph{Buck Converter:}
 The voltage from the battery can be converted to 3.3V using a Buck converter.
 A Buck converter is relatively simple and circuitry can easily be designed for the task.
 It is only able to supply an output voltage that is lower than the input voltage.
@@ -154,19 +139,19 @@ The drop out voltage can be calculated using equation \ref{eq:drop_v_tps62}, \ci
 
 Where $I_O$ is the output current, $R_{DS(on),max}$ is the \texttt{ON} resistance of the internal switch and $R_I$ is the DC resistance of the external inductor.
 The inductor resistance used is found in the \texttt{LQH55D} SMD inductor \cite{LQH55D}.
-\mikkel{Update if new inductor is used}
+\mikkel{Update to new inductor and change equations above}
 This means that it can supply 3.3V output when the input voltage is 3.315V or greater
 
 
 
-\paragraph{Buck-Boost Converter}
+\paragraph{Buck-Boost Converter:}
 The motivation for using a Buck-Boost converter is to allow for full utilization of the battery capacity.
 This requires that the converter can make a seamless transition between the stepping up and stepping down of the input voltage. 
 \texttt{TPS6300} is a Buck-Boost regulator that has these features.
 The external circuitry is simple, but the drawback of this regulator and converter is the efficiency of it.
 With an input voltage of 3.7V and an output voltage of 3.3V it has an efficiency of approximately 75\% with an output current in the range of 1mA to 20mA \cite{TPS6300}.
 
-\paragraph{Linear Regulator}
+\paragraph{Linear Regulator:}
 A linear regulator is a component that can regulate the output voltage by varying an internal resistance.
 Linear regulators have a drop voltage that limit the output voltage. 
 The \texttt{LD3985} has an ultra low drop voltage of 20mV at 50mA output current \cite{LD3985}.
@@ -211,7 +196,7 @@ A discharge test should be conducted to determine the amount of capacity that ca
 At the time of writing, the chosen battery has not yet been procured and the test will therefore be conducted on a similar battery instead.
 The battery under test is a 850 mAH Li-Ion battery with the dimensions 49mm X 29mm X 6mm.
 It should be noted that both the capacity and physical dimensions are similar to the chosen battery.
-The discharge curve of the two batteries will not be identical, but will be sufficient close to to allow for deciding which solution should be used.
+The discharge curve of the two batteries will not be identical, but will be sufficiently close to to allow for deciding which solution should be used.
 The test was conducted by connecting the battery to an electrical load programmed to discharge with a constant power of 0.3 Watt, while measuring the battery voltage.
 The measured discharge curve is shown in figure \ref{fig:bat_discharge}.
 
@@ -241,4 +226,4 @@ The circuit is shown in figure \ref{fig:tps62220_circuit}.
 
 \subsubsection{Choosing a Battery} % (fold)
 \label{ssub:choosing_a_battery}
-\mikkel{Hmmm}
+\thomas{write few words on renata and difficulty of procurement (most capacity in 57mm and 9mm)}

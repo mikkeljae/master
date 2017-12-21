@@ -1,7 +1,9 @@
 %!TEX root = ../main.tex
-\section{System Analysis}
+\section{State of the Art}
+\thomas{Elaborate on cites}
+\thomas{point mass assumption}
 The system developed throughout this report is a proposal made by the project owner and developed by the authors.
-It is intended as a learning platform for students to experiment with and understand underactuated systems.
+It is intended as a learning platform for students to experiment with and gain understanding of underactuated systems.
 Underactuated systems is a vast field of research including examples in personal transportation \cite{scooter} \cite{segway} and robotic grippers \cite{threegripper} \cite{softgripper}.
 An underactuated system is a system with more DoF (degrees of freedom) than actuators.
 Traditionally in control theory, an equal or greater number of actuators than DoF are used to cancel out the dynamics of a system.
@@ -10,6 +12,8 @@ Such systems are generally more agile and efficient than their fully actuated co
 \\~\\
 A general example often used for teaching underactuated systems is the inverted pendulum mounted on a cart.
 Numerous examples of such systems are described in literature \cite{invertpendulum1} \cite{tripleinvertpendulum} \cite{invertpendulum3} \cite{doubleinvertpendulum}.
+
+\section{System Analysis}
 This document is a development report detailing the creation of such a system.
 The authors have taken inspiration from the aforementioned literature to develop requirements and implementation ideas.
 \\~\\
@@ -17,7 +21,7 @@ Throughout the remainder of this section an analysis of the system will be done 
 In common for all of the cited systems is that they consist of a cart capable of moving along a rail with a pendulum mounted to it.
 The cited systems include single inverted pendulums \cite{invertpendulum1} \cite{invertpendulum3}, a double pendulum \cite{doubleinvertpendulum} and a triple pendulum \cite{tripleinvertpendulum}.
 This project will aim to create a double pendulum system.
-By actuating the cart using a motor the pendulums will be unactuated and the entire system therefore underactuated.
+By actuating only the cart, the pendulums will not be directly actuated and the entire system therefore underactuated.
 The connection-point between the cart and the first pendulum and between every consecutive pendulum should be a joint capable of rotating freely.
 Performing swing-up of the pendulum assembly requires knowledge of both the cart position on the rail and the position of every joint in the pendulum assembly.  
 \\~\\
@@ -26,11 +30,11 @@ This means that a number of users with varying levels of understanding of the un
 Therefore the system should be simple and safe to use.
 The exact definition of simple will clearly vary with different users but users are generally expected to have a working understanding of Linux.
 For this reason the project owner has requested that the main computation platform is based on the Xilinx Zynq-7 series architechture which provides the possibility of running Linux on the internal ARM cores while still maintaining the speed and flexibility of an FPGA.
-The authors have prior knowledge of the use of and design of systems with the MicroZed development board and will therefore utilize this platform in the development of this project. 
-The original intent was to develop and implement a kernel driver which would present the system to the user as a tty interface, however this quickly turned infeasible due to the time constraints of the project and will be left for future projects.
+The authors have prior knowledge of the use and design of systems with the MicroZed development board and will therefore utilize this platform in the development of this project. 
+The original intent was to develop and implement a kernel driver which would present the system to the user as a \texttt{tty} interface, however this quickly turned infeasible due to the time constraints of the project and will be left for future projects.
 Further design of the system should still maintain focus on the eventual goal of making the system accessible through Linux.
 \\~\\
-Safety around the system is important since the movement of a double pendulum is inherently unpredictable.
+Safety around the system is important since the movement of a double pendulum is chaotic and therefore inherently unpredictable.
 A means of disabling power to the motor in case of emergency should be present.  
 Engaging an emergency condition should be possible both manually and automatically.
 The handling of emergency conditions should happen independently of any programming so that faulty programming cannot disable handling.
@@ -40,13 +44,16 @@ It is likely that the system should remain caged once finished so as to ensure t
 In addition to the above, the system should also be tolerable to some amount of misuse such as blocking of the cart and similar unexpected situations.
 \\~\\
 Since the focus of the authors is electronics and embedded systems design, this will also be the main focus of this project.
-Therefore the design of electronics for motor control, interfacing of sensory equipment and power delievery for the MicroZed will be developed. 
+Therefore the design of electronics for motor control, interfacing of sensory equipment and power delievery for the electronics will be done. 
 \\~\\
 Since creating the final version of the software is infeasible given the time frame, another solution is required to validate the functionality of the system.
 For this reason a real-time software system should be developed which correctly exercises every part of the developed pendulum system.
 Additionally the distribution of functionality between the FPGA and the ARM cores should be determined to optimally make use of their abilities.
 The overall software design should be determined prior to initiating programming.
 Programming of individual components such as drivers for sensory equipment can be done bottom-up and integrated into a larger context once confirmed functioning.
+
+\thomas{Add section explaining the necessity of two boards}
+\thomas{explain the procurement of the base system in the above}
 \subsection{Requirement Specification}
 \label{sub:requirements}
 
@@ -55,30 +62,20 @@ Programming of individual components such as drivers for sensory equipment can b
 \begin{enumerate}	
 	\item System should consists of double pendulum mounted\\ on a moveable cart.\hfill S. 3.3
 	\item Cart should be actuated by a motor. \hfill 2.3
-	\item The motor should be controlled by a Microzed.\hfill 2.1
+	\item The pendulum system should be controlled by a Microzed.\hfill 2.1
 	\item Position of the cart and joint angles should be measured.
-	\item Real-time software on the MicroZed should be real time.
+	\item Any software developed for the pendulum system should be real-time.
 	\item System should be easily accessible to users.
 \end{enumerate}
 
 \paragraph{Safety:}
 \begin{enumerate}[resume]
-	\item System should not break when misused.
+	\item System should not break during operation by users.
 	\item System safety should not rely on the programming of the system.
 \end{enumerate}
 
 \paragraph{Design:}
 \begin{enumerate}[resume]
-	\item All parts of the system should be developed using the following method. 
-	\thomas{Is this necessary? it is not mentioned in the above analysis.}
-	\begin{itemize}
-	 	\item Analysis.
-	 	\item Requirement Specification.
-	 	\item Design.
-	 	\item Implementation.
-	 	\item Verification.
-	 \end{itemize} 
-	 \item System should be designed with learning outcome in mind.
 	 \item Software design is done is done top-down, whereas subcomponents are written bottom-up. 
 	 \item Design of the system should be done so that adaption to Linux is as simple as possible.
 \end{enumerate}

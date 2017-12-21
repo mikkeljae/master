@@ -3,18 +3,16 @@
 \label{sub:controller_board_analysis}
 
 In order to develop a controller board capable of controlling a double pendulum, the required functionality of the board needs to be determined. 
-This section will constitute an analysis of this functionality and an analysis of possible solutions to desired functionality.
+This section will constitute an analysis of this functionality and of possible solutions to desired functionality.
 
 \subsubsection{Communication} % (fold)
 \label{ssub:communication}
-The controller board should be able to communicate wirelessly with the joints as discussed in section \ref{sec:wireless}.
-\thomas{Some reference to the section where we determine that communication should be wireless.}
+The controller board should be able to communicate wirelessly with the joints as discussed in section \ref{ssub:mechanics}.
 The wireless link should provide sufficient bandwidth that the angular position of the joint can be transmitted sufficiently frequently.
 From section \ref{ssub:encoder} it can be seen that the encoder chosen for the joints allows 7200 counts per revolution.
 This can be represented using 13 bit. 
 Adding a 3 bit identifier makes the payload of a message 16 bit.
-This is a rough estimate and the actual protocol is discussed in more detail in section \ref{} 
-\thomas{section on protocol between joint and controller board.}
+This is a rough estimate which will be used for the purposes of this analysis.
 A number of different protocols exist which could be used in this project.
 Three were under consideration for this project:
 \begin{itemize}
@@ -24,6 +22,7 @@ Three were under consideration for this project:
 	In addition to the communication overhead, TCP/IP also requires some form of driver, making it difficult to forego the use of Linux in the joints, an OS that increases the requirements to the processing unit in the joint considerably.
 	\item \textbf{Bluetooth:} The Bluetooth protocol is developed specifically for low power, short range data transmission and is used extensively in various applications.
 	As with the previous option, a considerable amount of overhead is required in setting up bluetooth as well as in the transmission of packets, making it less desirable.
+	\thomas{source on bluetooth}
 	\item \textbf{Radio Frequency:} While not strictly a protocol, using an RF transceiver eliminates the additional overhead associated with the previously mentioned protocols.
 	RF transceivers come with a number of different interfaces such as SPI or I2C and will simply transmit the data received through that interface.
 	This makes it easy to communicate using this method through bare-metal code or even VHDL.
@@ -32,14 +31,12 @@ Considering the above it was chosen to use an RF transceiver to facilitate the c
 An RF transceiver can be implemented using very low power, making it ideal for the battery powered joints.
 % subsubsection communication (end)
 
-\subsubsection{Microcontroller} % (fold)
+\subsubsection{The MicroZed Development Platform} % (fold)
 \label{ssub:microcontroller}
-The controller board requires some form of microcontroller or other form of processing unit to interface the various signals on the board and implement the control algorithm.
-Since the platform is to be used for research and education purposes, the processing unit should resemble what its users are likely to have prior experience with.
-Many courses on embedded electronics at SDU are built around the Zybo development board\cite{zybo}.
-This board implements a number of features, such as VGA/HDMI and a few audio interfaces, which are not required in this project.
+\thomas{correct to start sensibly}
+\thomas{insert note on startup/shutdown sequency}
 A similar option which shares the same main chip, a Zynq-7000 series FPGA \cite{zynq}, is the MicroZed \cite{microzed}.
-The MicroZed is created specifically to implemented in a product and as such there are fewer built-in features to the board, resulting in a significantly smaller footprint.
+The MicroZed is created specifically to be implemented in a product and as such there are fewer built-in features to the board, resulting in a significantly smaller footprint.
 The authors have designed with the MicroZed in previous projects \cite{isaswarm}.
 Most of the design done in \cite{isaswarm} can be reused with limited modifications.
 For these reasons the MicroZed will be used in this project.
@@ -50,27 +47,26 @@ It is necessary to device some form of driving circuitry for the motor driving t
 The motor should be able to move in both directions. 
 An H-bridge allows this bidirectional movement.
 By properly switching the MOSFETs in the bridge the average voltage across the motor can be controlled and therefore also the speed and direction of the motor.
-As such, an H-bridge must be designed for the controller board.
-\\~\\
+As such, an H-bridge must be designed for the controller board. 
+This will in turn require that an H-bridge driver circuit is designed.
+
+\subsubsection{Capacitor Bank} % (fold)
 From simulation it was found that a capacitor bank across the supply near the H-bridge is required in order to protect the remainder of the PCB against ripple current and voltage spikes.
 See section \ref{ssub:sup_caps} for an in depth discussion.
 The necessary amount of supply capacitance must be determined.
 \\~\\
-When introducing a large amount of capacitance in a circuit, a problem known as inrush arises \cite{inrush}.
+When introducing a large amount of capacitance in a circuit, a problem known as inrush current arises \cite{inrush}.
 This happens when the circuit is powered on and the initial charging of the capacitors occur.
 Due to the amount of capacitance, the circuit will draw a very large current for a significant amount of time which can potentially destroy parts of the circuit.
 For this reason it is necessary to design circuitry which will temporarily limit the current through the circuit until the supply capacitors are charged.
 Such a circuit is often comprised of a relay in series with a resistor.
-The design of the circuitry surrounding the inrush relay must be designed.
 
 \subsubsection{Power Dissipation and Heat}
 The MOSFETs driving the motor will have to carry and switch a sizeable current.
 Carrying the motor current will result in some amount of power dissipation in the MOSFETs as they have a non zero drain-source \texttt{on} resistance, $R_{ds(on)}$.
 Switching the motor current \texttt{on} and \texttt{off} also represents a source of power dissipation in the MOSFETs.
 The total power dissipation leads to an increase in the temperature of the MOSFETs.
-As the MOSFETs have a maximum operation temperature it is believed that a heat sink should be connected to the MOSFETs in order to achieve a higher cooling effect.
-
-
+As the MOSFETs have a maximum operating temperature a heat sink should be connected to the MOSFETs in order to achieve a higher cooling effect.
 
 \subsubsection{Voltage Rails}
 The components chosen for the system all impose some requirement as to what voltage rails should be present on the controller board.
@@ -78,12 +74,13 @@ The components chosen for the system all impose some requirement as to what volt
 	\item \textbf{Maxon 148867 DC Motor:} This motor is rated at a nominal voltage of 24V.
 	Therefore a 24V rail will be created to supply the motor.
 	In addition to the motor, the 24V rail will also be used to generate any subsequent rails.
-	The maximum current draw possible the maxon 148867 is its stall current. 
+	The maximum current draw possible by the Maxon motor is its stall current. 
 	According to the datasheet this is 80.2A.
 	The authors wish for the system to be able to handle the stall current so the 24V rail should be capable of supplying at least that plus the current draw of any subsequent rails.
 	\item  \textbf{MicroZed:} This board is powered from a 5V rail and requires a 3.3V rail to power the I/O banks of the Zynq-7020 chip.
 	The design of the power delivery for this board was done by the authors in the aforementioned project \cite{isaswarm} and it was found that the MicroZed can draw a maximum of 1.8A from the 5V rail and up to 1A from the 3.3V rail.
-	The 3.3V rail is generated from the 5V rail in that design and the total current draw from the 5V rail resulting from the MicroZed is no larger than 2.5A.
+	The 3.3V rail is generated from the 5V rail in that design.
+	Total current draw from the 5V rail resulting from the MicroZed is therefore no larger than 2.5A.
 	An additional 2.5V rail is created in that design which is used only to facilitate the correct startup of the Zynq chip.
 	The 5V rail was designed to be created from a 2S Li-Po battery at 8V and the maximum input voltage of the DC/DC converter is 18V.
 	To reuse this design it is necessary to generate a rail lower than the 24V rail for the 5V rail to be generated from.
@@ -91,8 +88,8 @@ The components chosen for the system all impose some requirement as to what volt
 	The choice of this component is discussed in more detail in section \ref{ssub:h_bridge}.
 	A 12V rail will be used to power this component. 
 	This voltage is used by the HIP4081 to generate the gate signals.
-	This 12V rail will also be used to generate the 5V rail.
-	This overcomes the limitation of limited maximum input voltage of the DC/DC converter of the 5V rail.
+	The 12V rail will also be used to generate the 5V rail.
+	This is within the specification for input voltage of the DC/DC converter of the 5V rail. 
 	Due to the choice of using the HIP4081, it is necessary to do bootstrapping (see section \ref{ssub:bootstrap_circuit}). 
 	The current drawn from the bootstrap circuit is decided in large part by the designer and as such the current requirement of the 12V rail is somewhat flexible.
 	For this reason the current rating of the 12V rail should be as high as is practically and economically possible.
@@ -101,7 +98,7 @@ A number of additional components are likely to be required on the controller bo
 These are considered negligible when compared to the major consumers mentioned above.
 \\~\\
 The required accuracy of each rail is determined by the most sensitive component on that rail and is presented in table \ref{tab:powerrails}.
-Since the 24V and 12V rails do not have any strict requirements imposed on them and so a $\pm$1V requirement is set. 
+Since the 24V and 12V rails do not have any strict requirements imposed on them, a $\pm$1V requirement is set. 
 The 2.5V rail is used only as a reference voltage and therefore does not have a formal current requirement.
 
 \begin{table}[h]
@@ -114,16 +111,19 @@ The 2.5V rail is used only as a reference voltage and therefore does not have a 
 	\caption{Voltage rails to be created on the controller board and their specification.}
 	\label{tab:powerrails}
 \end{table}
- 
+
+\thomas{add rail hierarchy} 
+
 \subsubsection{Motor Current Sensing}
+\thomas{insert paragraph on current mode control in SotA}
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
 Current measurements are generally done by either hall effect based sensors or shunt resistors. 
 Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
 Additionally, their interference with the circuit they are measuring is negligible.
-Hall effect sensors however, do come at a significantly higher cost.
+Hall effect sensors however, do come at a significant cost compared to the alternative described below.
 A shunt resistor used for current measurements is simply a resistor with a very low resistance, typically $<$ 100m$\Omega$, and a high power rating ranging from a few watts into 10's of watts depending on the application.
 By adding such a resistor in series with the load, the voltage across the resistor can be measured and from that the current through the load determined.
-
+For this project a shunt resistor will be used since it is regarded as the simpler, cheaper option.
 
 \subsubsection{Safety} % (fold)
 \label{subsub:safety}
@@ -131,12 +131,13 @@ It is expected that, eventually, an error may occur that causes the cart to move
 A safety system should be constructed in such a way that it will prevent the cart from crashing violently.
 It should be isolated from the remaining system.
 Therefore, if it can at all be avoided, no programming should be involved in determining a safety condition.
+\thomas{explain safety conditions}
 With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
 In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
 Clearly, the system should function only if all safety conditions are met.
 This will be ensured by creating an aggregation circuit which compares all of the safety conditions, creating one signal which will be capable of closing the main relay if necessary.
 \\~\\
-One of the safety features of the system is the endstops.
+The system should be designed to have endstops.
 These are in place to quickly cut power to the system if the cart reaches the end of the rail.
 Creating these endstops can be done in different ways.
 Three potential implementations are presented here:
@@ -157,12 +158,10 @@ All mechanical switches have one drawback in common: they are mechanical and wil
 \paragraph{Hall Effect Sensor:} % (fold)
 \label{par:hall_effect_sensor}
 This type of sensor measures magnetic fields and produces a voltage proportional to the strength of the field.
-By placing a small neodymium magnet on the cart and mounting a hall effect sensor on the rail in such a way that the coincide would allow for detecting when the cart is above the sensor.
+By placing a small neodymium magnet on the cart and mounting a hall effect sensor on the rail in such a way that they coincide would allow for detecting when the cart is above the sensor.
 If the sensor is combined with a schmitt-trigger circuit the output could be a binary result, either the endstop is reached or it is not.
 Using this method requires that a magnet is placed on the cart itself and that a sensor is mounted to the rail.
 It should be noted that accelerating rather strong magnetic fields back and forth on the platform may not be the least electrically noisy solution one could think of.
-Magnetic fields are also wide, meaning that the cart would "sneak up on" the threshold.
-This requires some amount of calibration to determine the correct distance between sensor and magnet, which may not be mechanically simple to determine. 
 % paragraph hall_effect_sensor (end)
 \paragraph{Infrared Transceiver:} % (fold)
 \label{par:infrared_transceiver}
@@ -201,32 +200,32 @@ The strategy consist of five steps that needs to be completed after finishing th
 
 The content of each step will be elaborated here. 
 
-\paragraph{Documentation}
+\paragraph{Documentation:}
 Each circuit should be documented to ensure that the design is done correctly.
 Documenting a circuit requires studying the components datasheets and ensuring that they each meets the requirement.
 Furthermore it requires a thorough inspection of the expected functionality of the circuit.
-This step leads to correcting errors where a component is used wrong in respect to the wanted functionality of the circuit.
+This step leads to correcting errors where a component is used incorrectly in respect to the desired functionality of the circuit.
 
-\paragraph{General Inspection}
+\paragraph{General Inspection:}
 General inspection of the schematic includes finding typographical errors on signals, components, resistor values, etc.
-Furthermore each signal should be inspected to ensure that it is connected correctly and it should also be decided if it should be connected to an external header for measuring purposes.
+Furthermore each signal should be inspected to ensure that it is connected correctly and it should also be decided if it should be connected to an external header for measurement purposes.
 
-\paragraph{Datasheet and Report Comparison}
+\paragraph{Datasheet and Report Comparison:}
 Each circuit in the schematic should be compared to its datasheets recommendation and the documentation written in the report. 
 This step essentially ensures that each circuit has been verified more than one time. 
 One could think that this step is irrelevant, but the authors believe it is important due to the complexity of the schematic.
 After completion of this step, all circuits have been checked at least two times and the schematic should be correct. 
 
-\paragraph{Footprint Inspection}
+\paragraph{Footprint Inspection:}
 Provided that the schematic is correct, the only possibly source of errors is the components footprints. 
 Inspecting the footprint consist of verifying the correct pin assignment and the correct land patterns.
-Both are done by inspecting each components datasheet. 
+Both are done by inspecting the datasheet of each component. 
 After completion of this step, both the schematic and footprints should be correct and the board is expected to be free from errors.
 
-\paragraph{Peer-review}
+\paragraph{Peer-review:}
 In this part of the process the board design, schematic and footprints should be correct and everything has been verified by the authors multiple times.
 It is generally a problem that when working with a design for a long period of time, some errors are very hard to find for the designers themselves. 
-Therefore the design was should be reviewed by a person that has not taking part of the design of the board.
+Therefore the design should be reviewed by a person that has not taken part of the design of the board.
 The review should be done by pointing out the main features of the board and discussing the found components, schematic and the board layout.
 
 % section schematic_revision (end)
@@ -238,12 +237,17 @@ This is done in large part by controlling grounds in the PCB.
 An unbroken ground plane should be present in the design to ensure a low-impedance current path in the PCB \cite{pcblayoutds}.
 In addition to unbroken ground planes, they should also be seperated based on their role in the circuit.
 Often two, three or even more ground planes exist in circuits.
-A common distribution is an analogue ground, digital ground and power ground.
-Analogue signals are often sensitive to noise and should be shielded from the switching noise of the digital circuitry.
+A common distribution is an analog ground, digital ground and power ground.
+Analog signals are often sensitive to noise and should be shielded from the switching noise of the digital circuitry.
 Similarly, high currents in a ground plane is likely to cause voltage drops across it.
-This may cause issues in the digital circuitry. 
+This may cause issues in the digital circuitry.
 
-\thomas{more on split grounds and layers}
+Having several ground planes can cause issues with currents circulating in them.
+In order to avoid this it is crucial that the ground planes are connected in one place only.
+\\~\\
+Since at least part of the PCB is likely to carry significant currents it is necessary to appropriately size the width of traces and 
+\thomas{finish this thought }
+
 \subsubsection{Component Selection and Placement} % (fold)
 \label{ssub:component_case_selection_and_placement}
 There are limits to the production capabilities of the equipment, both of the manufacturer producing the PCB and the equipment available to the authors at SDU.
@@ -253,10 +257,10 @@ SMT components come in many sizes and some are simply too small to realistically
 Generally, SOT-23, SOIC and 0805 packages and similar sizes are preferred where possible.
 With the equipment available at SDU only components on one side of the PCB can be placed and soldered with the pick-and-place machine and oven.
 Due to this, components should only be placed on the top layer when possible.
-Larger components, such as big capacitors, can easily be hand soldered and thereby it is no problem to place them on the bottom side of the PCB.
+Larger components, such as big capacitors, can easily be hand-soldered and can therefore be placed on the bottom side of the PCB.
 \\~\\
 A number of signals should be routed to headers to allow for easier debugging and monitoring of the circuits.
-For simplicity theses headers should all be a of the same type. 
+For simplicity these headers should all be of the same type. 
 The JST ZH-series connectors should be used as they are commonly used at SDU, they are SMT and sufficiently small. 
 
 
@@ -264,28 +268,24 @@ The JST ZH-series connectors should be used as they are commonly used at SDU, th
 Some of the developed circuits will consist of many components and complex ICs.
 With such complex circuits, errors in a schematics can easily appear.
 Therefore the functionality of the most important parts of the circuit should be tested on prototype PCBs before ordering an expensive PCB.
-\mikkel{Hmmm. Grumble}
-
-\subsubsection{PCB...} % (fold)
-
 
 \subsubsection{Board Layout and Considerations} % (fold)
 \label{ssub:board_layout_and_considerations}
 A number of options are available when considering the general layout of the controller circuitry.
-Different circuits can be segregated into individual board, simplifying the layout and production of each board but imposing requirements on board-to-board connections between different circuits.
+Different circuits can be segregated into individual boards, simplifying the layout and production of each board but imposing requirements on board-to-board connections between different circuits.
 One possible configuration under consideration is the segregation of the digital circuit and the power circuits.
 This would allow a different number of layers and different copper thickness on the two PCBs.
 Extra layers are beneficial when routing the multitude of signals in a digital circuit but also add extra cost to the production of the circuit.
 Similarly, extra copper is likely to be necessary on the power circuit but also adds cost.
-Exploring various manufacturing options revealed that the added cost of making a new design significantly outweighs the savings by segregating the thicker copper and extra layers, rather than producing just a single PCB incorporating both extra layers and extra copper.
-For this reason it was decided to produce just a single PCB, housing all of the electronics related to the controller.
+Exploring various manufacturing options revealed that segregating the boards into one board with added copper and one board with added layers added significant cost to the order.
+For this reason it was decided to produce just a single PCB with extra copper and four layers, housing all of the electronics related to the controller.
 
 \clearpage
 \subsubsection{Requirement Specification}
 
 \paragraph{Functional:}
 \begin{enumerate}[resume]
-	\item Motor speed and direction should be adjustable through PWM outputs ports of the MicroZed.
+	\item Speed and direction of the motor should be adjustable through PWM from the MicroZed.
 	\label{enum:motor_speed_direction}
 	\begin{itemize}
 		\item H-bridge of MOSFETs capable of switching motor current direction.
@@ -297,7 +297,6 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\label{enum:motor_current}
 	\begin{itemize}
 		\item Shunt resistor to measure the motor current.
-		\item Amplification of shunt voltage into voltage measurable by the MicroZed. 
 	\end{itemize}
 
 	\item Voltage rails for the various components in the circuit.
@@ -316,21 +315,16 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 		\item Bulk capacitors on 24V rail to supply current to motor.
 		\item Properly sized input and output capacitance of DC/DC power supplies.
 		\item Appropriate copper volume for ground and power wires.
-		\item Following best practice layout for high power PCB. 
 	\end{itemize}
 
 	\item The MicroZed should be correctly interfaced.
 	\label{enum:microzed_interface}
 	\begin{itemize}
-		\item The connection between the controller board and the MicroZed should be realized through two Bergstak 100pins headers.
 		\item All signals to the MicroZed should be routed on the PCB to appropriate I/O ports.
 		\item Start-up power sequence and voltage levels should be correct.
 	\end{itemize}
-	\item MOSFETs should be cooled to avoid overheating of the board.
+	\item A Heatsink should be connected to the MOSFETs to avoid overheating of the H-bridge.
 	\label{enum:cool_mosfets}
-	\begin{itemize}
-		\item A heatsink should be connected to MOSFETs driving the motor.
-	\end{itemize}
 	\item Hardware for wireless communication using RF should be implemented.
 	\label{enum:hardware_for_wireless_implemented}
 \end{enumerate}
@@ -357,6 +351,7 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 	\item PCB layout....
 	\label{enum:pcb_layout}
+	\thomas{fix requirements}
 	\begin{itemize}
 		\item Ground plane...
 		\item Avoid through-hole components....
@@ -369,16 +364,15 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 	\end{itemize}
 \end{enumerate}
 
-	
+\thomas{Needs mentioning: stall current, emergency signal from microzed, relays}
 \paragraph{Safety:}
 \begin{enumerate}[resume]
-	\item Should not break if misused.
+	\item System should not break during operation by users.
 	\label{enum:not_break_mis}
 	\begin{itemize}
 		\item Endstops capable of stopping moving cart.
-		\item Components should be able to handle stall current for xx seconds.
+		\item Components should be able to handle stall current.
 		\item Safety circuits should not rely on programming.
-		\item Shoot-through protection of H-bridge.
 	\end{itemize}
 
 	\item Any triggered emergency condition should halt the cart.
@@ -390,7 +384,6 @@ For this reason it was decided to produce just a single PCB, housing all of the 
 				\item[$\circ$] Endstops for detecting cart run-away.
 				\item[$\circ$] Emergency signal from the MicroZed.
 			\end{itemize}
-			\item Emergency conditions cannot cut power to the MicroZed.
 			\item Relay should switch power to motor.
 			\item Relay should be active only when emergency conditions are inactive.
 			\item Power to remaining electronics and MicroZed should not be affected by an emergency condition.
