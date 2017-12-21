@@ -368,9 +368,23 @@ This requirement states that five voltage rails should be present on the control
 \paragraph{Test}~\\
 The test for this requirement is conducted in the verification procedure in section \ref{par:verify_voltage_rails} where also the conclusion is.
 
+\mikkel{This should be "flettet" sammen.}
+The voltages of the rails were measured for 20ms and the mean voltage on each rail is shown in table \ref{tab:meas_rails}.
+\begin{table}[]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+2.483V & 3.305V & 4.987V & 12.00V
+\end{tabular}
+\caption{Measured mean voltages on the 2.5V, 3.3V, 5V and 12V rails.}
+\label{tab:meas_rails}
+\end{table}
+All measured values are within the values specified in the requirement specification.
+
+
 \subsubsection{Requirement \ref{enum:voltage_transients}} % (fold)
 \label{ssub:requirement_enum:voltage_transients}
-This requirement states that there should be voltage rails for the various components in the circuit.
+This requirement states that
 
 \paragraph{Test}~\\
 
