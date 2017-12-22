@@ -214,10 +214,9 @@ In order to comply with the SPI standard a Slave Select \texttt{SS} pin should b
 The \texttt{nRF24L01} also has a non SPI pin, \texttt{CE} that also needs to be controlled from the \texttt{ATtiny}.
 The full interface between the two is shown in figure \ref{fig:tiny_nrf_com}.
 
-\thomas{fix this figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=.8\linewidth]{graphics/tiny_nrf_com}
+	\includegraphics[width=.35\linewidth]{graphics/tiny_nrf_com}
 	\caption[Interface between ATtiny84 and nRF24L01.]{Interfacing the \texttt{ATtiny84}s USI and \texttt{nRF24L01}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
 	\label{fig:tiny_nrf_com}
 \end{figure}
