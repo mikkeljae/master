@@ -452,12 +452,11 @@ MOSFETs should run the motor for several minutes at a high velocity.
 During the test, the MOSFETs should not get hot.
 
 \paragraph{Conclusion}~\\
-\thomas{verify continuity of this paragraph}
-\thomas{be aware of the possible lacking test}
 During production of the board an error in the footprint of the MOSFETs was found, causing the solution with the large common heatsink to be unachievable.
 Therefore individual standard TO-220 heatsinks were connected to each MOSFET.
-The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting hot.
-It was concluded that the MOSFETs are sufficiently cooled.
+The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting warm.
+It should be noted that this test does not necessarily stress the motor sufficiently to fully conclude sufficient cooling.
+Once the system is finished a test should be designed which moves the cart back and  forth repeatedly to have more current flow through the MOSFETs.
 
 \subsubsection{Verification of: Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
 \label{ssub:requirement_enum:hardware_for_wireless_implemented}
