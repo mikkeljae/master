@@ -166,6 +166,21 @@
          d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
          id="path7840-8" />
     </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker7503-4-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path7505-3-9" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -174,9 +189,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.2"
-     inkscape:cx="281.53964"
-     inkscape:cy="860.01283"
+     inkscape:zoom="7.919596"
+     inkscape:cx="329.57379"
+     inkscape:cy="726.53322"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -365,11 +380,11 @@
          sodipodi:role="line"
          x="305.97308"
          y="248.08643"
-         id="tspan7280-1">Write payload </tspan><tspan
+         id="tspan7280-1">Set </tspan><tspan
          sodipodi:role="line"
          x="305.17719"
          y="254.33643"
-         id="tspan7284-5">to RX_PW_P0</tspan></text>
+         id="tspan7284-5">RX_PW_P0 = 2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:5px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -419,16 +434,16 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:5px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="350.02271"
-       y="339.1922"
+       y="346.92432"
        id="text6083-2-3-52"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="350.02271"
-         y="339.1922"
-         id="tspan6170-9-5">Wait 130ms</tspan></text>
+         y="346.92432"
+         id="tspan6170-9-5">Wait 130us</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 329.98234,334.85376 c 0,0 0,-4.99999 5,-4.99999 5,0 30.00002,0 30.00002,0 0,0 5,0 5,4.99999 0,4.99999 0,4.99999 0,4.99999 0,0 0,5 -5,5 -5,0 -30.00002,0 -30.00002,0 0,0 -5,0 -5,-5 0,-4.99999 0,-4.99999 0,-4.99999 z"
+       d="m 329.98234,342.58589 c 0,0 0,-4.99999 5,-4.99999 5,0 30.00002,0 30.00002,0 0,0 5,0 5,4.99999 0,4.99999 0,4.99999 0,4.99999 0,0 0,5 -5,5 -5,0 -30.00002,0 -30.00002,0 0,0 -5,0 -5,-5 0,-4.99999 0,-4.99999 0,-4.99999 z"
        id="path6213-4-4"
        inkscape:connector-curvature="0" />
     <path
@@ -556,5 +571,10 @@
          x="380.12152"
          y="177.33458"
          id="tspan4249-6" /></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7503-4-2)"
+       d="m 350,323.3622 0,12"
+       id="path7583-1-1"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
