@@ -156,33 +156,39 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Correct cart position should be known at all times.
+	\label{enum:correct_cart_position}
 	\begin{itemize}
 		\item Encoder signals should be used to measure relative position.
 		\item Endstop signal should be used to calibrate and infer the absolute position.
 	\end{itemize}
-	\item General peripheral hardware should be controlled
+	\item General peripheral hardware should be controlled.
+	\label{enum:general_peripheral_hardware}
 	\begin{itemize}
 		\item Main relay and inrush relay should be controlled through output pins.
 		\item 3 channel 1kHz PWM with adjustable dutycycle should control each RGB LED.
 	\end{itemize}
 	\item Software should produce correct signals to motor driver that allows for control of speed and direction of the motor.
+	\label{enum:software_correct_motor_driver_signals}
 	\begin{itemize}
 		\item 22kHz PWM signals on two channels.
 		\item Adjustable dutycycle.
 		\item Control \texttt{DIS} signal.
  	\end{itemize}
 	\item Receive joint angle data from the two joint boards using the \texttt{nRF24L01} module
+	\label{enum:receive_joint_angle}
 	\begin{itemize}
 		\item Setup of Microzed as SPI master.
 		\item Setup of \texttt{nRF24L01} settings.
 		\item Receive joint angle data form joint boards.
 	\end{itemize}
 	\item Real time behaviour of software.
+	\label{enum:real_time_behavior}
 \end{enumerate}
 
 \paragraph{Design:}
 \begin{enumerate}[resume]
-	\item VHDL should be designed and implemented using the following practices.
+	\item VHDL modules should be designed and implemented using the following practices.
+	\label{enum:vhdl_implementation_practices}
 	\begin{itemize}
 		\item Utilization of Test Benches.
 		\item Atomic Components.
@@ -192,6 +198,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \paragraph{Safety:}
 \begin{enumerate}[resume]
 	\item Software should handle emergency situations.
+	\label{enum:software_should_handle_emergency}
 	\begin{itemize}
 		\item Should detect emergency condition.
 		\item Should be able to produce an emergency signal.
@@ -680,4 +687,90 @@ end process;
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
-\thomas{write verifications}
+
+\subsubsection{Verification of: Requirement \ref{enum:correct_cart_position}} % (fold)
+\label{ssub:verification_of_requirement_}
+This requirement states that correct cart position should be known at all times.
+
+\paragraph{Test}~\\
+Cart should by moved back and forth and the cart position variable should be be incremented and decremented accordingly.
+The position should be set to zero, when moving the cart to the position of endstop 1.
+\\
+Drifting of the counter should be tested by placing the cart at at fixed position and noting the position variable.
+Then the cart should be moved back and forth for some time and then placed at the initial fixed position. 
+The position value should have the same value as when initially held at the fixed position.
+
+\paragraph{Conclusion}~\\
+The test procedure described above was followed and it was found that the cart position variable is correctly increased, decreased and it was set to zero when reaching endstop 1.
+\\
+The drifting test was done by noting the counter position at the position of endstop 2. 
+Hereafter the cart was moved back and fourth at different velocities for several minutes before returning it to the place of endstop 2. 
+The position counter was the same, indicating that drifting is not present in the system.
+\\~\\
+The length of the rail from endstop 1 to endstop 2 was measured to be 72387 ticks.
+Ten cm was measured to equal 6663 ticks
+\mikkel{Does not seem to be true, when measuring the rail.}
+
+\subsubsection{Verification of: Requirement \ref{enum:general_peripheral_hardware}} % (fold)
+\label{ssub:verification_of_requirement_enum:general_peripheral_hardware}
+This requirement states that general peripheral hardware should be controlled.
+
+\paragraph{Conclusion}~\\
+It was tested that the two relays could be turned \texttt{on} and \texttt{off} successfully from the software.
+Furthermore it was tested that the three RGB LEDs could be illuminated in all colors using the PWM generation.
+
+
+\subsubsection{Verification of: Requirement \ref{enum:software_correct_motor_driver_signals}} % (fold)
+\label{ssub:verification_of_requirement_enum:software_correct_motor_driver_signals}
+This requirement specifies that software should produce correct signals to motor driver that allows for control of speed and direction of the motor.
+
+\paragraph{Test}~\\
+PWM outputs and I/O pin \texttt{DIS} of the MicroZed should be applied to the motor through the controller board circuitry.
+Through programming it should be possible to set speed and direction of motor.
+
+\paragraph{Conclusion}~\\
+The Microzed was programmed and inserted in the connector on the controller board.
+Setting different duty cycles yielded different velocities of the motor - as expected.
+By programming the \texttt{DIR} bit it was possible to change the motor direction.
+The motor was successfully stopped by setting the \texttt{DIS} variable \texttt{high}.
+
+\subsubsection{Verification of: Requirement of \ref{enum:receive_joint_angle}} % (fold)
+\label{ssub:verificatation_of_requirement_enum:receive_joint_angle}
+This requirement states that the software should receive joint angle data from the two joint boards using the \texttt{nRF24L01} module.
+
+\paragraph{Conclusion}~\\
+Testing this requirement requires software to run on the joint board.
+The joint board has a similar requirement, which states that it should be able to transmit joint angle data to the controller board.
+This requirement is tested and concluding remarks are given in section \ref{ssub:requirement_enum:joint_transmit}.
+
+\subsubsection{Verification of: Requirement \ref{enum:real_time_behavior}} % (fold)
+\label{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior}
+This requirement states that all software should be real time.
+\thomas{Fill me up, Scotty....}
+
+\subsubsection{Verification of: Requirement \ref{enum:vhdl_implementation_practices}} % (fold)
+\label{ssub:verification_of_requirement_enum:vhdl_implementation_practices}
+This requirement states that VHDL modules should be designed and implemented using the practices:
+\begin{itemize}
+	\item Utilization of Test Benches.
+	\item Atomic Components.
+	\item Utilization of IP Cores.
+\end{itemize}
+
+\paragraph{Conclusion}~\\
+This was successfully done as described in section \ref{ssub:vhdl_components}. 
+
+\subsubsection{Verification of: Requirement \ref{enum:software_should_handle_emergency}} % (fold)
+\label{ssub:verification_of_requirement_enum:software_should_handle_emergency}
+This requirement specifies that software should handle emergency situations.
+
+\paragraph{Test}~\\
+Detecting a safety condition should be tested by triggering an emergency condition e.g. moving the cart to one of the endstop and record this using the Microzed.
+\\
+Producing a safety condition should be done by setting the \texttt{EM\_MCU} signal \texttt{low}. 
+
+\paragraph{Conclusion}~\\
+It was found that the \texttt{EM\_DIS} signal that indicates a safety condition was not wired to the MicroZed Bergstak connector.
+This should be done in order to record safety conditions.
+\\~\\
+No tests were performed on producing a safety condition because of time constraints.
