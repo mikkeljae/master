@@ -38,20 +38,18 @@ Table \ref{tab:mosfetparameters} holds a list of the relevant parameters.
 	\label{tab:mosfetparameters}
 \end{table}
 
-It should be noted that even though \vth is maximum 3.5V, this is not enough to fully open the MOSFET.
+It should be noted that even though \vth is maximum 4V, this is not enough to fully open the MOSFET.
 Rather, this voltage is where the MOSFET will start to conduct.
-Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not fully conducting until \vgs $>4.5$V.
+Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not fully conducting until \vgs $>6$V.
 
-\thomas{update figure \ref{fig:mosfettransfercharacteristic} to new fet, datasheet cite and values}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\linewidth]{graphics/mosfet_transfer_characteristic}
 	\caption[Transfer characteristic of the IRF100B202.]{Transfer characteristic of the \texttt{IRF100B202} as per the datasheet.
-	Inspecting the graph reveals that the maximum \id of 100A is reached at \vgs$\approx4.2\rightarrow4.5$V.}
+	Inspecting the graph reveals that the maximum \id of 97A is reached at \vgs$\approx5.5\rightarrow6.5$V.}
 	\label{fig:mosfettransfercharacteristic}
 \end{figure}
  
-
 Having chosen a MOSFET for the full-bridge, some form of driver must be designed for the full-bridge.
 For this task, ready-made full-bridge drivers exist on the market that incorporate all of the electronics required to generate the driving signals, requiring only a PWM signal from the designer.
 In order to choose one, a few parameters must be fulfilled.
@@ -456,9 +454,7 @@ As can be seen, the \texttt{INA286} in this configuration requires only the volt
 \subsubsection{Endstop Detection} % (fold)
 \label{ssub:endstop_detection}
 As described in section \ref{subsub:safety} it was decided to use infrared transceivers to detect endstops.
-\mikkel{The actual 3D print design should be described elsewhere}
-It was decided to use the \texttt{TCST2103} \cite{} as it has the wanted functionality.
-\thomas{Cite me!}
+It was decided to use the \texttt{TCST2103} \cite{tcst2103} as it has the wanted functionality.
 It contains an infrared emitter pointing at a photo transistor, that conducts current proportional to the infrared light received.
 In this project it will be used to detect if the infrared light is blocked by the cart or not. 
 The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the current conducted to a voltage level. 
@@ -474,8 +470,6 @@ The circuit can be seen in appendix \ref{}
 	\label{fig:tcst_circuit}
 \end{figure}
 \thomas{Create correct circuit and text}
-
-
 
 \subsubsection{Voltage Rails} % (fold)
 \label{subsub:voltage_rails}
@@ -502,11 +496,11 @@ The RF Transceiver used in this project, however, requires only up to 15mA when 
 \paragraph{5V:} % (fold)
 \label{par:5v}
 This rail supplies, mainly, the MicroZed.
-\thomas{fix reference to hardware user guide and change sentence to explain 3.3 vs 5V distribution.}
-The authors previously found \cite{isaswarm} that the maximum expected current draw seen from the MicroZed is 1.85A at 5V.
+The maximum expected current draw from the microzed is 1.85A at 5V \cite{microzed}.
+This includes the current drawn from the 3.3V rail.
 In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
-The HEDS-5540 \cite{heds5540} encoder requires a maximum of 85mA.
-The endstops are realised using the TCST2103 infrared sensor \cite{tcst2103}.
+The \texttt{HEDS-5540} \cite{heds5540} encoder requires a maximum of 85mA.
+The endstops are realised using the \texttt{TCST2103} infrared sensor \cite{tcst2103}.
 The majority of the current supplied to this sensor is used to power the infrared LED present in the component.
 This current is decided by the resistor put in series with the LED and is estimated to be around 50mA per LED for a total of 100mA.
 Another 10mA is added to that figure due to the collector current possible on the transistor side.\\
@@ -530,21 +524,21 @@ See table \ref{tab:5vpowerbudget} for a full overview.
 	\label{tab:5vpowerbudget}
 \end{table}
 
-In \cite{isaswarm} the authors used a design in which the PTH08080 is used to generate a 5V rail.
+In \cite{isaswarm} the authors used a design in which the \texttt{PTH08080} is used to generate a 5V rail.
 Reusing this module will save on design time as well as the budget available to the project and as such is desirable.
 This module can supply 2.25A at 5V and should therefore be sufficient for this application.
-The PTH08080 design will be reused for this project.
+The \texttt{PTH08080} design will be reused for this project.
 % paragraph 5 (end)
 
 \paragraph{12V:} % (fold)
 \label{par:12v}
-This rail powers the HIP4081 motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
-The PTH08080 DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
+This rail powers the \texttt{HIP4081} motor driver, the relay coils, the bootstrap circuitry and the 5V DC/DC converter.
+The \texttt{PTH08080} DC/DC converter has a maximum input voltage of 18V and must be powered from the 12V rail rather than the 24V rail.
 The module can provide 2A at 5V and as such will require $\approx$0.85A from the 12V rail, assuming 100\% efficiency.
 
 There are two relays in the design, a smaller relay for controlling the inrush current and the larger main supply relay.
 Both of these require power to stay in the closed position.
-The first, the G6B, requires 16.7mA while the former, the LEV100A4ANG, requires 461mA.
+The first, the \texttt{G6B}, requires 16.7mA while the former, the \texttt{LEV100A4ANG}, requires 461mA.
 
 The motor driver of the system, the HIP4081 requires only 10mA.
 As mentioned, the bootstrap circuitry is also powered from the 12V rail.

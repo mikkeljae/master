@@ -676,7 +676,16 @@ end process;
 \label{code:vhdl_pwm_gen}
 \end{listing}
 
-\thomas{write section on khaos}
+\subsubsection{KHAos and Real-Time Software} % (fold)
+\label{ssub:khaos}
+KHAos is a run-to-complete scheduler written by Karsten Holm Andersen, lecturer at SDU.
+It is written to provide a simple operating system, OS, for use on bare-metal systems.
+The OS includes of a timer module and a CPU config module which are written specifically for the platform that the OS should be running on.
+The software also includes the scheduler itself, \texttt{schedule.c} and a pair of configuration files \texttt{rtcs.h} and \texttt{rtcscnf.h}.
+\\~\\
+It should be noted that while the authors did set up a functioning KHAos system it saw no actual use in the verification of features due to time constraints.
+The steps to properly configure KHAos are presented here to provide an overview of the process.
+% subsubsection khaos (end)
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
