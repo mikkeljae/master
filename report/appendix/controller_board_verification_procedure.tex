@@ -16,21 +16,7 @@ The most recent schematic can be seen on (a place).
  		\item[-] Verify 12V, 5V, 3.3V and 2.5V voltage rails.
  	\end{itemize}
  \end{itemize}
-\paragraph{Verify MicroZed Startup/Shutdown Sequence} % (fold)
-\label{par:verify_microzed_startup_shutdown_sequence}
-\begin{itemize}
-	\item Toggle power button OFF.
-	\item Insert MicroZed into controller board.
-	\item Toggle power button ON.
-	\begin{itemize}
-		\item Verify that the 3.3V rail is not high before \texttt{VCCIO\_EN} during startup. See figure \ref{fig:controllerboardv2_startup} for example of succesful startup sequencing.
-	\end{itemize}
-	\item Toggle power button OFF
-	\begin{itemize}
-		\item Verify that signals \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order during shutdown. See figure \ref{fig:controllerboardv2_startup} for example of succesful startup sequencing.
-	\end{itemize}
-\end{itemize}
-% paragraph verify_microzed_startup_shutdown_sequence (end)
+
 \paragraph{Simulate No Emergency} % (fold)
 \label{par:simulate_no_emergency}
 \begin{itemize}

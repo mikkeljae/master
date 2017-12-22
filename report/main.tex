@@ -44,9 +44,11 @@
 \graphicspath{{graphics/}}
 
 % Should force tikz to only run once on each included .tex file
-%\usepgfplotslibrary{external} 
-\usetikzlibrary{external}
-\tikzexternalize
+%\usepgfplotslibrary{external} %--- tRY
+
+%\usetikzlibrary{external}
+%\tikzexternalize
+
 %in LatexTools > settings-user, add the following after "display_log": "false",
 %"program": "pdflatex",
 %"command": ["latexmk", "-cd", "-e", "$pdflatex = '%E -shell-escape -interaction=nonstopmode -synctex=1 %S %O'", "-f", "-pdf"],
@@ -54,11 +56,12 @@
 
 % The next lines will make sure todo's and missingtables are not run externally. 
 % If they are not here, then todo's will not disappear when you remove them in the latex code.
-\LetLtxMacro{\oldtodo}{\todo}
-\renewcommand{\todo}[2][]{\tikzexternaldisable\oldtodo[#1]{#2}\tikzexternalenable}
 
-\LetLtxMacro{\oldmissingfigure}{\missingfigure}
-\renewcommand{\missingfigure}[2][]{\tikzexternaldisable\oldmissingfigure[{#1}]{#2}\tikzexternalenable}
+%\LetLtxMacro{\oldtodo}{\todo}
+%\renewcommand{\todo}[2][]{\tikzexternaldisable\oldtodo[#1]{#2}\tikzexternalenable}
+
+%\LetLtxMacro{\oldmissingfigure}{\missingfigure}
+%\renewcommand{\missingfigure}[2][]{\tikzexternaldisable\oldmissingfigure[{#1}]{#2}\tikzexternalenable}
 
 \usepackage[font=footnotesize,labelfont=bf]{caption}
 
@@ -122,10 +125,10 @@
 \input{sections/joint_board_software}
 \clearpage
 \newpage
-%\input{sections/model_development.tex}
-%\input{sections/system_verification.tex}
-%\input{sections/conclusion.tex}
-%\input{sections/future_work.tex}
+\input{sections/model_development.tex}
+\input{sections/system_verification.tex}
+\input{sections/conclusion.tex}
+\input{sections/future_work.tex}
 \clearpage
 \newpage
 \section*{References}
@@ -134,11 +137,11 @@
 \printbibliography[heading=none, keyword={data}]
 \newpage
 \appendix
-%\input{appendix/joint_board_verification_procedure}
+\input{appendix/joint_board_verification_procedure}
 \newpage
-%\input{appendix/controller_board_verification_procedure}
+\input{appendix/controller_board_verification_procedure}
 \newpage
-%\input{appendix/controller_board_schem}
+\input{appendix/controller_board_schem}
 \newpage
-%\input{appendix/joint_board_schem}
+\input{appendix/joint_board_schem}
 \end{document}

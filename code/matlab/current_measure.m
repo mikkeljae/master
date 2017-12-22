@@ -12,3 +12,9 @@ I_max_meas = V_max_meas/(R*G)
  
 Ii = 8;
 Vi = G *Ii * R
+
+
+
+res = 2^12
+res_volt = 1/res
+res_amp = 50/res

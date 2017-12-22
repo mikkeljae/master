@@ -101,6 +101,7 @@ As described in the requirements in section \ref{subs:joint_requirements}, a 5V 
 Generating the 5V rail can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
 The boost regulator \texttt{SP6641B} \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V.
 The circuitry used in this project will be based on the reference design shown in the datasheet, with the one difference that the \texttt{SHDN} (shutdown) pin has been pulled permanently high.
+The circuit is shown on the full joint board schematics in appendix \ref{app:joint_board_schem}.
 
 \subsubsection{3.3V}
 A 3.3V rail is needed according to the requirement specification.
@@ -133,13 +134,12 @@ The drop out voltage can be calculated using equation \ref{eq:drop_v_tps62}, \ci
 \end{equation}
 
 \begin{equation}
-	V_{drop} = 0.02 \cdot (0.67+0.09) = 15 [mV]
+	V_{drop} = 0.02 \cdot (0.062+0.09) = 14 [mV]
 	\label{eq:drop_v_tps62_2}
 \end{equation}
 
 Where $I_O$ is the output current, $R_{DS(on),max}$ is the \texttt{ON} resistance of the internal switch and $R_I$ is the DC resistance of the external inductor.
-The inductor resistance used is found in the \texttt{LQH55D} SMD inductor \cite{LQH55D}.
-\mikkel{Update to new inductor and change equations above}
+The inductor resistance used is the value of the \texttt{B82462G4} inductor \cite{B82462G4}, used on the joint board.
 This means that it can supply 3.3V output when the input voltage is 3.315V or greater
 
 
@@ -181,7 +181,7 @@ The most important parameters of the three solutions discussed are shown in tabl
 		  				&	Buck 	& Buck-Boost 	& Linear\\
 		 \hline
 		 Efficiency  	&  95\% 	& 75\%			&89\%		\\
-		 Drop out [mV]		&15  	& N/A		&20		\\
+		 Drop out [mV]		&14  	& N/A		&20		\\
 	\end{tabular}
 	\caption[Parameters of voltage generation solutions.]{Parameters of the three solutions using a Buck converter, Buck-Boost converter or a linear regulator. The efficiency shown is estimated with an input voltage of 3.7V, an output voltage of 3.3V and an output current in the range of 1mA to 20mA. The drop out voltage is estimated with an output current of 20mA (Buck) and 50mA (linear regulator).}
 	\label{tab:vol_gen_joint}
