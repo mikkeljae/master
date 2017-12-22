@@ -308,7 +308,6 @@ Since the 12V and therefore the 5V rail were unaffected by the dipping 24V rail 
 	\label{fig:current_w_load_slow}
 \end{figure}
 
-\thomas{anything to add about the initial-current-draw problem.}
 \subsubsection{Verification of: Requirement \ref{enum:motor_current}} % (fold)
 \label{ssub:requrement_enum:motor_current_}
 This requirement specifies that it should be possible to measure the current through the motor using the ADCs on the MicroZed.
@@ -344,11 +343,9 @@ A pristine analog ground is likely necessary to maintain signal integrity but th
 \label{ssub:requirement_enum:voltage_rails}
 This requirement states that five voltage rails should be present on the controller board. 
 
-\paragraph{Test}~\\
-The test for this requirement is conducted in the verification procedure in section \ref{par:verify_voltage_rails} where also the conclusion is.
-
-\mikkel{This should be "flettet" sammen.}
-The voltages of the rails were measured for 20ms and the mean voltage on each rail is shown in table \ref{tab:meas_rails}.
+\paragraph{Conclusion}~\\
+In the verification procedure in section \ref{par:verify_voltage_rails} it is verified that all rails are present.
+The voltages of the rails were measured for 20ms and the mean voltage of each rail is shown in table \ref{tab:meas_rails}.
 \begin{table}[]
 \centering
 \begin{tabular}{|l|l|l|l|}
@@ -430,22 +427,23 @@ It was concluded that the MOSFETs are sufficiently cooled.
 
 \subsubsection{Verification of: Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
 \label{ssub:requirement_enum:hardware_for_wireless_implemented}
-\mikkel{Insert conclusion, remove number}
-Requirement \ref{enum:hardware_for_wireless_implemented} specifies that hardware for wireless communication using RF should be implemented on the controllerboard.
+This requirement specifies that hardware for wireless communication using RF should be implemented on the controllerboard.
+
+\paragraph{Conclusion}~\\
 The \texttt{nRF24L01} was chosen and placed on the board with a SPI connection to the Microzed.
 
 \subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}
-\mikkel{Insert conclusion, remove number}
-Requirement \ref{enum:important_prototype} specifies that important parts of the circuitry should be tested on prototype PCB.
+This requirement specifies that important parts of the circuitry should be tested on prototype PCB.
+\paragraph{Conclusion}~\\
 This was done by making two prototype PCBs which lead to correction of two errors and verification of the rest of the functionality.
 Time and money was saved this way, by correcting the errors before ordering the full board from a professional PCB vendor at a higher cost and a long delivery time.
 
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_strategy}} % (fold)
 \label{ssub:requirement_enum:pcb_strategy}
-\mikkel{Insert conclusion, remove number}
-According to requirement \ref{enum:pcb_strategy} the PCB layout should be reviewed according to the five steps of the developed strategy.
+According to this requirement the PCB layout should be reviewed according to the five steps of the developed strategy.
+\paragraph{Conclusion}~\\
 Using this method a PCB layout was produced with significantly less errors than the previous experience of the authors.
 The fact that the final PCB contained errors indicates that the steps were not followed thoroughly enough or that the method is flawed.
 Two of the errors originated in a difference between a components footprint and the symbol in the schematic.
@@ -455,8 +453,8 @@ Especially it would have been beneficial to use the peer-review step more compre
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_debugging}} % (fold)
 \label{ssub:requirement_enum:pcb_debugging}
-\mikkel{Insert conclusion, remove number}
-Requirement \ref{enum:pcb_debugging} specifies that the PCB layout should be designed with debugging in mind.
+This requirement specifies that the PCB layout should be designed with debugging in mind.
+\paragraph{Conclusion}~\\
 This was done by adding six debugging headers with a total of 55 signals to the PCB design.
 The debugging headers were used extensively in the debugging process.
 

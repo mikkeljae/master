@@ -271,7 +271,7 @@ In this component both rising and falling edges are used and so any difference b
 This code is repeated for all three input signals, with the exception that the \texttt{Z} channel sets \texttt{next\_state} to \texttt{st6\_index} instead.
 
 \thomas{appropriate captions on listings}
-\begin{listing}[h]
+\begin{listing}[H]
 \begin{minted}{vhdl}
 case (state) is
 	when st1_idle =>
@@ -289,7 +289,7 @@ Is responsible for determining which phase is currently active.
 The different phases can be seen in figure \ref{fig:quadrature}.
 The phase is found simply by comparing the signals as seen in listing \ref{code:phase_detection}.
 Regardless of the detected phase \texttt{next\_state} is set to \texttt{st3\_dir}.
-\begin{listing}[h]
+\begin{listing}[H]
 \begin{minted}{vhdl}
 when st2_edge =>
 	if A = '1' then
@@ -308,7 +308,7 @@ when st2_edge =>
 Determines the current direction of travel.
 This can be seen by comparing the current phase to the last phase.
 Listing \ref{code:determine_direction} shows the structure of the code responsible for this step.
-\begin{listing}[h]
+\begin{listing}[H]
 \begin{minted}{vhdl}
 when st3_dir =>
 	if last_phase /= p0 then
@@ -360,7 +360,7 @@ It should be noted that the end signal is treated as a reset signal and as such 
 Since it is essentially a reset signal handling of it is placed in the \texttt{sync process} to avoid an asynchronous reset of the values.
 The code in question can be seen in listing \ref{code:cart_sync_proc}.
 
-\begin{listing}[h]
+\begin{listing}[H]
 \begin{minted}{vhdl}
 SYNC_PROC:  process(clk)
 	begin
@@ -660,8 +660,7 @@ Generating the PWM signal from the counter and compare values is done in lines 5
 Setting the PWM on to the correct channel is done in lines 12 to 16.
 As \texttt{pwm\_a\_l} and \texttt{pwm\_b\_l} are written to while in a process, they will only be updated with the last written value, at the end of the process.
 
-\mikkel{make sure figure is at right place}
-\begin{listing}[!h]
+\begin{listing}[H]
 \begin{minted}{vhdl}
 OUTPUT_DECODE: process (state,counter,dir)
 begin
