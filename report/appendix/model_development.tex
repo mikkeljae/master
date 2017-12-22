@@ -21,8 +21,6 @@ For convenience the two pendulums will be referred to as $p_1$ and $p_2$ where $
 	\label{fig:doublependulum}
 \end{figure}
 
-\mikkel{Maybe the illustration needs to be changed in order properly show the positive direction of $\theta_2$ }
-
 Equations should be developed such that, given an initial state, the position and subsequent movement can be derived from them.
 This can be achieved using the Euler-Lagrange differential equations.
 These will be found for this system throughout the remainder of this section.
@@ -50,7 +48,6 @@ In order to calculate the Euler-Lagrange diff. eq. it is necessary to first dete
 \end{equation}
 Where $E_k$ is the kinetic energy of the system and $E_p$, the potential energy.
 The derivation of $E_p$:
-\mikkel{g being the standard acceleration due to gravity}
 \begin{align}
 	E_p &= m_1 g y_1 + m_2 g y_2\\
 		&= -m_1 g l_1 \cos{\theta_1} - m_2 g l_1 \cos{\theta_1} - m_2 g l_2 \cos{\theta_2}\\
@@ -83,7 +80,6 @@ Similarly:
 	\end{split}
 \end{align}
 Isolating cosine and sine from the terms pairwise, 1 and 4, 2 and 5, 3 and 6, yields:
-\mikkel{from equation 20? add in text}
 \begin{align}
 	\begin{split}
 		v_2^2&=(\cos{\theta_1}^2+\sin{\theta_1}^2)l_1^2\dot\theta_1^2+(\cos{\theta_2}^2+\sin{\theta_2}^2)l_2^2\dot\theta_2^2\\
@@ -133,7 +129,6 @@ The three terms $\frac{\partial \mathcal{L}}{\partial \dot\theta}$,$\frac{d}{dt}
 	\end{split}\\
 	\frac{\partial \mathcal{L}}{\partial \theta_1} &= -m_2l_1l_2\dot\theta_1\dot\theta_2\sin(\theta_1-\theta_2)-(m_1+m_2)l_1g\sin{\theta_1}\\
 \end{align}
-\mikkel{Entering the x,x,x equations yields the first the Euler-Lagrange diff bla bla.}
 \begin{align}
 	\begin{split}
 		0&=(m_1+m_2)l_1\ddot\theta_1+m_2l_2\ddot\theta_2\cos{(\theta_1-\theta_2)}\\
@@ -151,14 +146,9 @@ And $p_2$:
 	\frac{\partial \mathcal{L}}{\partial \theta_2} &=m_2l_1l_2\dot\theta_1\dot\theta_2\sin{(\theta_1-\theta_2)}-m_2l_2g\sin{\theta_2}\\
 	\label{eq:part}
 \end{align}
-\mikkel{Entering the x,x,x equations yields the second the Euler-Lagrange diff bla bla.}
 \begin{align}
 	\begin{split}
 		0&=m_2l_2\ddot\theta_2+m_2l_1\ddot\theta_1\cos{(\theta_1-\theta_2)}\\
 		&\qquad-m_2l_1\dot\theta_1^2\sin{(\theta_1-\theta_2)}+m_2g\sin{\theta_2}
 	\end{split}
 \end{align}
-\thomas{eq. \ref{eq:part} has a minus in front of the first term according to our calculations. Determine why.}
-% subsection simple_double_pendulum (end)
-
-% section model_development (end)

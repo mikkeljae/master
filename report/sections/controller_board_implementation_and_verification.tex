@@ -93,7 +93,7 @@ Component names are referenced to the controller board schematics found in appen
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.75\linewidth]{graphics/controllerboard_real}
-	\caption{Image of the controller board}
+	\caption{Picture of the implemented controller board.}
 	\label{fig:controller_board_img}
 \end{figure}
 \subsection{Verification} % (fold)
@@ -394,19 +394,22 @@ All measured values are within the values specified in the requirement specifica
 
 \subsubsection{Verification of: Requirement \ref{enum:voltage_transients}} % (fold)
 \label{ssub:requirement_enum:voltage_transients}
-This requirement states that
+This requirement states that voltage transients on voltage rails should be minimized.
 
 \paragraph{Test}~\\
+The voltage across the H-bridge should be measured while driving the motor in order to detect voltage transients. 
 
 \paragraph{Conclusion}~\\
-\mikkel{Measure voltage transient on rails}
-\mikkel{Make simulation and write something here.}
-\mikkel{verify use of motor control}
+While conducting the test as described abobe it was not possible to detect any voltage transient due to the current draw by the motor.
+This is also as expected, because of the capacitor bank.
+The motor current and the current draw from the main power supply was measared while driving the motor.
+The measured waveforms are shown in figure \ref{fig:controllerboardv2_currents}.
+Here it can be seen that even though the motor current alternating the supply current is mostly DC.
 \begin{figure}[h]
 	\centering
     %\input{graphics/controllerboardv2_current_motor_supply.tex}
 	\caption[Measured supply and load currents.]{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
-	\label{fig:controllerboardv2_}
+	\label{fig:controllerboardv2_currents}
 \end{figure}
 
 \subsubsection{Verification of: Requirement \ref{enum:microzed_interface}} % (fold)
