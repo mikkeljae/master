@@ -1,8 +1,10 @@
 %!TEX root = ../main.tex
 \subsection{Implementation} % (fold)
 \label{sub:controller_implementation}
+This section will go through the implementation of the various boards created in relation to the controller board.
+The prototyping boards and the experiences gained from them are presented.
+Hereafter the manufacturing process of the controller board is shown.
 
-\thomas{Insert section on hardware fixes on controller and joint board}
 \subsubsection{Prototyping}
 \label{sub:controller_board_prototyping}
 In order to test important parts of the controller board a home-made prototype PCB was made at the University's PCB lab.
@@ -64,15 +66,42 @@ It was also verified that the high side gate signals are 180$^\circ$ out of phas
 
 \subsubsection{Controller Board} % (fold)
 \label{ssub:controller_board}
-\thomas{show picture and a few notes on the production of the board}
-Something should be written here about implementing/producing the controller board.
-A picture should be shown.
-
+The controller board was designed by the authors but the PCB was manufactured using an out-of-house PCB fabricator.
+Adding components to the top of the board was done using the pick-and-place facilities available at SDU.
+A stencil had been ordered along with the design to allow for easy application of solder paste.
+\\~\\
+As mentioned previously, the bottom side of the board is populated mostly with larger components which are easily handsoldered.
+The extra copper on all four layers did, however, complicate the soldering process somewhat.
+Applying sufficient heat to the board becomes troublesome, especially with the lower-wattage soldering irons generally available to the authors.
+Eventually a heating plate was used to pre-heat the board, which made the process bearable.
+\\~\\
+A picture of the finished board can be seen in figure \ref{fig:controller_board_img}.
+It should be noted that while the authors took measures to avoid errors in the PCB, some amount of them found their way into the design regardless.
+Here is a list of the errors that have been found and the fix done to work around them.
+Component names are referenced to the controller board schematics found in appendix \ref{app:controller_board_schem}.
+\begin{itemize}
+	\item Missing ground on source of Q22: A wire is soldered from R69 (same net as source of Q22) to ground-side of R73.
+	\item \texttt{EM\_MCU} wired to wrong port: The original trace was cut and a wire is soldered from R54 to JX2 Pin14.
+	\item Encoder signals not wired to header: Wires are soldered from \texttt{A} at R31, \texttt{B} at R32 and \texttt{Z} at R33 to JX2 Pin32, Pin36 and Pin38.
+	\item \texttt{EM\_END} signals not wired to header: Wire soldered from R44 to JX2 Pin30
+	\item MOSFETs are reversed in footprint: MOSFETs are reversed in design to negate the reversed footprint.
+	Standard TO220 heatsink used.
+	\item Footprint of Motor cabacitors reversed: Capacitors mounted in reverse to negate the reversed footprint.
+	\item Inhibit signals of \texttt{PTN78020} and \texttt{PTH08080} connected: Trace cut between the two so that \texttt{PTN78020} is still connected to the net.
+	\item nRFM close to copper: nRFM mounting using wires to clear the copper of the board.
+\end{itemize}
+\begin{figure}[h]
+	\centering
+	\missingfigure{image of the controller board}
+	%\includegraphics[width=.75\linewidth]{graphics/controller_board_img}
+	\caption{Image of the controller board}
+	\label{fig:controller_board_img}
+\end{figure}
 \subsection{Verification} % (fold)
 \label{ssub:verifaction}
-
-Something here....
-\thomas{introduction to verification}
+This section will go through the verification of the manufactured controller board.
+Verification is split into two parts.
+The initial part verifies mainly that the board has been correctly manufactured, while the next part verifies the remaining design of the board. 
 
 \subsubsection{General Verification Procedure} % (fold)
 \label{ssub:verification_procedure}
@@ -423,12 +452,11 @@ MOSFETs should run the motor for several minutes at a high velocity.
 During the test, the MOSFETs should not get hot.
 
 \paragraph{Conclusion}~\\
-\thomas{verify continuity of this paragraph}
-\thomas{be aware of the possible lacking test}
 During production of the board an error in the footprint of the MOSFETs was found, causing the solution with the large common heatsink to be unachievable.
 Therefore individual standard TO-220 heatsinks were connected to each MOSFET.
-The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting hot.
-It was concluded that the MOSFETs are sufficiently cooled.
+The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting warm.
+It should be noted that this test does not necessarily stress the motor sufficiently to fully conclude sufficient cooling.
+Once the system is finished a test should be designed which moves the cart back and  forth repeatedly to have more current flow through the MOSFETs.
 
 \subsubsection{Verification of: Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
 \label{ssub:requirement_enum:hardware_for_wireless_implemented}

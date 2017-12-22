@@ -70,7 +70,6 @@ This distinction is based on the expected amount of current carried by that trac
 	\item \textbf{High Power:} This type is used exclusively for the 24V rail.
 	The trace width for this type is 40mil. Accepting 15\degree temperature increase will allow up to $\approx$2.4A of current.
 	Since the inrush current is limited to $\approx$0.14A this leaves plenty of headroom for creating the 2.5V, 3.3V, 5V and 12V rails.
-	\thomas{verify 40mil trace width}
 \end{itemize}
 
 \subsubsection{Copper Layout} % (fold)
@@ -110,11 +109,10 @@ These wires are soldered directly to the MOSFET pins and connected to the digita
 		\caption{Copper layout of the power part on the top layer.}
 		\label{sfig:power_layout_2}
 	\end{subfigure}
-	\caption{caption?}
+	\caption{Power layout on the controller board.}
 	\label{fig:power_layout}
 \end{figure}
-\thomas{do caption in figure \ref{fig:power_layout}}
-
+~\\
 As mentioned previously it was chosen to use a 4-layer board.
 This was done for two reasons: It gives more copper for the main power rails on the power side of the board and it allows more space for routing signals on the digital part of the board.
 While the component density is not very high, the number of signals routed to headers does impose some difficulties routing on just two layers.
