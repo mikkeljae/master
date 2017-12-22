@@ -1,0 +1,25 @@
+Basic setup: Logical signals as expected, U6 burned for some reason
+
+Power setup: 
+	50% duty cycle on PWMB and 0% on PMWA. 12V applied initially, 24V applied afterwards, deadtime okay and mosfets are cold after several minutes.
+	50% duty cycle on PWMA and 0% on PMWB. 12V applied initially, 24V applied afterwards, deadtime okay and mosfets are cold after several minutes.
+
+	Setup is altered to run off single supply, 24V 20A limit. process: Board turned on, Dis set high, 24V on pwrin, set dis low. Everything runs as expected.
+
+	Above was repeated with the microzed attached, everything functioned as expected.
+
+	Resistor replaced with motor - Happy days for 10 minutes at varying duty cycles and loads. Both channel A and B are functioning as expected. 
+
+
+Monday 18th
+	- starting current error saved on thomas's flash: start-current-rail and start-current-rail-with-load
+	- The current draw error seems to last for approx 4ms after dis has been set low, by waiting this amount before setting pwm higher than 0, the problem can be circumvented.
+	- The code below set dis low and pwm to zero, wait for 500mill cycles and then sets pwm to 90%. No current draw seen. see data: start-current-rail-with-load-slow-start
+	INTERFACE_mWriteReg(INTERFACE_BASEADDR, DIS, 0x01);
+    MOTOR_PWM_mWriteReg(MPWM_BASEADDR, DIR, CHAN_B);
+    MOTOR_PWM_mWriteReg(MPWM_BASEADDR, COMPVAL, TO_PWM(0.0));
+    INTERFACE_mWriteReg(INTERFACE_BASEADDR, DIS, 0x00);
+    for(i = 0; i < 500000000; i++);
+    MOTOR_PWM_mWriteReg(MPWM_BASEADDR, COMPVAL, TO_PWM(0.9));
+
+    - Programming hardware while power is across fets is no-go

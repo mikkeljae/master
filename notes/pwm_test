@@ -1,0 +1,42 @@
+Procedure:
+	-24V on 2P connector
+	-Emergency button connected and activated
+	-DIS set high
+
+	Everything is cold and acts as expected
+
+	-DIS set low
+
+	Everything is cold and acts as expected
+
+	-Full setup, motor not connected.
+
+	Functions as expected with DIS set high. Attempted with and without emergency state.
+
+	-Set DIS low
+
+	Short circuit between PWRIN and PGND.
+
+	-Retry with no voltage
+
+	Channel B high and low are shorted, resulting in identical drive signal. (Short existed between R36 and R37)
+	Attempting on channel A revealed very long charge/discharge for gate signals: data: tek00000 and tek00001.
+
+Day two...
+	-Relays off by setting emergency situation, M_RELAY low, INRUSH low, no voltage across bridge.
+
+	Turning on PWM did not cause sparks, smoke or other unfortunate instances. 
+	Gate signals on channel b: tek00004, tek00005 and tek00006, tek00007
+
+	-Removing emergency situation, set M_RELAY high, INRUSH high, voltage across bridge
+
+	No sparking: data: tek00008, tek00009
+
+	Data for switching with 16 ohm load (parellel diode): tek00010 gate low, tek00011 source high, tek00012 gate high
+	Data for switching with 16 ohm load (parellel diode): tek00013 gate low, tek00014 source high, tek00015 gate high
+
+
+	Data for switching with 16 ohm load (no diode): tek00017 gate low, tek00018 source high, tek00019 gate high
+	Mosfet got hot and we did not want to test more...
+
+	Data for switching with 16 ohm load (diode, 5 ohm resistor): tek00020 gate low, tek00021 source high, tek00022 gate high
