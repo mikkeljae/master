@@ -23,10 +23,6 @@
 \usepackage{caption}
 \usepackage{subcaption}
 
-\usepackage{chngcntr}			%Make figure numbering reset on new section
-\counterwithin{figure}{section}
-\counterwithin{table}{section}
-\counterwithin{equation}{section}
 
 \usepackage[final]{pdfpages}
 \usepackage[hidelinks]{hyperref}
@@ -42,6 +38,8 @@
 	mathescape = true,
 	escapeinside=@@
 }
+
+\usepackage{chngcntr}			%Make figure numbering reset on new section
 
 \graphicspath{{graphics/}}
 
@@ -88,6 +86,10 @@
 \date{Jan, 2017}
 
 \begin{document}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\counterwithin{equation}{section}
+\counterwithin{listing}{section}
 \input{sections/title_page}
 \newpage
 \pagenumbering{Roman}
@@ -108,11 +110,8 @@
 \thomas{duty cycle, controller board, datasheet}
 \thomas{. in itemize}
 \thomas{real-time}
-\mikkel{rename listings to 2.1 and so on}
-\mikkel{find celcius}
 \thomas{section detailing the 3D prints}
 \thomas{high,low,on,off,1,0}
-\thomas{break long lines in listings}
 
 \input{sections/introduction}
 \input{sections/system_analysis}

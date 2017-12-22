@@ -353,19 +353,19 @@ The code in question can be seen in listing \ref{code:cart_sync_proc}.
 \begin{listing}[h]
 \begin{minted}{vhdl}
 SYNC_PROC:  process(clk)
-		        begin
-		            if rising_edge(clk) then
-		                if emend = '0' then
-		                    counter_i <= (others => '0');
-		                    state <= st1_idle;
-		                    cal_i <= '1';
-		                else
-		                    state <= next_state;
-		                    counter_i <= next_counter_i;
-		                    last_T_i <= T_i;
-		                end if;
-		            end if;
-		        end process;
+	begin
+	    if rising_edge(clk) then
+	        if emend = '0' then
+	            counter_i <= (others => '0');
+	            state <= st1_idle;
+	            cal_i <= '1';
+	        else
+	            state <= next_state;
+	            counter_i <= next_counter_i;
+	            last_T_i <= T_i;
+	        end if;
+	    end if;
+	end process;
 \end{minted}
 \caption{VHDL code}
 \label{code:cart_sync_proc}
@@ -432,16 +432,16 @@ Individual bits in a register can be set to different variables and the remainin
 \begin{listing}[h]
 \begin{minted}{vhdl}
 cart_counter_inst : cart_counter
-        port map(
-            clk => clk,
-            A => A,
-            B => B,
-            Z => Z,
-            emend => emend,
-            cal => slv_reg0(1),
-            dir => slv_reg0(0),
-            pos => slv_reg1
-        );
+	port map(
+	    clk => clk,
+	    A => A,
+	    B => B,
+	    Z => Z,
+	    emend => emend,
+	    cal => slv_reg0(1),
+	    dir => slv_reg0(0),
+	    pos => slv_reg1
+	);
 \end{minted}
 \caption{Code showing the connection of AXI registers to the cart position counter signals.}
 \label{code:axiconnection}
@@ -522,7 +522,7 @@ The three command bits specify if the action to be done is read or write.
 The five address bits specify address of the register that is to be written to. 
 The next one to five bytes is the value that are to be written to the register.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=.3\linewidth]{graphics/rw_register.eps}
 	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
@@ -535,7 +535,7 @@ Line 5 makes sure that a valid address and command is sent, regardless of the in
 Line 6 collects all bits that needs to be sent in one variable. 
 The 2 bytes are sent using SPI in line 7, where it can also be seen that the answer from the \texttt{nRF24L01} is ignored as the \texttt{NULL} pointer is given as the input buffer.  
 
-\begin{listing}[h]
+\begin{listing}[!h]
 \begin{minted}{c}
 #define W_REGISTER      0b00100000
 #define REGISTER_MASK   0b00011111
@@ -582,7 +582,7 @@ Line 5 defines the input and output buffers and line 6 assigns the read payload 
 The payload is also read and assigned to the input buffer in line 7.
 Line 8-11 extracts the 32 bytes payload and ignores the first byte sent from the \texttt{nRF24L01}, which is the value of the \texttt{STATUS} register.
 
-\begin{listing}[h]
+\begin{listing}[!h]
 \begin{minted}{c}
 #define R_RX_PAYLOAD       0b01100001
 #define PAYLOAD_SIZE       32
@@ -590,7 +590,8 @@ Line 8-11 extracts the 32 bytes payload and ignores the first byte sent from the
 void RF_read(XSpiPs *SPI_inst, u8 *buffer){
 	u8 input_buffer[PAYLOAD_SIZE+1], output_buffer[PAYLOAD_SIZE+1];
 	output_buffer[0] = R_RX_PAYLOAD;
-	XSpiPs_PolledTransfer(SPI_inst, output_buffer, input_buffer, PAYLOAD_SIZE+1);
+	XSpiPs_PolledTransfer(SPI_inst, output_buffer, input_buffer, @$\Rightarrow$@
+		PAYLOAD_SIZE+1);
 	int i;
 	for(i = 1; i < PAYLOAD_SIZE+1; i++){
 		buffer[i-1] = input_buffer[i];
@@ -652,7 +653,7 @@ Setting the PWM on to the correct channel is done in lines 12 to 16.
 As \texttt{pwm\_a\_l} and \texttt{pwm\_b\_l} are written to while in a process, they will only be updated with the last written value, at the end of the process.
 
 \mikkel{make sure figure is at right place}
-\begin{listing}[h]
+\begin{listing}[!h]
 \begin{minted}{vhdl}
 OUTPUT_DECODE: process (state,counter,dir)
 begin
