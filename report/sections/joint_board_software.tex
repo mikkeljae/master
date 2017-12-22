@@ -49,19 +49,17 @@ Based on the somewhat unstable transmission explained in section \ref{subs:wirel
 The datasheet of the \texttt{nRF24L01} module specifies that there is a settling time of 130$\mu$s when entering the transmit state.
 Several aspects should be considered in order to determine the required period time associated with transmission of one data packet.
 An overview is given in figure \ref{fig:tiny_period}.
-Transmission of a two byte payload through SPI takes $\approx$ 36 $\mu$s as will be shown in \ref{}.
-\mikkel{add reference on SPI transmission time}
+Transmission of a two byte payload through SPI takes $\approx$ 36 $\mu$s as will be shown in \ref{ssub:spi}.
 The \texttt{CE} should be \texttt{high} for at least 10$\mu$s in order for the transition to transmit mode is initiated.
 Hereafter a settling time of 130$\mu$s occurs.
 Then the \texttt{nRF24L01} will transmit the two byte payload in an eight byte data packet, which will take 68$\mu$s using an air transmission rate of 1Mbps.
 This totals 244$\mu$s, in which the computation time needed is not included.
 Therefore it was decided to use a period time of 333$\mu$s, which yields 84$\mu$s to computation and a sampling frequency of $\approx$3kHz.
 A sample latency of at least 249$\mu$s is incurred on the joint board software including air transfer before the data is available to the controller board nRFM.
-\mikkel{write proper caption}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1\linewidth]{graphics/latency_diagram}
-	\caption[Period of wireless transmission]{Period associated with transmission of one data packet.}
+	\caption[Period of wireless transmission]{Period associated with transmission of one data packet. SPI refers to the SPI transmission, CE refers to the time the \texttt{CE} pin is set \texttt{high}, TX Settle is the TX settling time, Air Transfer is the time it takes for the air transfer of the packet and Spare Time is the leftover time.}
 	\label{fig:tiny_period}
 \end{figure}
 
@@ -260,6 +258,8 @@ void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
 \end{listing}
 
 This functions enables setup of the \texttt{nRF24L01}, which is done with the same settings as explained in section \ref{ssubs:nrf24l01}.
+The frequency of the SPI clock is $\approx$675kHz and transmission of one byte takes 12$\mu$s.
+
 
 \subsubsection{Development of Wireless Transmission}
 \label{subs:wireless_transmission_joint}
@@ -287,7 +287,6 @@ The error was fixed by desoldering the \texttt{nRF24L01} and wiring it with long
 The timer shown in figure \ref{sfig:joint_main_flowchart}, is implemented on the \texttt{ATtiny84} using \texttt{Counter 1}, which is a 16 bit timer capable of generating software interrupts.
 \texttt{Counter 1} is setup by setting a prescaler to the CPU clock and a compare value.
 Using a prescaler of 1, the compare value for setting up an interrupt each 333$\mu$s is calculated as:
-\mikkel{check calculation}
 \begin{equation}
 	Comp = \frac{T}{T_{cpu}} = \frac{333 \cdot 10^{-6}}{1.25\cdot 10^{-7}} = 2664
 \end{equation}
