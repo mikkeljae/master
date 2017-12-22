@@ -2,8 +2,7 @@
 \subsection{Joint Design} % (fold)
 \label{sub:joint_design}
 The design of the pendulum assembly is, as in the analysis, split into an electrical design and a mechanical design.
-
-\thomas{Proper introduction required}
+The mechanical design consists of a presentation of the designed components while the electrical design gives a more in depth view of the design process.
 
 \subsubsection{Mechanical Design} % (fold)
 \label{ssub:mechanical_design}
@@ -95,14 +94,14 @@ Datarate_{max}	= 20 \cdot 3600 = 72kbps
 This datarate is clearly below the 200kbps and it was therefore decided to use no line termination, which also has the advantage that a minimum amount of current is needed from the \texttt{RL2IC}.
 
 
-\subsubsection{5V}
+\subsubsection{Generating a 5V Rail}
 As described in the requirements in section \ref{subs:joint_requirements}, a 5V rail is needed on the joint board.
 Generating the 5V rail can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
 The boost regulator \texttt{SP6641B} \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V.
 The circuitry used in this project will be based on the reference design shown in the datasheet, with the one difference that the \texttt{SHDN} (shutdown) pin has been pulled permanently high.
 The circuit is shown on the full joint board schematics in appendix \ref{app:joint_board_schem}.
 
-\subsubsection{3.3V}
+\subsubsection{Generating a 3.3V Rail}
 A 3.3V rail is needed according to the requirement specification.
 The task of generating the 3.3V rail is somewhat complicated since the battery voltage of a typical Li-Ion battery varies from 4.2V down to 3.0V.
 Three different solutions appeared after an initial analysis of the task:
