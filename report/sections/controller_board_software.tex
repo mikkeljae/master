@@ -519,15 +519,32 @@ Configuration of the device is done through SPI.
 \paragraph{Setup} % (fold)
 \label{par:nrfsetup}
 ~\\
-Blablablalbalb.
-Look at the nice flowchart and explain it.....
+The \texttt{nRF24L01} has multiple different modes of operations and care should be taken when setting it up.
+The flowchart of figure \ref{fig:nrf_setup} gives an overview of what registers are set in order to gain the settings used in this project.
+A description of each step and register is given below.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.8\linewidth]{graphics/nfr_setup}
 	\caption{Flowchart showing the setup process of the nRF24L01 module.}
 	\label{fig:nrf_setup}
 \end{figure}
-\mikkel{explain flowchart}
+\begin{itemize}
+	\item \texttt{SETUP} register is set in order to gain 1Mbps air transmission and maximum output power in TX mode.
+	\item \texttt{RF\_CH} register is used to set the channel used. It should be set differently for each \texttt{nRF24L01} pairs.
+	\item \texttt{SETUP\_AW} register is set to use the shortest available address width of three bytes.
+	\item \texttt{EN\_AA} register is set to disable auto acknowledgement.
+	\item \texttt{SETUP\_RETR} register is set to disable automatic retransmission.
+\end{itemize}
+
+The \texttt{PWR\_UP} bit is then set \texttt{1} to power up the module. 
+A wait of 4.5ms is then initiated to allow for proper start-up of the crystal.
+\\~\\
+If receive mode, \texttt{RX}, is needed the \texttt{PRIM\_RX} bit should be set to \texttt{1} and the receive address written to \texttt{RX\_ADDR\_P0}.
+Furthermore \texttt{RX\_PW\_P0} is set to 2 in order to set the payload size to two bytes.
+Finally \texttt{EN\_RX\_ADDR} is set to enable data on data pipe 0 and \texttt{CE} is set \texttt{high} to initiate the transition to \texttt{RX} mode.
+\\~\\
+If transmit mode, \texttt{TX}, is needed \texttt{PRIM\_RX} should be set to \texttt{0} and the transmit address should be written to \texttt{PRIM\_RX}.
+Hereafter \texttt{CE} is set \texttt{high} to initiate the transition to \texttt{TX} mode.
 
 \paragraph{Writing to a Register} % (fold)
 \label{par:writing_to_a_register}
@@ -539,7 +556,7 @@ The next one to five bytes is the value that are to be written to the register.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=.3\linewidth]{graphics/rw_register.eps}
+	\includegraphics[width=.5\linewidth]{graphics/rw_register.eps}
 	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
