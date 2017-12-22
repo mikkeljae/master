@@ -103,15 +103,13 @@ Finally, the component has a user-programmable dead time and shoot-through prote
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.6\linewidth]{graphics/hip_bootstrap}
-	\caption[.......]{REMEMBER TO PUT IN A COUPLE OF REFERENCES TO THIS FIGURE!!!}
+	\caption[Bootstrap circuitry]{Bootstrap circuitry consisting of a diode, a capacitor and a resistor. }
 	\label{fig:hip_bootstrap}
 \end{figure}	
-\thomas{insert references to figure \ref{fig:hip_bootstrap}}
 The chosen gate driver has floating drive circuitry for the high side MOSFETS but needs external bootstrap circuitry for providing the higher voltage. 
-A standard bootstrap circuits consists of a diode, a capacitor and a resistor. 
+A standard bootstrap circuits consists of a diode, a capacitor and a resistor as shown in figure \ref{fig:hip_bootstrap}.
 The advantage of using a bootstrap circuit to supply a high voltage for the floating drive is that it is very simple. 
 The disadvantage is that it sets a limit for the maximum and minimum duty cycle as the bootstrap capacitor needs to be charged fully in each period.
-\mikkel{make sure 95\%/5\% is correct.}
 The bootstrap circuitry for this project will be designed to have a maximum duty cycle for the higher MOSFETS of 95\%, thus meaning that the charging of the bootstrap capacitor should take no longer than 5\% of a period.  
 
 The bootstrap diode needs to have a fast recovery time, preferably below 100 ns \cite{bootstrap_infineon}, to minimize the energy fed back to the supply from the bootstrap capacitor.
@@ -461,17 +459,8 @@ It contains an infrared emitter pointing at a photo transistor, that conducts cu
 In this project it will be used to detect if the infrared light is blocked by the cart or not. 
 The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the current conducted to a voltage level. 
 The output is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
-The schmitt trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V.
-The circuit can be seen in appendix \ref{}
-\thomas{reference to appendix schematics}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.4\linewidth]{graphics/tcst_circuit_temp.jpg}
-	\caption{\texttt{TCST 2103} circuit.}
-	\label{fig:tcst_circuit}
-\end{figure}
-\thomas{Create correct circuit and text}
+The schmitt-trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V.
+The circuit can be seen in appendix \ref{app:controller_board_schem}.
 
 \subsubsection{Voltage Rails} % (fold)
 \label{subsub:voltage_rails}
