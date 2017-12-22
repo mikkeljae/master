@@ -97,16 +97,18 @@ This chip has both a Processing System, PS, and Programmable Logic, PL, which en
 The PS is a dual core ARM Cortex-A9 processsor and PL is an Artix-7 FPGA \cite{zynq_data_sheet}.
 The two parts are connected through the AXI bus.
 
-\paragraph{Concurrent Computing} % (fold)
+\paragraph{Concurrent Computing}~\\ % (fold)
 \label{par:concurrent_computing}
-Programming a FPGA will be done using VHDL,
-In order to   
-\mikkel{Some more.}
-Concurrent computing has the advantage that it is executed in true parallel.
-Inherently real-time....
+Programming an FPGA will be done using VHDL, which is a description of hardware rather than a programming language. 
+Everything in an FPGA is essentially electronics which makes it possible to do commutation in true parallel. 
+An FPGA is inherently real-time as it can be analysed exactly how many clock cycles propagation delay there is through a system.
 
-\paragraph{Sequential Computing} % (fold)
+\paragraph{Sequential Computing}~\\ % (fold)
 \label{par:sequential_computing}
+Programming on a processing systems such as the ARM processor is sequential computing. 
+Everything that should be calculated is done by the CPU, which means that code needs to be run one at a time.
+True parallel computing cannot be done on such a chip, but using an OS and tasks it is possible to achieve something similar to parallel computing.
+It is possible to make real-time software on a processing system if care is taken by the programmer to meet the required deadlines. 
 
 \paragraph{The AXI Bus and IP Cores} % (fold)
 \label{par:the_axi_bus}
@@ -827,7 +829,7 @@ This requirement is tested and concluding remarks are given in section \ref{ssub
 
 \subsubsection{Verification of: Requirement \ref{enum:real_time_behavior}} % (fold)
 \label{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior}
-This requirement states that all software should be real time.
+This requirement states that all software should be real-time.
 \thomas{Fill me up, Scotty....}
 
 \subsubsection{Verification of: Requirement \ref{enum:vhdl_implementation_practices}} % (fold)
