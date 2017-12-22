@@ -53,7 +53,7 @@ A sample latency of at least 249$\mu$s is incurred on the joint board software i
 
 \subsubsection{Real-Time Software}
 In order to produce reliable data for the controller board the joint angle should be sampled and transmitted at a constant rate.
-This requires the joint board software to be programmed as real time software, where deadlines should be met.
+This requires the joint board software to be programmed as real-time software, where deadlines should be met.
 
 \subsection{Requirement Specification} 
 
@@ -293,7 +293,7 @@ The variable is declared as \texttt{volatile} to tell the compiler that its valu
 It is declared as a \texttt{char}, because this is the smallest datatype available on the \texttt{ATtiny84} and it only takes up one byte. 
 In the main loop of the software, the \texttt{timer} variable is used determine if the process of transmitting data should be initiated.
 This mechanism provides real time performance of the software when the code used to transmit data is executed before the next deadline, which is the next \texttt{counter 1} interrupt.
-This means that the transmitting code needs to be executed in less than 333$\mu$s to ensure real time performance.
+This means that the transmitting code needs to be executed in less than 333$\mu$s to ensure real-time performance.
 
 \begin{listing}[H] 
 \begin{minted}{c}
@@ -387,7 +387,7 @@ An excerpt of the data is shown in figure \ref{fig:received_packets}.
 
 \subsubsection{Requirement \ref{enum:joint_real_time}} % (fold)
 \label{ssub:requirement_enum_joint_real_time}
-This requirement specifies that the software must exhibit real time behaviour, which means that the software must meet its deadlines.
+This requirement specifies that the software must exhibit real-time behaviour, which means that the software must meet its deadlines.
 
 \paragraph{Test}~\\
 It should be tested if the software meets its deadline, which is the next transmission of a packet.

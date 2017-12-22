@@ -97,16 +97,18 @@ This chip has both a Processing System, PS, and Programmable Logic, PL, which en
 The PS is a dual core ARM Cortex-A9 processsor and PL is an Artix-7 FPGA \cite{zynq_data_sheet}.
 The two parts are connected through the AXI bus.
 
-\paragraph{Concurrent Computing} % (fold)
+\paragraph{Concurrent Computing}~\\ % (fold)
 \label{par:concurrent_computing}
-Programming a FPGA will be done using VHDL,
-In order to   
-\mikkel{Some more.}
-Concurrent computing has the advantage that it is executed in true parallel.
-Inherently real time....
+Programming an FPGA will be done using VHDL, which is a description of hardware rather than a programming language. 
+Everything in an FPGA is essentially electronics which makes it possible to do commutation in true parallel. 
+An FPGA is inherently real-time as it can be analysed exactly how many clock cycles propagation delay there is through a system.
 
-\paragraph{Sequential Computing} % (fold)
+\paragraph{Sequential Computing}~\\ % (fold)
 \label{par:sequential_computing}
+Programming on a processing systems such as the ARM processor is sequential computing. 
+Everything that should be calculated is done by the CPU, which means that code needs to be run one at a time.
+True parallel computing cannot be done on such a chip, but using an OS and tasks it is possible to achieve something similar to parallel computing.
+It is possible to make real-time software on a processing system if care is taken by the programmer to meet the required deadlines. 
 
 \paragraph{The AXI Bus and IP Cores} % (fold)
 \label{par:the_axi_bus}
@@ -125,7 +127,7 @@ There are three different implementations of the AXI bus:
 	\item \textbf{AXI4-Stream:} This implementation foregoes the use of addresses and allows a continuous stream of data.
 \end{itemize}
 Since the data exchanged between PL and PS in this project is mostly the setting of control registers and reading cart positions at a steady rate the simpler AXI4-Lite implementation is going to be used for the components created in this project.
-\subsubsection{Real Time} % (fold)
+\subsubsection{Real-Time Software} % (fold)
 \label{ssub:real_time}
 \thomas{nice section on some of the reasons why real time is required}
 bla.bla.bla.
@@ -133,7 +135,7 @@ bla.bla.bla.
 \subsubsection{VHDL and Coding Practices} % (fold)
 \label{ssub:vhdl_and_coding_practices}
 The low level control is written in VHDL.
-This is done to leverage the hard real time nature of the FPGA to create robust and dependable control of the pendulum.
+This is done to leverage the hard real-time nature of the FPGA to create robust and dependable control of the pendulum.
 As the reader likely knows, programming in VHDL can be a complex venture.
 The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus.
 In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
@@ -184,7 +186,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 		\item Setup of \texttt{nRF24L01} settings.
 		\item Receive joint angle data form joint boards.
 	\end{itemize}
-	\item Real time behaviour of software.
+	\item Real-time behaviour of software.
 	\label{enum:real_time_behavior}
 \end{enumerate}
 
@@ -519,15 +521,32 @@ Configuration of the device is done through SPI.
 \paragraph{Setup} % (fold)
 \label{par:nrfsetup}
 ~\\
-Blablablalbalb.
-Look at the nice flowchart and explain it.....
+The \texttt{nRF24L01} has multiple different modes of operations and care should be taken when setting it up.
+The flowchart of figure \ref{fig:nrf_setup} gives an overview of what registers are set in order to gain the settings used in this project.
+A description of each step and register is given below.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.8\linewidth]{graphics/nfr_setup}
 	\caption{Flowchart showing the setup process of the nRF24L01 module.}
 	\label{fig:nrf_setup}
 \end{figure}
-\mikkel{explain flowchart}
+\begin{itemize}
+	\item \texttt{SETUP} register is set in order to gain 1Mbps air transmission and maximum output power in TX mode.
+	\item \texttt{RF\_CH} register is used to set the channel used. It should be set differently for each \texttt{nRF24L01} pairs.
+	\item \texttt{SETUP\_AW} register is set to use the shortest available address width of three bytes.
+	\item \texttt{EN\_AA} register is set to disable auto acknowledgement.
+	\item \texttt{SETUP\_RETR} register is set to disable automatic retransmission.
+\end{itemize}
+
+The \texttt{PWR\_UP} bit is then set \texttt{1} to power up the module. 
+A wait of 4.5ms is then initiated to allow for proper start-up of the crystal.
+\\~\\
+If receive mode, \texttt{RX}, is needed the \texttt{PRIM\_RX} bit should be set to \texttt{1} and the receive address written to \texttt{RX\_ADDR\_P0}.
+Furthermore \texttt{RX\_PW\_P0} is set to 2 in order to set the payload size to two bytes.
+Finally \texttt{EN\_RX\_ADDR} is set to enable data on data pipe 0 and \texttt{CE} is set \texttt{high} to initiate the transition to \texttt{RX} mode.
+\\~\\
+If transmit mode, \texttt{TX}, is needed \texttt{PRIM\_RX} should be set to \texttt{0} and the transmit address should be written to \texttt{PRIM\_RX}.
+Hereafter \texttt{CE} is set \texttt{high} to initiate the transition to \texttt{TX} mode.
 
 \paragraph{Writing to a Register} % (fold)
 \label{par:writing_to_a_register}
@@ -539,7 +558,7 @@ The next one to five bytes is the value that are to be written to the register.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=.3\linewidth]{graphics/rw_register.eps}
+	\includegraphics[width=.5\linewidth]{graphics/rw_register.eps}
 	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
@@ -810,7 +829,7 @@ This requirement is tested and concluding remarks are given in section \ref{ssub
 
 \subsubsection{Verification of: Requirement \ref{enum:real_time_behavior}} % (fold)
 \label{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior}
-This requirement states that all software should be real time.
+This requirement states that all software should be real-time.
 \thomas{Fill me up, Scotty....}
 
 \subsubsection{Verification of: Requirement \ref{enum:vhdl_implementation_practices}} % (fold)
