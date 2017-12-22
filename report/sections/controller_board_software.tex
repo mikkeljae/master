@@ -216,8 +216,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \label{ssub:vhdl_components}
 A number of VHDL components were designed and implemented for use on the MicroZed.
 An indepth description of each is not necessary and the authors have decided to instead focus on the implementation of just the cart position counter as it provides a good description of the workflow used for each component.
-
-\thomas{Part of the text below was required for me to properly write this section. Some of it may be better suited for an analysis.}
+\\~\\
 The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
 This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
 Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
@@ -272,7 +271,6 @@ If the two values are not equal an edge must have occured within the last clock 
 In this component both rising and falling edges are used and so any difference between the two is registered.
 This code is repeated for all three input signals, with the exception that the \texttt{Z} channel sets \texttt{next\_state} to \texttt{st6\_index} instead.
 
-\thomas{appropriate captions on listings}
 \begin{listing}[H]
 \begin{minted}{vhdl}
 case (state) is
@@ -282,7 +280,7 @@ case (state) is
 	    end if;
 	    @$\vdots$@
 \end{minted}
-\caption{VHDL code}
+\caption{VHDL edge detection of asynchronous signal.}
 \label{code:edge_detection}
 \end{listing}
 
@@ -303,7 +301,7 @@ when st2_edge =>
 	    next_state <= st3_dir;
 	    @$\vdots$@
 \end{minted}
-\caption{VHDL code}
+\caption{VHDL for phase detection in incremental quadrature.}
 \label{code:phase_detection}
 \end{listing}
 \paragraph{st3\_dir:} % (fold)
@@ -330,7 +328,7 @@ when st3_dir =>
         next_state <= st1_idle;
     end if;
 \end{minted}
-\caption{VHDL code}
+\caption{VHDL for determining direction of movement in incremental quadrature.}
 \label{code:determine_direction}
 \end{listing}
 As can be seen in the code there is a reference to phase 0.
@@ -379,7 +377,7 @@ SYNC_PROC:  process(clk)
 	    end if;
 	end process;
 \end{minted}
-\caption{VHDL code}
+\caption{Synchronous reset based on endstop signals.}
 \label{code:cart_sync_proc}
 \end{listing}
 
