@@ -71,10 +71,8 @@ This requires the joint board software to be programmed as real time software, w
 	\end{itemize}
 	\item Transmit joint angle using the \texttt{nRF24L01} module.
 	\label{enum:joint_transmit}
-	\thomas{rephrase to actually be requirements.}
 	\begin{itemize}
-		\item Setup of the \texttt{ATtiny} as SPI master.
-		\item Setup of \texttt{nRF24L01} settings and individually frequency bands.
+		\item \texttt{ATtiny} should be setup as SPI master.
 		\item Transmit data every 333$\mu$s.
 		\item Minimize latency.
 	\end{itemize}

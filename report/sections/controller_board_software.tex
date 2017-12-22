@@ -31,6 +31,9 @@ The PWM signals will be applied to the motor and therefore it was chosen to use 
 It was decided to only apply a PWM signal to one channel in order to reduce the stress and current through the MOSFET and the motor.
 This means that in order to change direction of the motor, the PWM signal needs to be switched between the two PWM channels.
 The duty cycle of the PWM needs to be adjustable in order to control the speed of the motor.
+\\
+As described earlier, the current through the motor needs to be sampled using an ADC. 
+By sampling at the t
 It is beneficial to implement the PWM generation on the FPGA part of the Microzed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
 
 \subsubsection{General Peripheral Hardware Control} % (fold)
@@ -615,8 +618,6 @@ In order to generate the two needed PWM signals from the Microzed an IP core mus
 As described the IP core needs to be able to switch the PWM signal between channel \texttt{A} and \texttt{B} and have a programmable duty cycle.
 It also needs to have a top signal that indicates the center of the PWM pulse.
 The designed PWM generator IP core has three inputs and three outputs as illustrated in figure \ref{fig:pwm_gen_component}.
-
-\mikkel{Write about top signal in analysis.}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.4\linewidth]{graphics/pwm_generator}
