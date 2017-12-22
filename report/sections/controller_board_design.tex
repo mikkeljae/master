@@ -44,7 +44,7 @@ Figure \ref{fig:mosfettransfercharacteristic} reveals that the MOSFET is not ful
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\linewidth]{graphics/mosfet_transfer_characteristic}
+	%\includegraphics[width=0.6\linewidth]{graphics/mosfet_transfer_characteristic}
 	\caption[Transfer characteristic of the IRF100B202.]{Transfer characteristic of the \texttt{IRF100B202} as per the datasheet.
 	Inspecting the graph reveals that the maximum \id of 97A is reached at \vgs$\approx5.5\rightarrow6.5$V.}
 	\label{fig:mosfettransfercharacteristic}
@@ -353,8 +353,7 @@ This is estimated to be sufficient as this is well below the boot time of the re
 The relay chosen for this application is the G6B-1114P \cite{g6b} with a 12V coil.
 Being a significantly smaller relay, carrying up to 5A, the G6B-1114P requires only 16.7mA to hold in the closed state.\\~\\
 Figure \ref{fig:relaycircuit} shows the driving circuitry for the inrush relay. 
-The circuitry is identical for the main relay but can be seen in the full schematic in appendix \ref{}.
-\mikkel{add schematics to appendix.}
+The circuitry is identical for the main relay but can be seen in the full schematic in appendix \ref{app:controller_board_schem}.
 As can be seen, the relay can be switched on and off by a signal to the MOSFET Q18.
 This signal is high only when signals \texttt{INRUSH} and \texttt{EM\_DIS} are high.
 \texttt{EM\_DIS} is the signal from the safety circuitry and \texttt{INRUSH} allows the user to toggle the relay.
@@ -388,9 +387,6 @@ The nominal current of the motor is 6A but allowing for some headroom maximum cu
 It was therefore decided that the circuit  needs to be able to measure currents of at least up to 40A.
 The resolution per ampere is increased by decreasing the current range that can be measured.
 If the current gets any higher the ADC input should not be harmed meaning that the input voltage should not exceed 1.9V.
-\mikkel{What can we achieve with the hardware?}
-
-% subsubsection requirements_for_the_current_measuring_circuit (end)
 
 \paragraph{Designing the Current Measuring Circuit} ~\\% (fold)
 \label{par:designing_the_current_measuring_circuit}
@@ -423,7 +419,13 @@ The measurable range using this IC is 0-50A as seen from \ref{eq:adc_input_volta
 \end{equation}
 
 It has a very low offset allowing it to be used in applications where the voltage drop across the shunt resistor is only a few mV.
-
+\\
+Using this configuraion the resolution can be calculated as:
+\begin{equation}
+	Res_{amp} = \frac{I_{max,measurable}}{Res_{ADC}} = \frac{50}{2^{12}}  = 12.2 mA
+\end{equation}
+Where $Res_{amp}$ is the resolution in amperes and $Res_{ADC}$ is the resolution of the ADC on the Zynq.
+\\~\\
 This design meets the required design specifications and the schematics can be seen in figure \ref{fig:currentmeasure}.
 As can be seen, the \texttt{INA286} in this configuration requires only the voltage input, \texttt{POWER\_SHUNT+/-} from the schematic on figure \ref{sfig:hbridgeshunt}, to generate a suitable output which is then fed directly to the ADC through the anti-aliasing filter shown on figure \ref{sfig:ina286aidschematic}.
 
