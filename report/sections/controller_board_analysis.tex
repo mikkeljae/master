@@ -20,9 +20,8 @@ Three were under consideration for this project:
 	This, along with the very large throughput, makes it an enticing option.
 	Considering the rather small message size this protocol does impose a significant amount of overhead.
 	In addition to the communication overhead, TCP/IP also requires some form of driver, making it difficult to forego the use of Linux in the joints, an OS that increases the requirements to the processing unit in the joint considerably.
-	\item \textbf{Bluetooth:} The Bluetooth protocol is developed specifically for low power, short range data transmission and is used extensively in various applications.
+	\item \textbf{Bluetooth:} The Bluetooth protocol is developed specifically for low power, short range data transmission and is used extensively in various mobile applications \cite{bluetooth}.
 	As with the previous option, a considerable amount of overhead is required in setting up bluetooth as well as in the transmission of packets, making it less desirable.
-	\thomas{source on bluetooth}
 	\item \textbf{Radio Frequency:} While not strictly a protocol, using an RF transceiver eliminates the additional overhead associated with the previously mentioned protocols.
 	RF transceivers come with a number of different interfaces such as SPI or I2C and will simply transmit the data received through that interface.
 	This makes it easy to communicate using this method through bare-metal code or even VHDL.
@@ -33,13 +32,13 @@ An RF transceiver can be implemented using very low power, making it ideal for t
 
 \subsubsection{The MicroZed Development Platform} % (fold)
 \label{ssub:microcontroller}
-\thomas{correct to start sensibly}
-\thomas{insert note on startup/shutdown sequency}
-A similar option which shares the same main chip, a Zynq-7000 series FPGA \cite{zynq}, is the MicroZed \cite{microzed}.
-The MicroZed is created specifically to be implemented in a product and as such there are fewer built-in features to the board, resulting in a significantly smaller footprint.
-The authors have designed with the MicroZed in previous projects \cite{isaswarm}.
-Most of the design done in \cite{isaswarm} can be reused with limited modifications.
+The MicroZed \cite{microzed} development platform is a Zynq-7000 series based platform which the authors have worked extensively with in previous projects \cite{isaswarm}.
+It was developed by Avnet specifically to be implemented in a product and as such there are fewer built-in features to the board, resulting in a reasonably small footprint and an efficient interface.
+Most of the design done by the authors in \cite{isaswarm} can be reused with limited modifications.
 For these reasons the MicroZed will be used in this project.
+\\~\\
+One thing of note is that the Zynq-7000 series of chips requires a specific startup/shutdown sequency, detailed in \cite{carrier_card_design_guide}, which ensures that signal integrity is maintained during startup and shutdown of the platform.
+This functionality should also be verified in this project.
 % subsubsection microcontroller (end)
 
 \subsubsection{Motor Driver}
