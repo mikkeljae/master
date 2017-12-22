@@ -317,18 +317,16 @@ The two assembly instructions that will be used to access the value of \texttt{t
 \label{sub:verification}
 
 
-\subsubsection{Requirement \ref{enum:joint_correct_angles}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
-\thomas{write requirements}
 This requirement specifies that the correct joint angle should be known at all times.
-This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
 
-\texttt{A}, \texttt{B} and \texttt{Z} signals were interfaced through interrupts and the code was written to ensure no data will be corrupted by interrupts.
-Calculations showed that no interrupts will go unnotieced with a angular velocity of less than 135Hz. 
+\paragraph{Test}~\\
+This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
+A test should be conducted where the joint angle information was sent to the controllerboard and printed to a serial console.
 
 \paragraph{Test and Conclusion}~\\
-A test was conducted where the joint angle information was sent to the controllerboard and printed to a serial console. 
-By visual inspection the functionality was verified.
+The test was done and by visual inspection the functionality was verified.
 
 \subsubsection{Requirement \ref{enum:joint_transmit}} % (fold)
 \label{ssub:requirement_enum:joint_transmit}
