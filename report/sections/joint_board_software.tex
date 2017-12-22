@@ -9,20 +9,8 @@ The following analysis will elaborate on the needed functionalities and requirem
 
 \subsubsection{Joint Angle}
 The angle of the joint can be determined by analysing the signals from the RL2IC encoder mounted on the joint.
-\mikkel{remove double up on quadrature implementation}
 This encoder implements incremental quadrature with three signals: \texttt{A}, \texttt{B} and \texttt{Z}.
-Figure \ref{fig:quadrature} is a depiction of this quadrature scheme.
-The two signals \texttt{A} and \texttt{B} are 90$^\circ$ out of phase and their frequency is determined by the angular velocity of the joint.
-As can be seen from the figure the signals create four unique stages, counting these allows knowledge of both the direction, position and, potentially, the velocity of the joint.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.5\linewidth]{graphics/quadrature}
-	\caption[Incremental quadrature scheme RL2IC encoder.]{Incremental quadrature scheme as implemented on the RL2IC encoder.}
-	\label{fig:quadrature}
-\end{figure}
-
-It is necessary to read \texttt{A}, \texttt{B} and \texttt{Z} using interrupts as missing a cycle in the counting procedure will cause the measured angle to drift.
+It is necessary to read all three signals using interrupts as missing a cycle in the counting procedure will cause the measured angle to drift.
 \texttt{Z} only goes \texttt{high} one time per revolution and can therefore be used to infer the absolute angle of the joint.
 Calibrating the joint angle is done by setting the measured angle to a fixed number, whenever \texttt{Z} goes \texttt{high}.
 Therefore data on angular position is not valid until the joint has been calibrated.
