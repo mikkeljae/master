@@ -174,9 +174,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="282.16358"
-     inkscape:cy="801.80062"
+     inkscape:zoom="11.2"
+     inkscape:cx="281.53964"
+     inkscape:cy="860.01283"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -227,11 +227,11 @@
          sodipodi:role="line"
          id="tspan6085"
          x="206.80672"
-         y="199.5399">SETUP</tspan><tspan
+         y="199.5399">RF_SETUP</tspan><tspan
          sodipodi:role="line"
          x="206.80672"
          y="205.7899"
-         id="tspan6087">CHANNEL</tspan><tspan
+         id="tspan6087">RF_CH</tspan><tspan
          sodipodi:role="line"
          x="206.80672"
          y="212.0399"
@@ -526,5 +526,35 @@
        d="m 227.11947,304.36153 0,4.99942 c 0,0 0,4.99943 5.10443,4.99943 5.10442,0 32.66832,0 32.66832,0 0,0 5.10442,0 5.10442,-4.99943 0,-4.99942 0,-26.9969 0,-26.9969"
        id="path8525"
        inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="319.85413"
+       y="171.08458"
+       id="text6083-2-3-5-3-36"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="319.85413"
+         y="171.08458"
+         id="tspan7245-5">RX</tspan><tspan
+         sodipodi:role="line"
+         x="319.85413"
+         y="177.33458"
+         id="tspan4249" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="380.12152"
+       y="171.08458"
+       id="text6083-2-3-5-3-36-3"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="380.12152"
+         y="171.08458"
+         id="tspan7245-5-5">TX</tspan><tspan
+         sodipodi:role="line"
+         x="380.12152"
+         y="177.33458"
+         id="tspan4249-6" /></text>
   </g>
 </svg>
