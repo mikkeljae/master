@@ -49,7 +49,7 @@ The measured signals are shown in figure \ref{fig:test_hip_signals}.
 
 \begin{figure}[h]
 	\centering
-    \input{graphics/test_motor_drive_signals.tex}
+    %\input{graphics/test_motor_drive_signals.tex}
 	\caption[Measured gate and input signals.]{Measured low and high side gate signals along with low side motor driver input signals.}
 	\label{fig:test_hip_signals}
 \end{figure}
@@ -131,14 +131,14 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 
 \begin{figure}[h]
 	\centering
-	\input{graphics/controllerboardv2_startup.tex}
+	%\input{graphics/controllerboardv2_startup.tex}
 	\caption[Signals measured doing startup of controllerboard.]{Important signals measured doing startup of controllerboard with the Microzed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
 	\label{fig:controllerboardv2_startup}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-    \input{graphics/controllerboardv2_shutdown.tex}
+    %\input{graphics/controllerboardv2_shutdown.tex}
 	\caption[Signals measured doing shutdown of controllerboard.]{Important signals measured doing shutdown of controllerboard with the Microzed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
 	\label{fig:controllerboardv2_shutdown}
 \end{figure}
@@ -194,7 +194,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 
 			\begin{figure}[h]
 				\centering
-			    \input{graphics/controllerboardv2_inrushcurrent.tex}
+			    %\input{graphics/controllerboardv2_inrushcurrent.tex}
 				\caption[Chargin curve of Capacitor bank.]{Voltage measured on \texttt{POWER\_IN}, when the inrush relay is conducting. It can be seen that charging the capacitors takes approximately 1s. }
 				\label{fig:controllerboardv2_inrushcurrent_charge}
 			\end{figure}
@@ -246,14 +246,14 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 
 \begin{figure}[h]
 	\centering
-    \input{graphics/controllerboardv2_gate_b.tex}
+    %\input{graphics/controllerboardv2_gate_b.tex}
 	\caption{Gate signals as produced by the motor driver.}
 	\label{fig:controllerboardv2_gate_b}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-    \input{graphics/controllerboardv2_gate_b_deadtime.tex}
+    %\input{graphics/controllerboardv2_gate_b_deadtime.tex}
 	\caption{Gate signals as produced by the motor driver. It is verified that dead time exists.}
 	\label{fig:controllerboardv2_gate_b_deadtime}
 \end{figure}
@@ -307,7 +307,7 @@ This data suggests that a large current, $>20$A is drawn when \texttt{DIS} is se
 
 \begin{figure}[h]
 	\centering
-	\input{graphics/current_w_load.tex}
+	%\input{graphics/current_w_load.tex}
 	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load}
 \end{figure}
@@ -319,7 +319,7 @@ At low PWM duty cycle the 24V rail recovers before the failure happens.
 \mikkel{change figure to have second axis in amperes, fix legend}
 \begin{figure}[h]
 	\centering
-	\input{graphics/current_w_load_closeup.tex}
+	%\input{graphics/current_w_load_closeup.tex}
 	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load_closeup}
 \end{figure}
@@ -338,7 +338,7 @@ Since the 12V and therefore the 5V rail were unaffected by the dipping 24V rail 
 
 \begin{figure}[h]
 	\centering
-	\input{graphics/current_w_load_slow.tex}
+	%\input{graphics/current_w_load_slow.tex}
 	\caption{Current draw when setting \texttt{DIS} low and applying a 0\% duty cycle PWM to the high side MOSFET of channel B for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
 	\label{fig:current_w_load_slow}
 \end{figure}
@@ -364,7 +364,7 @@ Furthermore the signal is very noisy with noise spikes as large as 200mV peak-to
 
 \begin{figure}[h]
 \centering
-\input{graphics/controllerboardv2_current_sense.tex}
+%\input{graphics/controllerboardv2_current_sense.tex}
 \caption{Measured output voltage of current sense amplifier.}
 \label{fig:controllerboardv2_current_sense}
 \end{figure}
@@ -408,7 +408,7 @@ This requirement states that
 \mikkel{verify use of motor control}
 \begin{figure}[h]
 	\centering
-    \input{graphics/controllerboardv2_current_motor_supply.tex}
+    %\input{graphics/controllerboardv2_current_motor_supply.tex}
 	\caption[Measured supply and load currents.]{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
 	\label{fig:controllerboardv2_}
 \end{figure}
