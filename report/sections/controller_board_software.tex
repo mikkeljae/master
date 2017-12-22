@@ -564,7 +564,7 @@ The \texttt{nRF24L01} always responds with the value of the \texttt{STATUS} when
 
 \begin{figure}[h]
 	\centering
-    \input{graphics/nrf24_spi.tex}
+    %\input{graphics/nrf24_spi.tex}
 	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total. The SPI transmission is setup and measured at 625kHz, for readability.}
 	\label{fig:nrf24_spi}
 \end{figure}
@@ -642,12 +642,12 @@ The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where t
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
-        \input{graphics/vhdl_pwm_gen_int.tex}
+        %\input{graphics/vhdl_pwm_gen_int.tex}
         \caption{Internal VHDL signals illustrated by a Matlab plot.}
         \label{sfig:pwm_gen_int}
     \end{subfigure}
     \begin{subfigure}[b]{0.45\textwidth}
-        \input{graphics/vhdl_pwm_gen.tex}
+        %\input{graphics/vhdl_pwm_gen.tex}
         \caption{External PWM signal measured using an oscilloscope. }
         \label{sfig:pwm_gen_ext}
     \end{subfigure}
@@ -683,7 +683,68 @@ end process;
 \label{code:vhdl_pwm_gen}
 \end{listing}
 
-\thomas{write section on khaos}
+\subsubsection{KHAos and Real-Time Software} % (fold)
+\label{ssub:khaos}
+KHAos is a run-to-complete scheduler written by Karsten Holm Andersen, lecturer at SDU.
+It is written to provide a simple operating system, OS, for use on bare-metal systems.
+The OS includes of a timer module and a CPU config module which are written specifically for the platform that the OS should be running on.
+The software also includes the scheduler itself, \texttt{schedule.c} and a pair of configuration files \texttt{rtcs.h} and \texttt{rtcscnf.h}.
+\\~\\
+It should be noted that while the authors did set up a functioning KHAos system it saw no actual use in the verification of features due to time constraints.
+The steps to properly configure KHAos are presented here to provide an overview of the process.
+Defining the task names is done in \texttt{rtcscnf.h}.
+An excerpt of the file can be seen in listing \ref{code:khaos_config}.
+As can be seen, every task created in the system is associated with an ID and is given an init function.
+The init function is used to set up hardware and other pre-requisites for the task and eventually to start the task. 
+\begin{listing}[H]
+\begin{minted}{c}
+#define T_TICK 1
+
+#define LAST_TASK 1
+
+#define TASK0 alive_task
+#define TASK1 cart_task
+#define TASK2 NULL
+#define TASK3 NULL
+
+#define INIT_TASK0 init_alive_task
+#define INIT_TASK1 init_cart_task
+#define INIT_TASK2 NULL
+#define INIT_TASK3 NULL
+
+#define ALIVE_TASK 0
+#define CART_TASK 1
+\end{minted}
+\caption[Configuration file of KHAos.]{Excerpt of the configuration file of KHAos. Each task is given an ID for both the task itself and its init function. The number of tasks in the system is given in \texttt{LAST\_TASK}.}
+\label{code:khaos_config}
+\end{listing}
+The timer has been set up to provide a tick every 10$\mu$s.
+This means that the period of the scheduler can be set in multiples of 10$\mu$s by setting the \texttt{T\_TICK} variable.
+In this project it was chosen to use the shortest possible frequency while setting up the system.
+Clearly, when more tasks are added to the system it is crucial to ensure that the deadline of each task is still upheld.
+\\~\\
+For the sake of verifying the system a simple \texttt{alive\_task} is set up which toggles one of the RGB LEDs on the controller board.
+This task can be seen in listing \ref{code:alive_task}.
+Every 0.5s this task flips the state of \texttt{RGB2} between the \texttt{off}-state and lighting the green LED.
+The functions \texttt{set\_green()} and \texttt{set\_off()} are wrapper functions which hide the calls to \texttt{Xil\_Out32()} in an effort to simplify the code.
+\begin{listing}[H]
+\begin{minted}{c}
+void alive_task(void)
+{
+	if(led)
+		set_green(RGB2_BASEADDR);
+	else
+		set_off(RGB2_BASEADDR);
+
+	led = !led;
+
+	_wait(MILLI_SEC(500));
+}
+\end{minted}
+\caption[Alive task in KHAos.]{Alive task in KHAos. This task repeatedly switches one of the RGB LEDs on the controller board to green and off.}
+\label{code:alive_task}
+\end{listing}
+% subsubsection khaos (end)
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
