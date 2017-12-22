@@ -227,15 +227,14 @@ The function shown in listing \ref{code:tiny_spi_transfer} implements this funct
 It takes pointers to \texttt{data}, \texttt{input} and the number of bytes that needs to be sent as inputs.
 Line 2 sets \texttt{SS} \texttt{low} to initiate an SPI transfer.
 The loop in lines 4 to 11 is run \texttt{n} times to send and receive \texttt{n} bytes.
-In line 5 the USI Data Register \texttt{USIDR} is loaded with the byte to be sent and in line 6 the counter overflow flag in the USI Status Register, \texttt{USISR}, is cleared.
-Lines 7 to 9 writes 1 to the \texttt{USITC} bit of the USI Control Register \texttt{USICR} until the counter overflow flag \texttt{USIOIF} is raised.
+In line 5 the USI Data Register \texttt{USIDR} is loaded with the byte to be sent and in line 6 the counter overflow flag is cleared.
+Lines 7 to 9 writes 1 to \texttt{USICR} until the counter overflow flag \texttt{USIOIF} is raised.
 The USI clock \texttt{USCK} is toggled each time 1 is written to \texttt{USITC}.
 Data is shifted to \texttt{DO} correctly by the USI by counting the clock edges generated. 
 Data on \texttt{DI} is sampled at falling edges of the \texttt{USCK} and stored in \texttt{USIDR}.
 The counter overflow flag \texttt{USIOIF} will raise when 16 clock edges has been generated and eight bits of data has been sent and received.
 Line 10 copies the received data to the \texttt{input} pointer if there is one.
 When \texttt{n} bytes of data have been sent and received the \texttt{SS} pin will be set \texttt{high}.
-\mikkel{attempt to remove register references.}
 \begin{listing}[h] 
 \begin{minted}{c}
 void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
