@@ -37,10 +37,12 @@ The PCB material most commonly used is FR-4 which has a temperature index of 130
 At an ambient temperature of 20\degree this would imply a permissable conductor temperature rise of 110\degree.
 In all practical situations, this is unreasonably high.
 The material will discolor and degrade over time with the excessive heating and cooling of the board while also increasing the apparent ambient temperature of other components on the PCB, lowering the efficiency of the circuit.
+\\~\\
 In actual designs, a much more conservative temperature rise of 10\degree is often used, 15\degree is acceptable and 20\degree is considered high.
 This was discussed with Jesper Nielsen, a technician at SDU who has experience in designing high power PCBs and it was decided to accept 15\degree increase. 
 The actual temperature rise of a conductor is dependent on a great number of variables, among these are: conductor length, cross-sectional area, conductor material, PCB material, ambient temperature, convection, PCB layout (the amount of copper in the vicinity), etc.
-Additionally, not all conductors carry the same current so different conductors have different thermal impacts on different locations on the PCB.
+\\~\\
+Not all conductors carry the same current so different conductors have different thermal impacts on different locations on the PCB.
 Clearly, it is difficult to accurately calculate the required copper thickness, however an estimate can be made.
 In IPC-2221A \cite{ipc2221} data is presented to show the temperature rise resulting from allowing a current through a trace on a PCB on different trace widths.
 This data was first published in \cite{conduct}, a progress report from the American National Bureau of Standards dating back to 1956.
@@ -50,12 +52,12 @@ In 2009 the new IPC-2152 \cite{ipc2152} was published and reevaluates the topic 
 This standard, however, is unavailable due to its high cost and the original charts are used instead.
 A number of PCB trace width calculators exist online which extrapolate from the original data to give estimates of the required copper thickness and width.
 One such calculator \cite{pcb_trace_calc} was used to determine the required copper thickness and width required in this project.
-~\\
+\\~\\
 There are economic constraints in place for this project which requires the authors to be somewhat conservative with respect to how exotic a solution will be considered.
 Most manufacturers support increasing the thickness of copper on a specific layer, allowing well above the 35$\mu$m standard copper thickness.
 The manufacturer used in this project was chosen due to a comparatively low price on 4-layer boards with 70$\mu$m copper on outer layers and 52.5$\mu$m on internal layers.
 On the power part of the board this results in a total of 122.5$\mu$m of copper for the 24V rail and power ground.
-~\\
+\\~\\
 In order to simplify the design process, a distinction is made between three types of traces.
 This distinction is based on the expected amount of current carried by that trace.
 \begin{itemize}

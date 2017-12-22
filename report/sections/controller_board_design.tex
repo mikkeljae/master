@@ -591,11 +591,8 @@ While the load at the 12V rail is mostly steady, it does supply the bootstrap ca
 It was therefore decided to use two 330 $\mu$F electrolytic capacitors in parallel.
 As suggested by the datasheet an additional 20 $\mu$F of ceramic capacitance is added to the output to further improve the transient response.\\
 
-\subsubsection{5V and 3.3V Rail Circuitry} % (fold) 
+\subsubsection{5V, 3.3V and 2.5V Rail Circuitry} % (fold) 
 \label{subsub:pth08080w}
-\thomas{add 2.5V note}
 As mentioned previously the choice of these component and the design of the circuitry around them was done by the authors in a previous project \cite{isaswarm} and the details of the design will be omitted for this discussion.
-The PTH08080W and LMR10510XMF are responsible for creating the 5V and 3.3V rails, respectively.
-These rails were designed mainly for ensuring the correct boot and shutdown of the MicroZed.
-These procedures are described in detail in \cite{isaswarm}.
+The \texttt{PTH08080W} and \texttt{LMR10510XMF} are responsible for creating the 5V and 3.3V rails, respectively and the 2.5V reference is created by the \texttt{TL431AIDBZT}.
 % subsection pth08080w (end)
