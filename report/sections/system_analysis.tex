@@ -3,16 +3,27 @@
 \thomas{Elaborate on cites}
 \thomas{point mass assumption}
 \thomas{insert paragraph on current mode control in SotA}
+
 The system developed throughout this report is a proposal made by the project owner and developed by the authors.
 It is intended as a learning platform for students to experiment with and gain understanding of underactuated systems.
-Underactuated systems is a vast field of research including examples in personal transportation \cite{scooter} \cite{segway} and robotic grippers \cite{threegripper} \cite{softgripper}.
 An underactuated system is a system with more DoF (degrees of freedom) than actuators.
 Traditionally in control theory, an equal or greater number of actuators than DoF are used to cancel out the dynamics of a system.
+Underactuated systems is a vast field of research including examples in personal transportation such as the self-balancing scooter \cite{scooter} or the Segway \cite{segway}.
+Both of these systems are essentially practical implementations of the inverted pendulum where an on-board control system will attempt to keep the device upright while maintaining a steady speed based on the tilt of the device.
+Also underactuated robotic grippers are seen in abundance in literature. 
+\cite{threegripper} is an implementation of a three-phalanx finger gripper which utilises two underactuated fingers.
+When the fingers are brought together around an object, using the only actuated degree of freedom, the fingers wrap themselves around the object, regardless of size or shape.
+This means that a gripper can be far more versatile and much less dependent on the correct placement of the object. 
+\cite{pullgripper} implements a two-to-five finger gripper with belts on each finger to pull objects into the grasp of the gripper.
+\\~\\
 In control of underactuated systems it is required to exploit the natural dynamics of the system \cite{mitunderactuated} in order to gain full control.
 Such systems are generally more agile and efficient than their fully actuated counter-parts.
 \\~\\
 A general example often used for teaching underactuated systems is the inverted pendulum mounted on a cart.
 Numerous examples of such systems are described in literature \cite{invertpendulum1} \cite{tripleinvertpendulum} \cite{invertpendulum3} \cite{doubleinvertpendulum}.
+\\~\\
+Often literature simplifies the inverted pendulum problem by assuming that all mass is placed in the joints \cite{doubleinvertpendulum}.
+
 
 \section{System Analysis}
 This document is a development report detailing the creation of such a system.
