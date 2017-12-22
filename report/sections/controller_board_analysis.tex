@@ -81,7 +81,7 @@ The components chosen for the system all impose some requirement as to what volt
 	The design of the power delivery for this board was done by the authors in the aforementioned project \cite{isaswarm} and it was found that the MicroZed can draw a maximum of 1.8A from the 5V rail and up to 1A from the 3.3V rail.
 	The 3.3V rail is generated from the 5V rail in that design.
 	Total current draw from the 5V rail resulting from the MicroZed is therefore no larger than 2.5A.
-	An additional 2.5V rail is created in that design which is used only to facilitate the correct startup of the Zynq chip.
+	An additional 2.5V reference is created in that design which is used only to facilitate the correct startup of the Zynq chip.
 	The 5V rail was designed to be created from a 2S Li-Po battery at 8V and the maximum input voltage of the DC/DC converter is 18V.
 	To reuse this design it is necessary to generate a rail lower than the 24V rail for the 5V rail to be generated from.
 	\item \textbf{HIP4081:} This component is the motor driver used in the project.
@@ -97,9 +97,17 @@ The components chosen for the system all impose some requirement as to what volt
 A number of additional components are likely to be required on the controller board which will all impose additional current draw on their respective rails.
 These are considered negligible when compared to the major consumers mentioned above.
 \\~\\
+An overview of the hierarchy of the different rails can be seen in figure
 The required accuracy of each rail is determined by the most sensitive component on that rail and is presented in table \ref{tab:powerrails}.
 Since the 24V and 12V rails do not have any strict requirements imposed on them, a $\pm$1V requirement is set. 
-The 2.5V rail is used only as a reference voltage and therefore does not have a formal current requirement.
+The 2.5V reference is used only as a reference voltage and therefore does not have a formal current requirement.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.75\linewidth]{graphics/rail_hierarchy}
+	\caption[Overview of the voltage rail hierarchy in the controller board design.]{Overview of the voltage rail hierarchy in the controller board design. The 24V rail is external and is used to genereate the 12V rail which generates the 5V rail which, finally, generates the 3.3V rail and 2.5V reference.}
+	\label{fig:figure1}
+\end{figure}
 
 \begin{table}[h]
 	\centering
@@ -112,10 +120,7 @@ The 2.5V rail is used only as a reference voltage and therefore does not have a 
 	\label{tab:powerrails}
 \end{table}
 
-\thomas{add rail hierarchy} 
-
 \subsubsection{Motor Current Sensing}
-\thomas{insert paragraph on current mode control in SotA}
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
 Current measurements are generally done by either hall effect based sensors or shunt resistors. 
 Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
@@ -128,11 +133,13 @@ For this project a shunt resistor will be used since it is regarded as the simpl
 \subsubsection{Safety} % (fold)
 \label{subsub:safety}
 It is expected that, eventually, an error may occur that causes the cart to move uncontrollably.
-A safety system should be constructed in such a way that it will prevent the cart from crashing violently.
-It should be isolated from the remaining system.
-Therefore, if it can at all be avoided, no programming should be involved in determining a safety condition.
-\thomas{explain safety conditions}
-With this in mind, the safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
+A safety system should be constructed in such a way that it will prevent the cart from crashing violently or the electronics to self-destruct.
+It should be isolated from the remaining system and no programming should be involved in determining whether a safety condition is met.
+\\~\\
+A safety condition is defined as a situation that, when not met, indicates that a critical or dangerous situation has occured with the system.
+When a condition is met, that situation has not occured.
+\\~\\
+The safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
 In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
 Clearly, the system should function only if all safety conditions are met.
 This will be ensured by creating an aggregation circuit which compares all of the safety conditions, creating one signal which will be capable of closing the main relay if necessary.
@@ -179,7 +186,6 @@ While all of the above have their drawbacks, it was decided to use the infrared 
 This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart or rail.
 \\~\\
 In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
-
 
 \subsubsection{Schematic Revision} % (fold)
 \label{ssub:schematic_revision}
