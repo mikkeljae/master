@@ -220,7 +220,7 @@ Data on \texttt{DI} is sampled at falling edges of the \texttt{USCK} and stored 
 The counter overflow flag \texttt{USIOIF} will raise when 16 clock edges has been generated and eight bits of data has been sent and received.
 Line 10 copies the received data to the \texttt{input} pointer if there is one.
 When \texttt{n} bytes of data have been sent and received the \texttt{SS} pin will be set \texttt{high}.
-\begin{listing}[h] 
+\begin{listing}[H] 
 \begin{minted}{c}
 void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
   PORTB &= ~_BV(SS);
@@ -276,7 +276,7 @@ Using a prescaler of 1, the compare value for setting up an interrupt each 333$\
 Where $Comp$ is the compare value, $T$ is the wanted period time and $T_{cpu}$ is the CPU clock period.
 Setting up \texttt{Counter 1} with this compare value and the flag to clear the counter when reaching the compare value, results in interrupts on \texttt{TIM1\_COMPA\_vect} each 333$\mu$s.
 
-\begin{listing}[h] 
+\begin{listing}[H] 
 \begin{minted}{c}
 volatile char timer;
 
@@ -296,7 +296,7 @@ In the main loop of the software, the \texttt{timer} variable is used determine 
 This mechanism provides real time performance of the software when the code used to transmit data is executed before the next deadline, which is the next \texttt{counter 1} interrupt.
 This means that the transmitting code needs to be executed in less than 333$\mu$s to ensure real time performance.
 
-\begin{listing}[h] 
+\begin{listing}[H] 
 \begin{minted}{c}
 while(1){
     if(timer==1){ 
