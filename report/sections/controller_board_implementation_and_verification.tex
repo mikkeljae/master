@@ -1,8 +1,8 @@
 %!TEX root = ../main.tex
 \subsection{Implementation} % (fold)
 \label{sub:controller_implementation}
-\mikkel{Something here}
 
+\thomas{Insert section on hardware fixes on controller and joint board}
 \subsubsection{Prototyping}
 \label{sub:controller_board_prototyping}
 In order to test important parts of the controller board a home-made prototype PCB was made at the University's PCB lab.
@@ -15,23 +15,23 @@ Three main functionalities should be verified on the board:
 	\item Motor driver circuit
 \end{itemize}
 
-The remaining functionalities has either been tested beforehand or deemed too simple to test. 
+The remaining functionalities have either been tested previously or were too trivial to test. 
 
-\par{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}
+\paragraph{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}~\\
 The Schmitt-triggers were tested by varying the input voltage and verifying the switching threshold along with the the hysteresis levels. 
 Testing the \texttt{AND} gate was done by applying different logic levels and verifying the results.
-The complete circuit was found to work as intended.
+The complete circuit was found to work as intended and can be seen in appendix \ref{app:controller_board_schem}, at component \texttt{U7} and \texttt{Q14}.
 
-\par{PWM Logic Level Shifting}
-The functionality of the logic level shifter \texttt{74LVC2G17} was verified by measuring input and output on an oscilloscope. 
+\paragraph{PWM Logic-Level-Shifting}~\\
+The functionality of the logic-level-shifter \texttt{74LVC2G17} was verified by measuring input and output on an oscilloscope. 
 
-\par{Motor Driver Circuit}
-By measuring the outputs of the \texttt{74LVC2G17} it was concluded that there was a design error in the way the component was used, because it output signals were invalid.
-A thorough investigation of the schematic showed that the component could be omitted, without changing the functionality of the board.
-The motor driver circuit on the PCB could not be tested because of this design error on the developed PCB .
-Therefore it was decided to develop a small prototype PCB with the sole purpose of testing the motor driver circuit.
-The circuit can bee seen in \ref{}.......
-\mikkel{Make correct reference}
+\paragraph{Motor Driver Circuit}~\\
+By measuring the outputs of the inverter \texttt{SN74LVC2G04} it was concluded that there was a design error in the way the component was used and the output signals were invalid.
+A thorough investigation of the schematic revealed that the component could be omitted, without changing the functionality of the board.
+The motor driver circuit on the PCB could not be tested because of this design error.
+Therefore it was decided to develop another prototype PCB with the sole purpose of testing the motor driver circuit.
+The circuit can be seen in \ref{}
+\mikkel{Find appropriate circuit}
 A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
 
 \begin{figure}
@@ -40,9 +40,9 @@ A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
 	\caption[Prototype PCB with motor driver.]{Picture of PCB developed to test the functionality of the motor drive circuitry.}
 	\label{fig:m_drive_circuit}
 \end{figure}
-The boards gate signals was wired to the gate of four MOSFETs.
+The board's gate signals were wired to the gates of four MOSFETs.
 A power resistor was used as a load and PWM signals were applied to the motor driver input pins. 
-Measuring the gate signals showed strange behaviour and after a thorough inspection of the board and the schematic it was found that the bootstrap diode was facing the wrong direction. 
+Measuring the gate signals showed strange behaviour and after a thorough inspection of the board and the schematic it was found that the bootstrap diodes were facing in the wrong direction. 
 The source of this was an error in the footprint of the component. 
 After correcting the issue the driver and the bootstrap circuit was found to function as intended. 
 The measured signals are shown in figure \ref{fig:test_hip_signals}.
@@ -53,11 +53,12 @@ The measured signals are shown in figure \ref{fig:test_hip_signals}.
 	\caption[Measured gate and input signals.]{Measured low and high side gate signals along with low side motor driver input signals.}
 	\label{fig:test_hip_signals}
 \end{figure}
-It is verified that the low side gate signal follows the waveform of low side input signal, but with a logic level of $\approx$12V as expected. 
-It is also verified that the high side gate signals are 180$^\circ$ out of phase of the low side signals and are correctly bootstrapped to $\approx$24V.
+It was verified that the low side gate signal follows the waveform of low side input signal, but with a logic level of $\approx$12V as expected. 
+It was also verified that the high side gate signals are 180$^\circ$ out of phase of the low side signals and are correctly bootstrapped to $\approx$24V.
 
 \subsubsection{Controller Board} % (fold)
 \label{ssub:controller_board}
+\thomas{show picture and a few notes on the production of the board}
 Something should be written here about implementing/producing the controller board.
 A picture should be shown.
 
@@ -65,13 +66,16 @@ A picture should be shown.
 \label{ssub:verifaction}
 
 Something here....
+\thomas{introduction to verification}
 
 \subsubsection{General Verification Procedure} % (fold)
 \label{ssub:verification_procedure}
-This procedure is created in an effort to allow for an easier debugging procedure of a newly produced controller board.
+This procedure is created in an effort to allow for an easier debugging procedure of a newly produced controller board, should a developer require the production of a new board.
 A blank version appropriate for printing can be found in appendix \ref{sec:controller_board_verification_procedure}.
 It should be noted that the version seen below is not identical to the one found in the appendix.
 This is because some of the tests performed below are done to verify that the design is done correctly, rather than ensuring that production has been done correctly.
+\cmark is used to indicate the successful verification of a test while \xmark is used to indicate the initial failure of a test.
+All pins, components and nets are typeset using the \texttt{teletype font} and are referenced to the schematics in appendix \ref{app:controller_board_schem}.
 \paragraph{Verify Voltage Rails} % (fold)
 \label{par:verify_voltage_rails}
 
@@ -85,18 +89,19 @@ This is because some of the tests performed below are done to verify that the de
  			\end{itemize}
  		\item[\xmark] Verify 12V, 5V, 3.3V and 2.5V voltage rails.
  			\begin{itemize}
- 				\item[-] None of the voltage rails were present, when measuring.
+ 				\item[-] None of the voltage rails were present.
  				This lead to an investigation of \texttt{PTN78020}, which should produce the 12V rail. 
- 				It turned out that the \texttt{PTN78020}s \texttt{inhibit} pin is sufficiently floating.
+ 				The \texttt{PTN78020}s \texttt{inhibit} pin is insufficiently floating.
  				It has an internal pull-up resistor which should bring the pin voltage up to 1.5V when the signal is left floating externally, but the pin voltage was approximately 0V.
  				Applying a 3V signal to the pin brings the 12V rail up, followed by the 5V and 3.3V rails.
  				The issue was found to be that the inhibit pins of \texttt{PTN78020} and \texttt{PTH08080} are connected to the same net, \texttt{DCDC\_EN}.
- 				It seems that the \texttt{PTN78020} is not able to correctly raise the voltage on its inhibit pin, because of \texttt{PTH08080}. 
+ 				The \texttt{PTN78020} is not able to correctly raise the voltage on its inhibit pin, because of \texttt{PTH08080}. 
  				Cutting the DCDC\_EN track such that the two are effectively on separate nets fixed the issue.
             	This results in not being able to disable the \texttt{PTH08080} manually, however this will happen in an acceptable manner by simply turning off the \texttt{PTN78020}.
  			\end{itemize}
  	\end{itemize}
  \end{itemize}
+\mikkel{Move microzed startup bla to requirement section, refactor for new format}
 \paragraph{Verify MicroZed Startup/Shutdown Sequence} % (fold)
 \label{par:verify_microzed_startup_shutdown_sequence}
 \begin{itemize}
@@ -107,7 +112,7 @@ This is because some of the tests performed below are done to verify that the de
 		\item[\cmark] Verify that the 3.3V rail is not high before \texttt{VCCIO\_EN} during startup. See figure \ref{fig:controllerboardv2_startup} for example of succesful startup sequencing.
 		\begin{itemize}
 			\item[-]
-			All important signals during startup where measured and is plotted in figure \ref{fig:controllerboardv2_startup}.
+			All important signals during startup where measured and are plotted in figure \ref{fig:controllerboardv2_startup}.
 			It should be noted that the \texttt{VCCIO\_EN} signal is controlled by the Microzed and not the developed controllerboard. 
 			It can be verified that the voltage on the 3.3V rail does not rise when the voltage of \texttt{VCCIO\_EN} is lower than 1.3V.
 			This level is the high threshold of the comparator that enables the DCDC converter that generates the 3.3V rail.
@@ -118,7 +123,7 @@ This is because some of the tests performed below are done to verify that the de
 	\begin{itemize}
 		\item[\cmark] Verify that signals \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order during shutdown. 
 		\begin{itemize}
-			\item[-] The important signals when shutting down the controllerboard and the Microzed are measured and plotted in figure \ref{fig:controllerboardv2_startup}
+			\item[-] The important signals when shutting down the controllerboard and the Microzed are measured and plotted in figure \ref{fig:controllerboardv2_shutdown}
 			It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in the correct order. 
 		\end{itemize}
 	\end{itemize}
@@ -180,11 +185,12 @@ This is because some of the tests performed below are done to verify that the de
 		\item[\cmark] Verify that 5V is present on the output of U5.
 		\item[\xmark] Verify that 24V is present on \texttt{POWER\_IN}
 		\begin{itemize}
-			\item[-]  Measuring the voltage on \texttt{POWER\_IN} did to show the intended 24V, but approximately 6V. 
-			Investigation showed that the footprint of the four $330 \mu F$ electrolytic capacitors is inversed. 
+			\item[-]  Measuring the voltage on \texttt{POWER\_IN} did not show the expected 24V, but approximately 6V. 
+			Investigation showed that the footprint of the four $330 \mu F$ electrolytic capacitors was inversed. 
 			Desoldering the capacitors and soldering in the correct orientation yields the expected behaviour and the 24V can be measured at \texttt{POWER\_IN}.
 			The charging curve of the capacitors through the inrush current is shown in figure 
-			\ref{fig:controllerboardv2_inrushcurrent_charge} and it can be seen that the initial charge of the capacitors takes approximately 1s. 
+			\ref{fig:controllerboardv2_inrushcurrent_charge} and it can be seen that the initial charge of the capacitors takes approximately 1s.
+			This is in accordance with the calculation done in section \ref{ssub:relay_circuitry}
 
 			\begin{figure}[h]
 				\centering
@@ -234,6 +240,7 @@ This is because some of the tests performed below are done to verify that the de
 			See figure \ref{fig:controllerboardv2_gate_b} for a view of the signals on channel B.
 		\end{itemize}
 		\item[\cmark] Verify that deadtime exists between the two channels.
+		\mikkel{insert dead time figure}
 	\end{itemize}
 \end{itemize}
 
@@ -248,9 +255,9 @@ This is because some of the tests performed below are done to verify that the de
 \paragraph{Verify NRF24L01 Module functionality} % (fold)
 \label{par:verify_nrf24l01_module_functionality}
 \begin{itemize}
-	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE}.
+	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE} one at a time.
 	\begin{itemize}
-		\item[\cmark] Verify that 3.3V is present on the corresponding signals on the NRF24L01 module (component U1).
+		\item[\cmark] Verify that 3.3V is present on the corresponding signals on the \texttt{nRF24L01} module (component \texttt{U1}).
 	\end{itemize}
 \end{itemize}
 % paragraph verify_nrf24l01_module_functionality (end)
@@ -272,12 +279,12 @@ This is because some of the tests performed below are done to verify that the de
 %In order to properly verify if all of the requirements for the system are met additional verification is needed.T
 %his verification is needed to verify the design and it is therefore not important to do it for each PCB, but one time per new design.
 
-\subsubsection{Requirement \ref{enum:motor_speed_direction}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:motor_speed_direction}} % (fold)
 \label{subs:requirement_enum:motor_speed_direction}
 This requirement specifies that motor speed and direction should be adjustable through PWM output ports of the MicroZed.
 
 \paragraph{Test}~\\
-Verification of the requirement is done by applying a \texttt{low} level signal to \texttt{DIS} and \texttt{PWM\_B} while applying a PWM signal to the \texttt{PWM\_A} pin.
+Verification of the requirement is done by applying a \texttt{low} level signal to \texttt{DIS} and \texttt{PWM\_B} while applying a 3.3V PWM signal to the \texttt{PWM\_A} pin.
 Gate signals should be measured and it should be verified that the motor is turning.
 Hereafter the dutycycle should be altered and the motor speed should change.
 Repeat for channel \texttt{B}.
@@ -295,24 +302,25 @@ This data suggests that a large current, $>20$A is drawn when \texttt{DIS} is se
 \begin{figure}[h]
 	\centering
 	\input{graphics/current_w_load.tex}
-	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% PWM to the high side mosfet of channel b. Supply current is measured in amperes.}
+	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load}
 \end{figure}
 
-This current draw continuous for approximately 4ms and then disappears.
+This current draw continues for approximately 4ms and then disappears.
 While the current draw is present the 24V rail falls which, eventually, will cause the 12V rail to fail, causing the 5V rail to fail and, finally, the MicroZed to power down.
-At low PWM the 24V rail recovers before the failure happens.
+At low PWM duty cycle the 24V rail recovers before the failure happens.
 
+\mikkel{change figure to have second axis in amperes, fix legend}
 \begin{figure}[h]
 	\centering
 	\input{graphics/current_w_load_closeup.tex}
-	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% PWM to the high side mosfet of channel b. Supply current is measured in amperes.}
+	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load_closeup}
 \end{figure}
 
-By inspecting the data of the time immediately after \texttt{DIS} is set low, as seen in figure \ref{fig:current_w_load_closeup} it is apparent that the gate signal on the high side MOSFET is never pulled below 12V and as a result the MOSFET is never closed, creating shoot-through on the 24V rail.
-Additionally the current can be seen to step up at every pulse of PWM until at approximately 0.2ms where a steady state occurs.
-This steady state is maintained until approximately 4ms have passed where suddenly the gate signal does correctly go to 0V, closing the MOSFET, allowing the 24V rail to recover.
+By inspecting the data of the time immediately after \texttt{DIS} is set low, as seen in figure \ref{fig:current_w_load_closeup} it is apparent that the gate signal on the high side MOSFET is never pulled below 12V and as a result the MOSFET is always conducting, creating shoot-through on the 24V rail when the low-side MOSFET is conducting.
+Due to this the current can be seen to step up at every pulse of PWM until at approximately 0.2ms where a steady state occurs.
+This steady state is maintained until approximately 4ms have passed where suddenly the gate signal does correctly go to 0V, meaning that the high-side MOSFET no longer conducts, allowing the 24V rail to recover.
 \\~\\
 In an attempt to work around the issue the first 4ms after setting \texttt{DIS} low, were spent with 0\% PWM, yielding the result seen in figure \ref{fig:current_w_load_slow}.
 This is the expected behaviour.
@@ -325,16 +333,14 @@ Since the 12V and therefore the 5V rail were unaffected by the dipping 24V rail 
 \begin{figure}[h]
 	\centering
 	\input{graphics/current_w_load_slow.tex}
-	\caption{Current draw when setting \texttt{DIS} low and applying a 0\% PWM to the high side mosfet of channel b for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
+	\caption{Current draw when setting \texttt{DIS} low and applying a 0\% duty cycle PWM to the high side MOSFET of channel B for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
 	\label{fig:current_w_load_slow}
 \end{figure}
 
 \thomas{anything to add about the initial-current-draw problem.}
-\subsubsection{Requirement \ref{enum:motor_current}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:motor_current}} % (fold)
 \label{ssub:requrement_enum:motor_current_}
-This requirement specifies that it should be possible to measure the current through the motor usint the ADCs on the MicroZed.
-A 200$\mu \Omega$ shunt resistor was placed in a low-side H-bridge configuration with a current sense amplifier with a gain of 100.
-This ensures that currents up to 40A can be measured and the maximum current of 80A does not harm the Microzed.
+This requirement specifies that it should be possible to measure the current through the motor using the ADCs on the MicroZed.
 
 \paragraph{Test}~\\
 Place a 3 $\Omega$ resistive load across the motor terminals and apply 24V to the board.
@@ -348,6 +354,8 @@ The output was measured and is shown in figure \ref{fig:controllerboardv2_curren
 As can be seen the output is approximately 300mV, twice as large as the expected output, 160mV.
 Furthermore the signal is very noisy with noise spikes as large as 200mV peak-to-peak. 
 
+\thomas{add addendum}
+
 \begin{figure}[h]
 \centering
 \input{graphics/controllerboardv2_current_sense.tex}
@@ -360,8 +368,8 @@ Further tests revealed that further noise is introduced when the MOSFETs are act
 Additionally spikes appeared in the data that do not in anyway represent the current flowing through the load.
 
 A pristine analog ground is likely necessary to maintain signal integrity but this requires a completely new PCB design and will not be pursued further in the report. 
-
-\subsubsection{Requirement \ref{enum:voltage_rails}} % (fold)
+\thomas{is this sufficient?}
+\subsubsection{Verification of: Requirement \ref{enum:voltage_rails}} % (fold)
 \label{ssub:requirement_enum:voltage_rails}
 This requirement states that five voltage rails should be present on the controller board. 
 
@@ -382,7 +390,7 @@ The voltages of the rails were measured for 20ms and the mean voltage on each ra
 All measured values are within the values specified in the requirement specification.
 
 
-\subsubsection{Requirement \ref{enum:voltage_transients}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:voltage_transients}} % (fold)
 \label{ssub:requirement_enum:voltage_transients}
 This requirement states that
 
@@ -391,6 +399,7 @@ This requirement states that
 \paragraph{Conclusion}~\\
 \mikkel{Measure voltage transient on rails}
 \mikkel{Make simulation and write something here.}
+\mikkel{verify use of motor control}
 \begin{figure}[h]
 	\centering
     \input{graphics/controllerboardv2_current_motor_supply.tex}
@@ -398,10 +407,10 @@ This requirement states that
 	\label{fig:controllerboardv2_}
 \end{figure}
 
-\subsubsection{Requirement \ref{enum:microzed_interface}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:microzed_interface}} % (fold)
 \label{ssub:requirement_enum:microzed_interface}
 According to requirement  \ref{enum:microzed_interface}, the Microzed should be interfaced correctly.
-Connecting the Microzed to the controller boad pcb is done through two Bergstak 100pins headers, where all appropriate signals are routed to.
+Connecting the Microzed to the controller board PCB is done through two Bergstak 100pins headers, where all appropriate signals are routed to.
 The circuitry for powering up and powering down the Microzed is reused from an earlier project.
 
 \paragraph{Test}~\\
@@ -411,35 +420,39 @@ It was tested if the board complies with the correct power on and power off sequ
 The measured signals on figure \ref{fig:controllerboardv2_shutdown} and \ref{fig:controllerboardv2_startup} show that the implementation on the controllerboard complies with the correct sequence as specified by Microzed.
 
 
-\subsubsection{Requirement \ref{enum:cool_mosfets}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:cool_mosfets}} % (fold)
 \label{ssub:requirement_ref_enum:cool_mosfets}
-Requirement \ref{enum:cool_mosfets} specifies that MOSFETs should be cooled to avoid overheating of the board. 
-The design of the controllerboard included a large heatsink connected to all MOSFETs. 
-During production of the board an error in the footprint of the MOSFETs was found, causing the solution with the large common heatsink to be unachievable.
-Therefore individual standard TO-220 heatsinks were connected to each MOSFET.
+Requirement \ref{enum:cool_mosfets} specifies that MOSFETs should be cooled to avoid overheating. 
 
 \paragraph{Test}~\\
 MOSFETs should run the motor for several minutes at a high velocity. 
 During the test, the MOSFETs should not get hot.
 
 \paragraph{Conclusion}~\\
+\thomas{verify continuity of this paragraph}
+\thomas{be aware of the possible lacking test}
+During production of the board an error in the footprint of the MOSFETs was found, causing the solution with the large common heatsink to be unachievable.
+Therefore individual standard TO-220 heatsinks were connected to each MOSFET.
 The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting hot.
 It was concluded that the MOSFETs are sufficiently cooled.
 
-\subsubsection{Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
 \label{ssub:requirement_enum:hardware_for_wireless_implemented}
+\mikkel{Insert conclusion, remove number}
 Requirement \ref{enum:hardware_for_wireless_implemented} specifies that hardware for wireless communication using RF should be implemented on the controllerboard.
 The \texttt{nRF24L01} was chosen and placed on the board with a SPI connection to the Microzed.
 
-\subsubsection{Requirement \ref{enum:important_prototype}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}
+\mikkel{Insert conclusion, remove number}
 Requirement \ref{enum:important_prototype} specifies that important parts of the circuitry should be tested on prototype PCB.
 This was done by making two prototype PCBs which lead to correction of two errors and verification of the rest of the functionality.
 Time and money was saved this way, by correcting the errors before ordering the full board from a professional PCB vendor at a higher cost and a long delivery time.
 
 
-\subsubsection{Requirement \ref{enum:pcb_strategy}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:pcb_strategy}} % (fold)
 \label{ssub:requirement_enum:pcb_strategy}
+\mikkel{Insert conclusion, remove number}
 According to requirement \ref{enum:pcb_strategy} the PCB layout should be reviewed according to the five steps of the developed strategy.
 Using this method a PCB layout was produced with significantly less errors than the previous experience of the authors.
 The fact that the final PCB contained errors indicates that the steps were not followed thoroughly enough or that the method is flawed.
@@ -448,26 +461,27 @@ Therefore it should be added to the footprint inspection step that it should be 
 The conclusion on the rest of the errors was that the steps should have been followed more thoroughly.
 Especially it would have been beneficial to use the peer-review step more comprehensively.
 
-\subsubsection{Requirement \ref{enum:pcb_debugging}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:pcb_debugging}} % (fold)
 \label{ssub:requirement_enum:pcb_debugging}
+\mikkel{Insert conclusion, remove number}
 Requirement \ref{enum:pcb_debugging} specifies that the PCB layout should be designed with debugging in mind.
 This was done by adding six debugging headers with a total of 55 signals to the PCB design.
 The debugging headers were used extensively in the debugging process.
 
-\subsubsection{Requirement \ref{enum:pcb_layout}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:pcb_layout}} % (fold)
 \label{ssub:requirement_enum:pcb_layout}
 blabla.....
 WE ALSO NEED ANALOG GROUND
-
-\subsubsection{Requirement \ref{enum:pcb_soldering}} % (fold)
+\mikkel{Help me, please!}
+\subsubsection{Verification of: Requirement \ref{enum:pcb_soldering}} % (fold)
 \label{ssub:requirement_enum:pcb_soldering}
 According to requirement \ref{enum:pcb_soldering} all PCB soldering should be possible at SDUs facilities, which it successfully was.
+\mikkel{Help me, please!}
 
-
-\subsubsection{Requirement \ref{enum:not_break_mis}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:not_break_mis}} % (fold)
 \label{ssub:requirement_enum:not_break_mis}
 \mikkel{Help me, please!}
 
-\subsubsection{Requirement \ref{enum:any_trigger_em}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:any_trigger_em}} % (fold)
 \label{ssub:requirement_enum:any_trigger_em}
 \mikkel{Help me, please! Also here!}

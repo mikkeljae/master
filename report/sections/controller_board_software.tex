@@ -5,53 +5,50 @@
 \subsection{Analysis} % (fold)
 \label{sub:analysis}
 This section will seek to analyse the requirements for the software that runs on the Microzed mounted on the controllerboard.
-The software will need to serve as a base system, where control algorithms can be run.....
-\mikkel{More clever words here....}
-
+The software will need to serve as a base system, where control algorithms can be run for verification purposes.
+It is not intended as the final system as that system should be Linux based and imposes a completely different set of requirements on the system.
 
 \subsubsection{Cart Position}
 \label{ssub:cart_position}
 In order to control the position of the cart it is important to know its absolute position.
-The \texttt{HEDS5540} encoder mounted on the motor has an \texttt{A}, \texttt{B} and \texttt{Z} incremental quadrature and can be used to measure the relative position of the cart. 
+The \texttt{HEDS5540} \cite{heds5540} encoder mounted on the motor has an \texttt{A}, \texttt{B} and \texttt{Z} incremental quadrature and can be used to measure the relative position of the cart. 
 The absolute position of the cart should be referred to the rail and therefore the \texttt{Z} signal cannot be used to determine the absolute position.
 The endstops have fixed positions on the rail and the signals from them can therefore be used to infer the absolute position.
-Specifically, resetting the position when reaching endstop 1 is a correct method of calibrating the system.
+Specifically, resetting the position when reaching endstop 1 should be done to calibrate the system.
 Hereafter the absolute position can be measured by reading signals \texttt{A} and \texttt{B}.
 
 Implementing this functionality on an FPGA using VHDL has the advantage that all signals can be read simultaneously.
 This means that a correct VHDL design will ensure that no edges on pins can go unnoticed.
-Furthermore it has the advantage that the processor does not need to do any computation and jitter is not introduced, because no interrupts are used. 
+Furthermore it has the advantage that the processor does not need to do any computation and no jitter is introduced, since no interrupts are used. 
 Therefore it was decided to implement the functionality of measuring absolute cart position in a VHDL module.
 
 
 \subsubsection{Controlling the Motor Driver} % (fold)
 \label{ssub:controlling_the_motor_driver}
-The motor driver has three inputs that needs to be produced by the controller board software.
-More Specifically, two PWM inputs and a disable pin that the disables the outputs of the motor driver.
+The motor driver has three inputs that need to be produced by the controller board software.
+More Specifically, two PWM inputs and a disable pin that disables the outputs of the motor driver.
 The PWM signals will be applied to the motor and therefore it was chosen to use a frequency of 22kHz in order to be outside of the audible range.
 It was decided to only apply a PWM signal to one channel in order to reduce the stress and current through the MOSFET and the motor.
-This means that in order to change direction of the motor torque, the PWM signal needs to be switched between the two PWM channels.
-The dutycycle of the PWM needs to be adjustable in order to control the speed of the motor.
-It was decided that it is beneficial to implement the PWM generation on the FPGA part of the Microzed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
+This means that in order to change direction of the motor, the PWM signal needs to be switched between the two PWM channels.
+The duty cycle of the PWM needs to be adjustable in order to control the speed of the motor.
+It is beneficial to implement the PWM generation on the FPGA part of the Microzed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
 
 \subsubsection{General Peripheral Hardware Control} % (fold)
 \label{ssub:general_peripheral_hardware}
 As described in section \ref{ssub:relay_circuitry}, two relays should be controlled by the controller board software. 
-A inrush relay that allows for safe charging of the capacitor bank and the main relay. 
-Both are controlled by controlling the logic level of a output pin.
+An inrush relay that allows for safe charging of the capacitor bank and the main relay. 
+Both are controlled by controlling the logic level of an output pin.
 Furthermore the software needs to control the three RGB LEDs on the controller board. 
 In order to utilize the full functionality of the RGB LEDs each channel of the LED should be controlled by a PWM signal.
 Using this method the LED can be illuminated in all colours.
 The frequency of the PWM is not of great concern as long as it is faster than human eye. 
-A higher frequency means a higher loss in the MOSFETs and therefore a frequency of 1kHz was chosen.
-
-
+A higher frequency means a higher loss in the MOSFETs and therefore a frequency of 1kHz was chosen, this is fast enough to avoid visible flickering.
 
 \subsubsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}
 The joint boards need to transmit joint angles to the controllerboard wirelessly using the \texttt{nRF24L01} module.
-In section  \ref{ssub:wireless_transmission_of_data} is is determined that two bytes are needed to represent the joint angle data.
-The rate of transmission of joint angle should be highest possible while still maintaining a reliable transmission.
+In section  \ref{ssub:wireless_transmission_of_data} is determined that two bytes are needed to represent the joint angle data.
+The rate of transmission of joint angles should be as high as possible while still maintaining reliable transmission.
 Throughout this section this aspect is explored further.
 
 With knowledge of the message size, it is possible to determine the theoretical maximum transmission rate.
@@ -73,15 +70,15 @@ The problem can be overcome by lowering the transmission frequency such that the
 %6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
 
 
-\paragraph{Air Collisions}~\\ % (fold)
+\paragraph{Air Collisions}~\\
 \label{par:air_collisions}
 There is a risk that two packets will collide if the joints transmit at the same time.
 Due to uneven drift between the two microcontrollers on the joints it is unlikely that collisions will occur indefinitely, however even a few lost packets in a row can cause severe problems in the control of the pendulum.
 The lowered transmission frequency alleviates this issue somewhat, but there is still a risk that multiple packets may be lost.
-Air collisions could be overcome altogether by using the acknowledge feature in the Enhanced Shockburst protocol, this enables the module to resend a message if an ACK message has not been received within 250$\mu$s.
+Air collisions could be handled by using the acknowledge feature in the Enhanced Shockburst protocol, this enables the module to resend a message if an ACK message has not been received within 250$\mu$s.
 After 250$\mu$s however, the previous position is outdated and the new position should be sent rather than the lost position.
 Additionally, the ACK message adds 15 bytes to the transmission of each packet, greatly lowering the possible throughput.
-The nRF24L01 is capable of operating on different frequencies.
+The nRF24L01 is capable of operating on different frequency-bands.
 By adding a second receiver on the controller board the two joints can communicate on different frequencies, eliminating the risk of air collisions altogether.
 This realisation was made after the controller board was produced and so the additional \texttt{nRF24L01} has to be retrofitted on the board. 
 % paragraph air_collisions (end)
@@ -93,11 +90,9 @@ The joint boards will, upon powering up, immediately start transmitting the pack
 \subsubsection{Utilizing the Zynq Platform} % (fold)
 \label{ssub:utializing_the_zynq_platform}
 The Microzed has a Xilinx Zynq 7020 chip embedded on the board. 
-This chip has both a Processing System, PS, part and a Programmable Logic, PL, part, which enables the use of both concurrent and sequential computing on the same board. 
-The PS is a dual core ARM Cortex-A9 processsor,PL is Artix-7 FPGA \cite{zynq_data_sheet}.
-The two parts are connected through the AXI bus as shown in figure ??
-
-\missingfigure{Put in a nice illustration}
+This chip has both a Processing System, PS, and Programmable Logic, PL, which enables the use of both concurrent and sequential computing on the same board. 
+The PS is a dual core ARM Cortex-A9 processsor and PL is an Artix-7 FPGA \cite{zynq_data_sheet}.
+The two parts are connected through the AXI bus.
 
 \paragraph{Concurrent Computing} % (fold)
 \label{par:concurrent_computing}
@@ -129,16 +124,15 @@ There are three different implementations of the AXI bus:
 Since the data exchanged between PL and PS in this project is mostly the setting of control registers and reading cart positions at a steady rate the simpler AXI4-Lite implementation is going to be used for the components created in this project.
 \subsubsection{Real Time} % (fold)
 \label{ssub:real_time}
+\thomas{nice section on some of the reasons why real time is required}
 bla.bla.bla.
-
-
 
 \subsubsection{VHDL and Coding Practices} % (fold)
 \label{ssub:vhdl_and_coding_practices}
 The low level control is written in VHDL.
 This is done to leverage the hard real time nature of the FPGA to create robust and dependable control of the pendulum.
 As the reader likely knows, programming in VHDL can be a complex venture.
-The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus \ref{sec:axi}.
+The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus.
 In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
 \begin{itemize}
 	\item \textbf{Utilization of Test Benches:} VHDL was developed primarily as a means to simulate hardware.
@@ -152,7 +146,7 @@ In order to minimize the complexity of the VHDL programming task a number of pra
 	VHDL components can be compiled into an IP core which can then be easily distributed amongst multiple users.
 	They also provide a means to more easily build a system by connecting several IP cores of arbitrary complexity.
 \end{itemize}
-In addition to the points made above, it is the expectation that a future project will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
+In addition to the points made above, it is the expectation that future developers will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
 Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
 
 
@@ -163,7 +157,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \begin{enumerate}[resume]
 	\item Correct cart position should be known at all times.
 	\begin{itemize}
-		\item Encoder signals should be used to measure relative position
+		\item Encoder signals should be used to measure relative position.
 		\item Endstop signal should be used to calibrate and infer the absolute position.
 	\end{itemize}
 	\item General peripheral hardware should be controlled
@@ -194,14 +188,13 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 		\item Atomic Components.
 		\item Utilization of IP Cores.
 	\end{itemize}
-	\item C or VHDL...??????????
 \end{enumerate}
-\mikkel{Write something clever about C or VHDL!}
 \paragraph{Safety:}
 \begin{enumerate}[resume]
 	\item Software should handle emergency situations.
 	\begin{itemize}
-		\item Should detect emergency condition and be able to produce emergency signal.
+		\item Should detect emergency condition.
+		\item Should be able to produce an emergency signal.
 	\end{itemize}
 \end{enumerate}
 
@@ -211,18 +204,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 \label{ssub:vhdl_components}
 A number of VHDL components were designed and implemented for use on the MicroZed.
 An indepth description of each is not necessary and the authors have decided to instead focus on the implementation of just the cart position counter as it provides a good description of the workflow used for each component.
-\\~\\
-The majority of VHDL components in this project are written as state machines, SM's.
-Each SM is done using a Mealy SM in a three-part structure:
-\begin{enumerate}
-	\item \textbf{Sync Process:} This is the only process which is synchronized with the clock signal.
-	It is used to ensure that state and signals are changed only on the rising edge of the clock.
-	\item \textbf{Output Decode:} In each state the output signals are to be in a specific configuration.
-	Given any state, this process ensures that the signals are in that configuration.
-	\item \textbf{Next State Decode:} In this process the next state is determined based on the current state and the current inputs.
-\end{enumerate}
-Using this structure ensures that each process has only one responsibility and will generally result in cleaner, more simple code.
-\\~\\
+
 \thomas{Part of the text below was required for me to properly write this section. Some of it may be better suited for an analysis.}
 The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
 This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
@@ -241,13 +223,13 @@ This signal is not used in this VHDL component as the angular position of the mo
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/quadrature}
-	\caption{Incremental quadrature scheme as implemented on the Maxon.}
+	\caption{Incremental quadrature scheme as implemented on the \texttt{HEDS5540}.}
 	\label{fig:quadrature}
 \end{figure}
 
 \paragraph{State Machine Structure}~\\ % (fold)
 \label{par:state_machine_structure}
-Each state machine written for this project is done using a Mealy SM in a three-part structure:
+Each state machine written for this project is done using a Moore SM in a three-part structure:
 \begin{itemize}
 	\item \textbf{Sync Process:} This is the only process which is synchronized with the clock signal.
 	It is used to ensure that state and signals are changed only on the rising edge of the clock.
@@ -258,7 +240,7 @@ Each state machine written for this project is done using a Mealy SM in a three-
 Using this structure ensures that each process has one responsibility and will generally result in cleaner, more simple code.
 \\~\\
 The component described in this section is comprised of two subcomponents.
-The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of the signal.
+The first is a state machine responsible for reading the current direction of travel and generating a tick on every edge of signals \texttt{A} and \texttt{B}.
 A depiction of the SM responsible for decoding the incremental quadrature can be seen in figure \ref{fig:quadstatemachine}.
 On this figure \texttt{A}, \texttt{B} and \texttt{Z} are the quadrature signals, \texttt{p} and \texttt{pl} are the \texttt{phase} and \texttt{last\_phase} variables, \texttt{T\_i}, \texttt{D\_i} and \texttt{I\_i} are the \texttt{tick}, \texttt{direction} and \texttt{index} variables.
 Note that VHDL notation has been omitted for clarity.
@@ -276,8 +258,9 @@ Listing \ref{code:edge_detection} shows how an edge is detected on a signal.
 The current value of the signal is continuously compared to the last value, which is saved on every clock cycle.
 If the two values are not equal an edge must have occured within the last clock cycle.
 In this component both rising and falling edges are used and so any difference between the two is registered.
-This code is repeated for all three input signals, with the exception that the \texttt{Z} channel set \texttt{next\_state} to \texttt{st6\_index} instead.
+This code is repeated for all three input signals, with the exception that the \texttt{Z} channel sets \texttt{next\_state} to \texttt{st6\_index} instead.
 
+\thomas{appropriate captions on listings}
 \begin{listing}[h]
 \begin{minted}{vhdl}
 case (state) is
@@ -340,20 +323,18 @@ when st3_dir =>
 \end{listing}
 As can be seen in the code there is a reference to phase 0.
 This is required since the initial phase is unknown.
-During the first run the direction-determination is mostly skipped and \texttt{last\_phase} is initialized to phase.
+During the first run the direction-determination is skipped and \texttt{last\_phase} is initialized to phase.
 On every subsequent run, depending on the direction, \texttt{next\_state} is set to either \texttt{st4\_cw} or \texttt{st5\_ccw}.
-\paragraph{st4\_cw:} % (fold)
-The SM is in this state for one clock cycle to allow for the outputs to be adjusted and a tick to be generated.
-\paragraph{st5\_ccw:} % (fold)
-The SM is in this state for one clock cycle to allow for the outputs to be adjusted and a tick to be generated.
+\paragraph{st4\_cw and st5\_ccw:} % (fold)
+The SM is in these states for one clock cycle to allow for the outputs to be adjusted and a tick to be generated.
 \paragraph{st6\_index:} % (fold)
 The SM is in this state for one clock cycle when the \texttt{Z} input goes high and generates a signal to indicate that the index has been reached.
 While this feature is unused in the cart position counter as it currently exists, it was decided to include it to allow future developers to use it if the need arises.
 
 \paragraph{Cart Position Counter}~\\ % (fold)
 \label{par:cart_position_counter}
-This component maintains a counter which is incremented or decremented at every tick generated by the incremental quadrature decoder depending on the state of direction signal.
-If either of the end signals are set high the counter is set to zero.
+This component maintains a counter which is incremented or decremented at every tick generated by the incremental quadrature decoder depending on the state of the direction signal.
+If the endstop 1 signal is set high the counter is set to zero.
 Upon booting the system the cart should be moved to the rightmost end-stop in order to calibrate the system.
 Moving the cart will now increment the position with leftward motion and decrement with rightward motion.
 
@@ -366,7 +347,7 @@ Moving the cart will now increment the position with leftward motion and decreme
 
 The SM of the system can be seen in figure \ref{fig:countstatemachine}.
 It should be noted that the end signal is treated as a reset signal and as such is not part of the actual SM.
-Since it is essentially a reset signal handling of it is placed in the sync process to avoid an asynchronous reset of the values.
+Since it is essentially a reset signal handling of it is placed in the \texttt{sync process} to avoid an asynchronous reset of the values.
 The code in question can be seen in listing \ref{code:cart_sync_proc}.
 
 \begin{listing}[h]
@@ -399,7 +380,7 @@ In those states the position variable, \texttt{C} is either decremented or incre
 \label{par:test_benches}
 A part of developing these components has been to develop and use test benches to verify code as it is being written.
 VHDL was originally thought as a language to describe and simulate hardware and logic and has later been used as the programming language used to create FPGA designs.
-All of the original features of the language are still present and as such it is possible to create a component which fully exercises whichever compoment is under development, the unit-under-test or UUT.
+All of the original features of the language are still present and as such it is possible to create a component which fully exercises whichever component is under development, the unit-under-test or UUT.
 \\~\\
 The test bench written for the cart position counter is comprised of three processes, the \texttt{clk\_proc} which is responsible for generating the driving clock for the component, \texttt{quad\_proce\_ccw} or \texttt{quad\_proce\_cw} for simulating the quadrature signal in either the counter-clockwise or the clockwise direction and finally the \texttt{stim\_proc} which is responsible for exercising any of the input signals.
 \\~\\
@@ -415,8 +396,6 @@ When \texttt{emend\_i} goes low the counter is reset and future ticks are ignore
 	\caption{State machine of the cart position counter created for the MicroZed.}
 	\label{fig:testbench}
 \end{figure}
-
-\thomas{A mention of Vivado, should we refer to it somehow?}
 
 \paragraph{Packaging an AXI-Enabled IP Core}~\\ % (fold)
 \label{par:ip_cores}
@@ -510,7 +489,7 @@ void cart_task(void)
 		@$\vdots$@
 }
 \end{minted}
-\caption[Excerpt from the code written to handle the communication with the cart position counter.]{Excerpt from the code written to handle the communication with the cart position counter. \texttt{is\_calibrated() returns the status of calibration.}}
+\caption[Excerpt from the code written to handle the communication with the cart position counter.]{Excerpt from the code written to handle the communication with the cart position counter. \texttt{is\_calibrated()} returns the status of calibration.}
 \label{code:axiconnectionps}
 \end{listing}
 
@@ -520,27 +499,28 @@ In this case the position is only valid if the calibration bit is set high.
 When it is not, a null pointer is returned.
 Rather than checking both the calibration status and the position, both can be done using a single function call.
 
-\subsubsection{nRF24L01} % (fold)
+\subsubsection{Interfacing the nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
 ~\\
 The \texttt{nRF24L01} is interfaced through a standard SPI connection and a \texttt{CE} pin that is used to activate the chip. 
-It also has a interrupt pin, but it was chosen not to use it and instead poll the device. 
+It also has an interrupt pin, but it was chosen not to use it and instead poll the device. 
 Configuration of the device is done through SPI.
 
 \paragraph{Setup} % (fold)
-\label{par:setup}
+\label{par:nrfsetup}
 ~\\
 Blablablalbalb.
 Look at the nice flowchart and explain it.....
 \missingfigure{FLOWCHART}
-
+\mikkel{explain flowchart}
+\thomas{create flowchart}
 \paragraph{Writing to a Register} % (fold)
 \label{par:writing_to_a_register}
 ~\\
 Figure \ref{fig:rw_register} illustrates the bits that are sent to the \texttt{nRF24L01} in order to write a value to a register. 
 The three command bits specify if the action to be done is read or write.
 The five address bits specify address of the register that is to be written to. 
-The next one to five bytes is the value that is to be written to the register.
+The next one to five bytes is the value that are to be written to the register.
 
 \begin{figure}[h]
 	\centering
@@ -548,8 +528,7 @@ The next one to five bytes is the value that is to be written to the register.
 	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
-\mikkel{Figure should be updated with 1 byte more....}
-\mikkel{FIX CODE TO NOT USE POLLED MODE - the update listing}
+\thomas{Figure should be updated with 1 byte more....}
 
 The C code in listing \ref{code:rf_write_register_code} is used to write a value to a register. 
 Line 5 makes sure that a valid address and command is sent, regardless of the inputs.
@@ -573,7 +552,7 @@ void RF_write_register(XSpiPs *SPI_inst, u8 reg, u8 value){
 
 The corresponding SPI signals are measured and plotted in figure \ref{fig:nrf24_spi}.
 It can be seen that the \texttt{MOSI} signal corresponds to \texttt{0b00100000, 0b00110101}, which means that the value \texttt{0b00110101} is written to the \texttt{RF\_CONFIG} register which has address \texttt{0x00}.
-It can also be noted the data is available on the \texttt{MISO} signal. 
+It can also be noted that data is available on the \texttt{MISO} signal. 
 The \texttt{nRF24L01} always responds with the value of the \texttt{STATUS} when detecting a falling edge on \texttt{SS}.
 
 \begin{figure}[h]
@@ -629,7 +608,7 @@ As described the IP core needs to be able to switch the PWM signal between chann
 It also needs to have a top signal that indicates the center of the PWM pulse.
 The designed PWM generator IP core has three inputs and three outputs as illustrated in figure \ref{fig:pwm_gen_component}.
 
-\mikkel{Make sure this is actually described in the analysis and requirements.}
+\mikkel{Write about top signal in analysis.}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.4\linewidth]{graphics/pwm_generator}
@@ -650,7 +629,7 @@ The compare value for a 50\% dutycycle should be calculated using:
 \end{equation}
 Where $Compare$ is the compare value and $D$ is the wanted dutycycle ratio.
 
-The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where the top signal is simply set \texttt{high}, when counter reaches is high limit.
+The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where the top signal is simply set \texttt{high}, when the counter reaches its high limit.
 
 \begin{figure}
     \centering
@@ -670,8 +649,9 @@ The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where t
 
 Generating the PWM signal from the counter and compare values is done in lines 5 to 11 of listing \ref{code:vhdl_pwm_gen}.
 Setting the PWM on to the correct channel is done in lines 12 to 16.
-As \texttt{pwm\_a\_l} and \texttt{pwm\_b\_l} are written to in a process, they will only be updated with the last written value, when the process is left.
+As \texttt{pwm\_a\_l} and \texttt{pwm\_b\_l} are written to while in a process, they will only be updated with the last written value, at the end of the process.
 
+\mikkel{make sure figure is at right place}
 \begin{listing}[h]
 \begin{minted}{vhdl}
 OUTPUT_DECODE: process (state,counter,dir)
@@ -695,7 +675,8 @@ end process;
 \label{code:vhdl_pwm_gen}
 \end{listing}
 
-	
+\thomas{write section on khaos}
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
+\thomas{write verifications}

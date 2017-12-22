@@ -9,7 +9,7 @@ The following analysis will elaborate on the needed functionalities and requirem
 
 \subsubsection{Joint Angle}
 The angle of the joint can be determined by analysing the signals from the RL2IC encoder mounted on the joint.
-
+\mikkel{remove double up on quadrature implementation}
 This encoder implements incremental quadrature with three signals: \texttt{A}, \texttt{B} and \texttt{Z}.
 Figure \ref{fig:quadrature} is a depiction of this quadrature scheme.
 The two signals \texttt{A} and \texttt{B} are 90$^\circ$ out of phase and their frequency is determined by the angular velocity of the joint.
@@ -22,15 +22,15 @@ As can be seen from the figure the signals create four unique stages, counting t
 	\label{fig:quadrature}
 \end{figure}
 
-It is necessary to read \texttt{A}, \texttt{B} and \texttt{Z} using interrupts as missing a cycle or introducing jitter in the counting procedure will cause the measured angle to drift.
+It is necessary to read \texttt{A}, \texttt{B} and \texttt{Z} using interrupts as missing a cycle in the counting procedure will cause the measured angle to drift.
 \texttt{Z} only goes \texttt{high} one time per revolution and can therefore be used to infer the absolute angle of the joint.
-This should be done by calibrating the joint angle by setting  the measured angle to a fixed number, whenever \texttt{Z} goes \texttt{high}.
-This means that the angle should not be measured until the joint software has been calibrated by reaching the point where \texttt{Z} goes \texttt{high}.
-
+Calibrating the joint angle is done by setting the measured angle to a fixed number, whenever \texttt{Z} goes \texttt{high}.
+Therefore data on angular position is not valid until the joint has been calibrated.
+\\~\\
 Since the angle is to be transmitted there is a risk that an interrupt may occur while this transmission takes place, potentially corrupting the data to be transmitted.
 This needs to be avoided and can be done by temporarily disabling interrupts and copying the needed data to other variables.
-The code that temporarily disables interrupts and copies the variable needs to be executed faster than two consecutive interrupts can occur, because otherwise angle movement is lost.
-The time between two consecutive interrupts is only dependent of the angular velocity of the joint.
+The code that temporarily disables interrupts and copies the variable needs to be executed faster than two consecutive interrupts can occur, otherwise information on joint movement is lost.
+The time between two consecutive interrupts is only dependent on the angular velocity of the joint.
 It is estimated that the maximum angular velocity is  $\approx$20Hz, which means that no interrupts should go unnoticed at this frequency.
 \mikkel{It would be nice with some sort of reasoning/reference.}
 
@@ -47,15 +47,17 @@ Based on the somewhat unstable transmission explained in section \ref{subs:wirel
 \paragraph{Transmission Rate} % (fold)
 \label{par:transmission_rate}~\\
 The datasheet of the \texttt{nRF24L01} module specifies that there is a settling time of 130$\mu$s when entering the transmit state.
-Several aspects should be considered in order to determine the required period time associated with transmission of one data packet. 
+Several aspects should be considered in order to determine the required period time associated with transmission of one data packet.
+An overview is given in figure \ref{fig:tiny_period}.
 Transmission of a two byte payload through SPI takes $\approx$ 36 $\mu$s as will be shown in \ref{}.
-The \texttt{CE} should be high for at least 10$\mu$s in order for the transition to transmit mode is initiated.
-Hereafter the settling time of 130$\mu$s is inferred.
-Then the \texttt{nRF24L01} will transmit the two byte payload in a eight byte data packet, which will take 68$\mu$s using a air transmission rate of 1Mbps.
+\mikkel{add reference on SPI transmission time}
+The \texttt{CE} should be \texttt{high} for at least 10$\mu$s in order for the transition to transmit mode is initiated.
+Hereafter a settling time of 130$\mu$s occurs.
+Then the \texttt{nRF24L01} will transmit the two byte payload in an eight byte data packet, which will take 68$\mu$s using an air transmission rate of 1Mbps.
 This totals 244$\mu$s, in which the computation time needed is not included.
-Therefore it was decided to use a period time of 333$\mu$s, which yields 89$\mu$s to computation and a sampling frequency of $\approx$3kHz.
-The period is shown in figure \ref{fig:tiny_period}.
-
+Therefore it was decided to use a period time of 333$\mu$s, which yields 84$\mu$s to computation and a sampling frequency of $\approx$3kHz.
+A sample latency of at least 249$\mu$s is incurred on the joint board software including air transfer before the data is available to the controller board nRFM.
+\mikkel{write proper caption}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1\linewidth]{graphics/latency_diagram}
@@ -63,9 +65,7 @@ The period is shown in figure \ref{fig:tiny_period}.
 	\label{fig:tiny_period}
 \end{figure}
 
-
-
-\subsubsection{Real Time Software}
+\subsubsection{Real-Time Software}
 In order to produce reliable data for the controller board the joint angle should be sampled and transmitted at a constant rate.
 This requires the joint board software to be programmed as real time software, where deadlines should be met.
 
@@ -85,20 +85,21 @@ This requires the joint board software to be programmed as real time software, w
 	\end{itemize}
 	\item Transmit joint angle using the \texttt{nRF24L01} module.
 	\label{enum:joint_transmit}
+	\thomas{rephrase to actually be requirements.}
 	\begin{itemize}
-		\item Setup of the \texttt{ATtiny} as a SPI master.
+		\item Setup of the \texttt{ATtiny} as SPI master.
 		\item Setup of \texttt{nRF24L01} settings and individually frequency bands.
 		\item Transmit data every 333$\mu$s.
 		\item Minimize latency.
 	\end{itemize}
-	\item Real time behaviour of software.
+	\item Software should be written as real-time.
 	\label{enum:joint_real_time}
 \end{enumerate}
 
 \subsection{Design and Implementation} % (fold)
 \label{sub:design_and_implementation}
 
-\mikkel{Add attiny84 setup before nrf setup. Add calibrated = 1.}
+\thomas{Add attiny84 setup before nrf setup. Add calibrated = 1.}
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}[b]{0.30\textwidth}
@@ -116,9 +117,9 @@ This requires the joint board software to be programmed as real time software, w
 	\caption{Flowchart of the software design for the joint board.}
 	\label{fig:joint_software}
 \end{figure}
-A software design was made based on the requirements for the joint board software.
+A software design was made based on the requirement specification for the joint board software.
 The main functionality of the software is illustrated in the flowchart of figure \ref{sfig:joint_main_flowchart}.
-Upon startup the \texttt{nRF24L01} is setup as explained in section \ref{par:nrf24l01}.
+Upon startup the \texttt{nRF24L01} is setup as explained in section \ref{par:nrfsetup}.
 A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpacket}, is sent every 333$\mu$s.
 Now the copying procedure is started after which the packet is transmitted and the program is idling until 333$\mu$s has passed and the process starts over.
 An interrupt can happen at any given time and the ISR, will update the measured joint angle. 
@@ -127,12 +128,12 @@ The coming sections will elaborate on the different elements of the software.
 \subsubsection{Joint Angle Measurement}
 \label{ssub:joint_angle_measurement}
 In figure \ref{sfig:joint_interrupt} the interrupt routine is shown.
-This routine can be engaged at any given time and is engaged whenever an either rising or falling edge appears on \texttt{A}, \texttt{B} or \texttt{Z}.
+This routine can be engaged at any given time and is engaged whenever a rising or falling edge appears on \texttt{A}, \texttt{B} or \texttt{Z}.
 
 Initially the signals are read.
-If \texttt{Z} is high the index has been reached and the position counter is reset and the calibration bit is set.
+If \texttt{Z} is \texttt{high} the index has been reached and the position counter is reset and the calibration bit is set.
 Hereafter the execution of the main loop is continued.
-If \texttt{Z} is low \texttt{A} and \texttt{B} are inspected to determine which phase is active.
+If \texttt{Z} is low, \texttt{A} and \texttt{B} are inspected to determine which phase is active.
 Table \ref{tab:bin_phase} shows each phase and the combination of \texttt{A} and \texttt{B} in that phase.
 By comparing with the previous phase it is possible to determine the direction of movement and therefore whether the position counter should be incremented or decremented.
 Before returning execution to the main loop the current phase is stored. 
@@ -153,29 +154,29 @@ Before returning execution to the main loop the current phase is stored.
 
 \subsubsection{Wireless Transmission of Data}
 \label{ssub:wireless_transmission_of_data}
-The joint board should transmit the angular angle of the joint and whether calibration has occured since startup.
+The joint board should transmit the angular position of the joint and whether calibration has occured since startup.
 The \texttt{RL2IC} encoder used in the joint produces 7200 counts per revolution, requiring 13 bits to represent a full revolution of the joint.
 The calibration status is binary and represents one bit. 
 16 bit is required to transmit this information, since the \texttt{nRF24L01} payload needs be an integer number of bytes.
 See figure \ref{fig:rfpacket} for a visual representation of the message.
 
-\mikkel{Joint ID, calibration and direction not necessary }
+\thomas{Joint ID and direction not necessary}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/rf_packet}
-	\caption[RF transmission packet used from the joint board.]{UPDATE ME!!!!!!!!!!!!!!--  Sructure of a packet used on the RF transmission between the joint boards and the controller board. Bits 0-12 represent the current joint angle and bit 13 represents the state of calibration.}
+	\caption[RF transmission packet used from the joint board.]{Sructure of a packet used on the RF transmission between the joint boards and the controller board. Bits 0-12 represent the current joint angle and bit 13 represents the state of calibration.}
 	\label{fig:rfpacket}
 \end{figure}
 
 When information is to be transmitted the calibration and angle variables needs to be copied to other variables.
-The act of copying a variable takes several clock cycles and if an interrupt occurs while the variable is being transmitted the data is can be corrupted.
-In order to avoid this problem it is necessary to temporarily disable interrupts while copying original variable into a temporary variable. 
-In effect the resulting code is as seen in code \ref{code:critical_section_c}.
+The act of copying a variable takes several clock cycles and if an interrupt occurs while the variable is being transmitted the data can be corrupted.
+In order to avoid this problem it is necessary to temporarily disable interrupts while copying the original variable into a temporary variable. 
+In effect the resulting code is as seen in listing \ref{code:critical_section_c}.
 Disabling interrupts means that any incoming interrupts will not be processed until interrupts are reenabled, as described in the datasheet of the ATtiny84 \cite{attiny84}.
 Interrupts should therefore not be disabled for longer than the shortest expected time between two edges on any single signal.
 
 The \texttt{AVR-GCC} compiler has the option to only compile the code, leaving a human readable assembly file.
-The assembly corresponding to code \ref{code:critical_section_c} can be seen in code \ref{code:critical_section_asm}.
+The assembly corresponding to listing \ref{code:critical_section_c} can be seen in listing \ref{code:critical_section_asm}.
 Each of these instructions are described in the datasheet of the microcontroller where the number of cycles required to execute them is specified: \texttt{rcall} 3 cycles, \texttt{\_CLI} 1 cycle, \texttt{ldd} 2 cycles, \texttt{std} 2 cycles, \texttt{\_SEI}, 1 cycle.
 In total 16 clock cycles are spent executing the required commands.
 At 8MHz this is 2 $\mu$s.
@@ -215,6 +216,7 @@ In order to comply with the SPI standard a Slave Select \texttt{SS} pin should b
 The \texttt{nRF24L01} also has a non SPI pin, \texttt{CE} that also needs to be controlled from the \texttt{ATtiny}.
 The full interface between the two is shown in figure \ref{fig:tiny_nrf_com}.
 
+\thomas{fix this figure}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.8\linewidth]{graphics/tiny_nrf_com}
@@ -235,8 +237,8 @@ Data is shifted to \texttt{DO} correctly by the USI by counting the clock edges 
 Data on \texttt{DI} is sampled at falling edges of the \texttt{USCK} and stored in \texttt{USIDR}.
 The counter overflow flag \texttt{USIOIF} will raise when 16 clock edges has been generated and eight bits of data has been sent and received.
 Line 10 copies the received data to the \texttt{input} pointer if there is one.
-When \texttt{n} bytes of data has been sent and received the \texttt{SS} pin will be set \texttt{high} and the function is exited.
-\mikkel{Does this shit make sense or do we need to add some other kind of illustration or explanation.}
+When \texttt{n} bytes of data have been sent and received the \texttt{SS} pin will be set \texttt{high}.
+\mikkel{attempt to remove register references.}
 \begin{listing}[h] 
 \begin{minted}{c}
 void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
@@ -259,33 +261,37 @@ void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
 
 This functions enables setup of the \texttt{nRF24L01}, which is done with the same settings as explained in section \ref{ssubs:nrf24l01}.
 
-\subsubsection{Wireless Transmission}
+\subsubsection{Development of Wireless Transmission}
 \label{subs:wireless_transmission_joint}
 During implementation of the software for the \texttt{nRF24L01} a lot of testing was done to verify that the developed code worked.
-Initially two \texttt{nRF24L01} modules were wired up to two arduinos running example code from the internet. 
+Initially two \texttt{nRF24L01} modules were wired up to two Arduinos running example code from the arduino community libraries. 
 This was done to verify wiring and functionality of the \texttt{nRF24L01} modules.
+\\~\\
 Afterwards an Arduino was programmed to receive data and the software was written to the \texttt{ATtiny84} to transmit data using the \texttt{nRF24L01}.
-The functionality of the joint board software was verified by transmitting data from the \texttt{ATtiny84} to a Arduino successfully.
-Afterwards a \texttt{nRF24L01} was wired to the Microzed and the software was written.
+The functionality of the joint board software was verified by transmitting data from the \texttt{ATtiny84} to an Arduino successfully.
+Afterwards an \texttt{nRF24L01} was wired to the Microzed and the software was written.
+\\~\\
 The transmission of data between the \texttt{ATtiny84} and the Microzed was verified by transmitting data from the joint board \texttt{nRF24L01} to a \texttt{nRF24L01} module in free air connected to the Microzed.
 The transmission was successful.
-\\
-The same software was used to to test the \texttt{nRF24L01} module wired on the controllerboard. 
+\\~\\
+The same software was used to to test the \texttt{nRF24L01} module wired on the controller board. 
 Tests showed that no data was received in this setup.
-Thoroughly inspection of the schematic and PCB revealed no mistakes. 
+Thoroughly inspection of the schematic and PCB revealed no errors. 
 Further testing with a \texttt{nRF24L01} module in free air connected to the Microzed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRF24L01}.
 The problem is believed to be due to the large amount of copper in the controller board PCB.
-The error was fixed by soldering the \texttt{nRF24L01} off and wiring it with longer wires.
+The error was fixed by desoldering the \texttt{nRF24L01} and wiring it with longer wires.
+\thomas{check datasheet for mounting information, explain better fix}
 
 \subsubsection{Software Timer}
 \label{ssub:software_timer}
 The timer shown in figure \ref{sfig:joint_main_flowchart}, is implemented on the \texttt{ATtiny84} using \texttt{Counter 1}, which is a 16 bit timer capable of generating software interrupts.
 \texttt{Counter 1} is setup by setting a prescaler to the CPU clock and a compare value.
-Using a prescaler of 1, the compare value for setting up a interrupt each 333$\mu$s is calculated as: 
+Using a prescaler of 1, the compare value for setting up an interrupt each 333$\mu$s is calculated as:
+\mikkel{check calculation}
 \begin{equation}
 	Comp = \frac{T}{T_{cpu}} = \frac{333 \cdot 10^{-6}}{1.25\cdot 10^{-7}} = 2664
 \end{equation}
-Where $Comp$ is the compare value, $T$ is the wanted period time and $T_{cpu}$ is the cpu clock period.
+Where $Comp$ is the compare value, $T$ is the wanted period time and $T_{cpu}$ is the CPU clock period.
 Setting up \texttt{Counter 1} with this compare value and the flag to clear the counter when reaching the compare value, results in interrupts on \texttt{TIM1\_COMPA\_vect} each 333$\mu$s.
 
 \begin{listing}[h] 
@@ -302,7 +308,7 @@ ISR(TIM1_COMPA_vect)
 \end{listing}
 
 The ISR function associated with these interrupts are shown in \ref{code:timer_isr} together with the declaration of \texttt{timer}.
-The variable is declared as \texttt{volatile} to tell the compiler that its value is changed in an \texttt{ISR}. 
+The variable is declared as \texttt{volatile} to tell the compiler that its value can be changed whenever during run-time. 
 It is declared as a \texttt{char}, because this is the smallest datatype available on the \texttt{ATtiny84} and it only takes up one byte. 
 In the main loop of the software, the \texttt{timer} variable is used determine if the process of transmitting data should be initiated.
 This mechanism provides real time performance of the software when the code used to transmit data is executed before the next deadline, which is the next \texttt{counter 1} interrupt.
@@ -324,7 +330,7 @@ while(1){
 \end{listing}
 In lines 2 and 3 of listing \ref{code:main_loop_timer} the \texttt{timer} variable is accessed.  
 Accessing a variable that is written to in a \texttt{ISR} can result in corrupted data, but in this case it is not a problem because \texttt{timer} is a one byte variable. 
-The two assembly instructions that will be used to access the value of \texttt{timer} is \texttt{ldi} and \texttt{cpi}, which are both instructions that will be executed in one clock cycle.
+The two assembly instructions that will be used to access the value of \texttt{timer} is \texttt{ldi} and \texttt{cpi}, which are both instructions that will be executed in one clock cycle and can therefore not be interrupted.
 
 \subsection{Verification} % (fold)
 \label{sub:verification}
@@ -332,7 +338,8 @@ The two assembly instructions that will be used to access the value of \texttt{t
 
 \subsubsection{Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
-This requirement specifies that the correct joint angle should be know at all times.
+\thomas{write requirements}
+This requirement specifies that the correct joint angle should be known at all times.
 This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
 
 \texttt{A}, \texttt{B} and \texttt{Z} signals were interfaced through interrupts and the code was written to ensure no data will be corrupted by interrupts.
@@ -365,7 +372,7 @@ The number of received packets can be seen in table \ref{tab:received_still}.
 \hline
 7046 & 7245 & 7272 & 7241 & 7232 & 7212 & 7160 & 7217 & 7241 & 7221 \\ \hline
 \end{tabular}
-\caption[Number of received packets without movement.]{Number of received packets out of 10000 transmitted. The pendulum was held still during the test.}
+\caption[Number of received packets without movement.]{Number of received packets out of 10000 transmitted. The pendulum was held still during the test. The average of the number of received packets was 7208.}
 \label{tab:received_still}
 \end{table}
 The average number of received packets is 7208 which corresponds to $\approx$ 72\% of the transmitted packages.
@@ -380,10 +387,10 @@ The average number of received packets is 7191 which corresponds to $\approx$ 72
 \hline
 7148 & 7215 & 7208 & 7173 & 7221 & 7165 & 7138 & 7187 & 7274 & 7186 \\ \hline
 \end{tabular}
-\caption[Number of received packets with movement.]{Number of received packets out of 10000 transmitted. The pendulum was moved during the test.}
+\caption[Number of received packets with movement.]{Number of received packets out of 10000 transmitted. The pendulum was moved during the test. The average of the number of received packets was 7191.}
 \label{tab:received_moved}
 \end{table}
-By looking at the to test results it can be determined that movement of the pendulum has no significant affect on the success rate of transmission.
+By looking at the two test results it can be determined that movement of the pendulum has no significant effect on the success rate of transmission.
 
 In order to determine if there was a pattern in how the 28\% of packages were lost the IDs of the packages were plotted.
 The ID of a package corresponds to the number of milliseconds passed since program start.
@@ -405,7 +412,7 @@ This requirement specifies that the software must exhibit real time behaviour, w
 It should be tested if the software meets its deadline, which is the next transmission of a packet.
 This means that it should be shown that the software executes everything related to sending a packet within the period of 333$\mu$s.
 This can be tested by setting an output pin \texttt{high} as the first part of the code responsible for the transmission and setting it \texttt{low} as the last line of code.
-It should then be verified \texttt{on} time of this pin is less than 333$\mu$s.
+It should be verified that the \texttt{on} time of this pin is less than 333$\mu$s.
 
 \paragraph{Conclusion}~\\
 The described test was performed with the output pin and SPI clock measured by an oscilloscope. 
