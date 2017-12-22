@@ -240,9 +240,9 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 			See figure \ref{fig:controllerboardv2_gate_b} for a view of the signals on channel B.
 		\end{itemize}
 		\item[\cmark] Verify that deadtime exists between the two channels.
-		\mikkel{insert dead time figure}
 	\end{itemize}
 \end{itemize}
+
 
 \begin{figure}[h]
 	\centering
@@ -250,7 +250,13 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 	\caption{Gate signals as produced by the motor driver.}
 	\label{fig:controllerboardv2_gate_b}
 \end{figure}
-% paragraph verify_motor_driver_functionality (end)
+
+\begin{figure}[h]
+	\centering
+    \input{graphics/controllerboardv2_gate_b_deadtime.tex}
+	\caption{Gate signals as produced by the motor driver. It is verified that dead time exists.}
+	\label{fig:controllerboardv2_gate_b_deadtime}
+\end{figure}
 
 \paragraph{Verify NRF24L01 Module functionality} % (fold)
 \label{par:verify_nrf24l01_module_functionality}
