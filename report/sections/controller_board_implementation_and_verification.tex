@@ -463,15 +463,19 @@ The debugging headers were used extensively in the debugging process.
 blabla.....
 WE ALSO NEED ANALOG GROUND
 \mikkel{Help me, please!}
+
 \subsubsection{Verification of: Requirement \ref{enum:pcb_soldering}} % (fold)
 \label{ssub:requirement_enum:pcb_soldering}
-According to requirement \ref{enum:pcb_soldering} all PCB soldering should be possible at SDUs facilities, which it successfully was.
-\mikkel{Help me, please!}
-
-\subsubsection{Verification of: Requirement \ref{enum:not_break_mis}} % (fold)
-\label{ssub:requirement_enum:not_break_mis}
-\mikkel{Help me, please!}
+According to requirement \ref{enum:pcb_soldering} all PCB soldering should be possible at SDUs facilities
+\paragraph{Conclusion}~\\
+The PCB soldering was successfully done using SDUs facilities.
 
 \subsubsection{Verification of: Requirement \ref{enum:any_trigger_em}} % (fold)
 \label{ssub:requirement_enum:any_trigger_em}
-\mikkel{Help me, please! Also here!}
+This requirement states that any triggered emergency condition should halt the cart.
+
+\paragraph{Conclusion}~\\
+Signals from emergency button, endstops and emergency signal from MicroZed are inferred to an \texttt{AND} gate, providing one signal that determines if an emergency condition is present: \texttt{EM\_DIS}.
+\\
+The power delivery to the H-bridge is delivered by the main relay.
+The \texttt{EM\_DIS} signal is used to the control relay effectively cutting the power to the motor when an emergency condition is present.
