@@ -324,8 +324,6 @@ The output was measured and is shown in figure \ref{fig:controllerboardv2_curren
 As can be seen the output is approximately 300mV, twice as large as the expected output, 160mV.
 Furthermore the signal is very noisy with noise spikes as large as 200mV peak-to-peak. 
 
-\thomas{add addendum}
-
 \begin{figure}[h]
 \centering
 %\input{graphics/controllerboardv2_current_sense.tex}
@@ -333,12 +331,19 @@ Furthermore the signal is very noisy with noise spikes as large as 200mV peak-to
 \label{fig:controllerboardv2_current_sense}
 \end{figure}
 
-Note that this data is gathered with NO switching of the MOSFETs.
-Further tests revealed that further noise is introduced when the MOSFETs are actively switching.
-Additionally spikes appeared in the data that do not in anyway represent the current flowing through the load.
+\paragraph{Addendum}
+The data was gathered with NO switching of the MOSFETs.
+Further tests revealed that additional noise is introduced when the MOSFETs are actively switching.
+Spikes appeared in the data that do not in anyway represent the current flowing through the load.
+\\~\\
+During design the necessity of an analog ground was overlooked, despite the obvious need for one when handling signals as delicate as are seen here.
+Unfortunately it is unlikely that this feature can be used without a redesign of the board.
+This redesign would include the addition of an analog ground and possibly an attempt at increasing the signal voltages.
+While this would cause more power loss due to the higher resistance to ground it would also make the signals more robust and therefore easier to measure correctly.
+\\~\\
+Lacking the current measuring feature is unfortunate but only excludes the possibility of current mode control.
+Complete control and swing is still possible without this feature.
 
-A pristine analog ground is likely necessary to maintain signal integrity but this requires a completely new PCB design and will not be pursued further in the report. 
-\thomas{is this sufficient?}
 \subsubsection{Verification of: Requirement \ref{enum:voltage_rails}} % (fold)
 \label{ssub:requirement_enum:voltage_rails}
 This requirement states that five voltage rails should be present on the controller board. 
