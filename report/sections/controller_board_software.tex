@@ -441,7 +441,7 @@ In PL registers are generated which the user can input data to.
 An example of how this is set up can be seen in listing \ref{code:axiconnection}.
 Individual bits in a register can be set to different variables and the remaining bits left unchanged.
 
-\begin{listing}[h]
+\begin{listing}[H]
 \begin{minted}{vhdl}
 cart_counter_inst : cart_counter
 	port map(
@@ -467,7 +467,7 @@ The offset is determined by the width of the registers.
 In this case registers are 32 bits wide and so every offset is \texttt{0x04} bytes.
 In code this is handled as seen in listing \ref{code:axiconnectionps}
 
-\begin{listing}[h]
+\begin{listing}[H]
 \begin{minted}{c}
 #define CART_BASEADDR XPAR_ZYBO_CART_COUNTER_V1_0_0_BASEADDR
 
@@ -792,8 +792,6 @@ Hereafter the cart was moved back and fourth at different velocities for several
 The position counter was the same, indicating that drifting is not present in the system.
 \\~\\
 The length of the rail from endstop 1 to endstop 2 was measured to be 72387 ticks.
-Ten cm was measured to equal 6663 ticks
-\mikkel{Does not seem to be true, when measuring the rail.}
 
 \subsubsection{Verification of: Requirement \ref{enum:general_peripheral_hardware}} % (fold)
 \label{ssub:verification_of_requirement_enum:general_peripheral_hardware}
@@ -818,7 +816,7 @@ Setting different duty cycles yielded different velocities of the motor - as exp
 By programming the \texttt{DIR} bit it was possible to change the motor direction.
 The motor was successfully stopped by setting the \texttt{DIS} variable \texttt{high}.
 
-\subsubsection{Verification of: Requirement of \ref{enum:receive_joint_angle}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:receive_joint_angle}} % (fold)
 \label{ssub:verificatation_of_requirement_enum:receive_joint_angle}
 This requirement states that the software should receive joint angle data from the two joint boards using the \texttt{nRF24L01} module.
 

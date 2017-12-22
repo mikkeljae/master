@@ -142,38 +142,53 @@ One rail capable of delivering 100mA at 3.3V$\pm$0.2V.
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Pendulum assembly should allow movement only in the X-Y plane. 
+	\label{enum:pendulum_should_only_x_y}
 	\item Voltage rails for the components in the circuit.
+	\label{enum:joint_voltage_rails}
 	\begin{itemize}
 		\item At least 100mA at 3.3V$\pm$0.2V.
 		\item At least 200mA at 5V$\pm$0.2V.
 	\end{itemize}
 	\item Joint should be able to rotate freely about the mounting axis.
-	\item Include the nRF24L01 module for communication.
-	\item Correcly interface the RS-422 interface of the RL2IC encoder.
-	\item The design should allow programming of the \texttt{ } using 5V SPI.
+	\label{enum:rotate_freely_joint}
+	\item Include the \texttt{nRF24L01} module for communication.
+	\label{enum:joint_include_nrf}
+	\item Correcly interface the RS-422 interface of the \texttt{RL2IC} encoder.
+	\label{enum:interface_rs422_enc}
+	\item The design should allow programming of the \texttt{ATtiny84} using 5V SPI.
+	\label{enum:program_5v_spi}
 	\item An LED should be employed for debugging purposes.
+	\label{enum:led_debugging_joint}
 \end{enumerate}
 
 \paragraph{Design:}
 \begin{enumerate}[resume]
 	\item Weight of rods should be minimized to uphold the point mass assumption.
+	\label{enum:design_req1}
 	\item Joints should be designed in a modular fashion such that $n$ joints can be mounted in series.
+	\label{enum:design_req2}
 	\item Distance between joints should be adjustable.
+	\label{enum:design_req3}
 	\item Friction in the joint should be minimized.
+	\label{enum:design_req4}
 	\item Design of the joint should employ mounting solutions for:
+	\label{enum:design_req5}
 	\begin{itemize}
 		\item Joint board.
 		\item Encoder.
 		\item Battery. 
 	\end{itemize}
 	\item The design of the joint should be done so that it can be manufactured by the SDU workshop.
+	\label{enum:design_req6}
 	\item The PCB should be designed with the enclosure in mind.
+	\label{enum:design_req7}
 	\begin{itemize}
 		\item Height of components and general design should be minimized.
 		\item Placement of connectors should accomodate the enclosure.
 		\item Shape of the PCB should allow for easy mounting of the PCB and other components.
 	\end{itemize}
 	\item The PCB layout should be reviewed according to the developed strategy.
+	\label{enum:design_req8}
 	\begin{itemize}
 		\item Documentation.
 		\item General inspection.
@@ -182,10 +197,12 @@ One rail capable of delivering 100mA at 3.3V$\pm$0.2V.
 		\item Peer-review.
 	\end{itemize}
 	\item A Battery should be sourced which conforms with the following requirements:
+	\label{enum:design_req9}
 	\begin{itemize}
 		\item Battery should provide power for the joint for as long as possible.
 		\item Battery should fit within the dimensions dictated by the enclosure.
 	\end{itemize}
 	\item Overall power consumption of the design should be minimized.
+	\label{enum:overall_joint_power}
 \end{enumerate}
 % subsection analysis (end)

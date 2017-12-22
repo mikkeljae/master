@@ -9,22 +9,24 @@ This will give the reader an impression of the method used to verify the impleme
 \label{ssub:mechanics_implementation}
 The joint design created in the previous section was manufactured by the SDU Workshop.
 As the more experienced mechanical technicians at the workshop worked through the design they worked with the authors to improve on the design to make it practically possible to construct.
-\mikkel{insert pictures of final system}
+The implemented system is shown in the picture of figure \ref{fig:joint_ass_real}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\linewidth]{graphics/joint_ass_real}
+	\caption[Implemented joint pendulum assembly]{Picture of implemented joint pendulum assembly.}
+	\label{fig:joint_ass_real}
+\end{figure}
+
 % subsubsection mechanics_implementation (end)
 \subsection{Verification}
 \subsubsection{Verification Methodology} % (fold)
 \label{ssub:testing_methodology}
-\thomas{refer to previous description instead}
-From the experience of the authors, verification of a PCB design can become difficult without a predefined plan, increasing the risk of mistakes, oversights and similar problems.
-In order to minimize the risk of these, it was decided to create a verification method prior to the actual verification of the PCB.
-Each verification procedure is written to reflect the features created in the design.
-Each of these features should be tested, in the intended order.
-It should be written such that the verification can be done with no prior knowledge of the operation of the design.
-This approach holds a few different benefits.
-Firstly, the developer doing the verification is doing less thinking while verifying, this is likely to decrease the number of mistakes.
-Secondly, a thorough verification procedure will enable users to more easily reproduce the PCB's if necessary.\\~\\
-Each procedure is presented in the report with the results as gathered by the authors.
-% subsubsection testing_methodology (end)
+
+This procedure is created in an effort to allow for an easier debugging procedure of a newly produced controller board, should a developer require the production of a new board.
+A blank version appropriate for printing can be found in appendix \ref{sec:joint_board_verification_procedure}.
+\cmark ~is used to indicate the successful verification of a test while \xmark ~is used to indicate the initial failure of a test.
+All pins, components and nets are typeset using the \texttt{teletype font} and are referenced to the schematics in appendix \ref{app:joint_board_schem}.
 
 \subsubsection{Joint Board Verification Procedure} % (fold)
 \label{ssub:joint_board_verification_methodology}
@@ -120,16 +122,79 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 	\end{itemize}
 \end{itemize}
 
-In later debugging it was revealed that the 74LCX244 and ATtiny84 both attempt to drive the \texttt{SCLK} and \texttt{MOSI} nets, resulting in the communication with the nRF24L01 module not functioning.
+\subsubsection{Verification of: Requirement \ref{enum:pendulum_should_only_x_y}} % (fold)
+\label{ssub:verification_of_requirement_enum:pendulum_should_only_x_y}
+This requirement states that the pendulum assembly should allow movement only in the X-Y plane. 
+
+\paragraph{Conclusion}~\\
+When the pendulum assembly was mounted on the cart it was found that some movement in the Z plane was possible.
+By actuating the cart it was found that it is actually possible for the joints to collide, which is clearly problematic.
+As descried the authors only have small knowledge in the world of mechanical engineering and it was decided to omit further work on the problem.
+Instead it is proposed that a future developer with more mechanical knowledge should seek to find a solution to the problem 
+
+\subsection{Verification of: Requirement \ref{enum:joint_voltage_rails}} % (fold)
+\label{sub:verification_of_requirement_enum:joint_voltage_rails}
+This requirement states that 3.3V and 5V rails should be available for the components in the circuit.
+
+\paragraph{Conclusion}~\\
+The presence of the two voltage rails are verified in the procedure shown in section \ref{par:verify_voltage_level_shifter_functionality}.
+Furthermore the mean value of the two rails were measured over a period of 25ms, yielding 3.27V and 5.07.
+Both mean values are within the maximum values.
+
+\subsubsection{Verification of: Requirement \ref{enum:rotate_freely_joint}} % (fold)
+\label{ssub:verification_of_requirement_enum:rotate_freely_joint}
+This requirement specifies that joint should be able to rotate freely about the mounting axis.
+
+\paragraph{Conclusion}~\\
+This functionality was verified.
+
+
+\subsubsection{Verification of: Requirement \ref{enum:joint_include_nrf}} % (fold)
+\label{ssub:verification_of_requirement_enum:joint_include_nrf}
+This requirement specifies that the \texttt{nRF24L01} module should be included for communication.
+
+\paragraph{Conclusion}~\\
+The \texttt{nRF24L01} was included in the joint board PCB and wired to the \texttt{ATtiny84}.
+
+
+\subsubsection{Verification of: Requirement \ref{enum:interface_rs422_enc}} % (fold)
+\label{ssub:verification_of_requirement_enum:interface_rs422_enc}
+This requirement specifies that the \texttt{RL2IC} encoders RS-422 interface should be correctly interfaced.
+
+\paragraph{Conclusion}~\\
+The RS-422 receiver \texttt{DS26LS32CM} was placed on the joint board PCB to decode the signals from the \texttt{RL2IC} encoder.
+In section \ref{par:verify_rs_422_circuitry_functionality} the functionality of the \texttt{DS26LS32CM} is verified. 
+
+\subsubsection{Verification of: Requirement \ref{enum:program_5v_spi}} % (fold)
+\label{ssub:verification_of_requirement:enum:program_5v_spi}
+This requirement specifies that the design should allow programming of the \texttt{ATtiny84} using 5V SPI.
+
+\paragraph{Conclusion}~\\
+Programming the \texttt{ATtiny84} using 5V SPI was made possible using voltage level shifting.
+While developing software for the \texttt{ATtiny84} it was revealed that the \texttt{74LCX244} and \texttt{ATtiny84} both attempt to drive the \texttt{SCLK} and \texttt{MOSI} nets, resulting in the communication with the nRF24L01 module not functioning.
 This is a design error and should be fixed in later versions of the design.
-A temporary fix was done by soldering a wire to the enable pin of the 74LCX244 and connecting it to a switch connected to \texttt{GND} and \texttt{5V}, effectively creating a programming mode and a running mode.
-In the programming mode the 74LCX244 is enabled and has control over the affected nets.
-In running mode the 74LCX244 is disabled and the ATtiny84 is capable of driving the affected nets.
-% paragraph verify_attiny84_functionality (end)
-% subsubsection joint_board_verification_methodology (end)
-\thomas{Write all of the requirements, section below is requirement 19.}
-\subsubsection{Circuit Power Draw and Run-time} % (fold)
-\label{ssub:circuit_power_draw_and_runtime}
+A temporary fix was done by soldering a wire to the enable pin of the \texttt{74LCX244} and connecting it to a switch connected to \texttt{GND} and \texttt{5V}, effectively creating a programming mode and a running mode.
+In the programming mode the \texttt{74LCX244} is enabled and has control over the affected nets.
+In running mode the \texttt{74LCX244} is disabled and the \texttt{ATtiny84} is capable of driving the affected nets.
+
+\subsubsection{Verification of: Requirement \ref{enum:led_debugging_joint}} % (fold)
+\label{ssub:verification_of_requirement_enum:led_debugging_joint}
+This requirement states that an LED should be employed for debugging purposes.
+
+\paragraph{Conclusion}~\\
+An LED is present on the joint board PCB.
+
+
+\subsubsection{Verification of: Requirements \ref{enum:design_req1}, \ref{enum:design_req2}, \ref{enum:design_req3}, \ref{enum:design_req4}, \ref{enum:design_req5}, \ref{enum:design_req6}, \ref{enum:design_req7}, \ref{enum:design_req8} and \ref{enum:design_req9}} % (fold)
+All of the above requirements concern the design of the pendulum assembly and the joints.
+\paragraph{Conclusion}~\\
+They have all been followed throughout the design of the pendulum assembly.
+
+\subsubsection{Verification of: Requirement \ref{enum:overall_joint_power}} % (fold)
+\label{ssub:verification_of_requirement_enum:overall_joint_power}
+This requirement states that overall power consumption of the design should be minimized.
+
+\paragraph{Conclusion}~\\
 In section \ref{par:power_delivery} it was found that the circuit would require $\approx$462mW when transmitting.
 In testing it was found that the circuit draws 117mA at 3.7V or 432.9mW.
 Since the original numbers were calculated based on maximum values from the datasheets of the components used in the calculation it is reasonable to see a slightly lower number.
@@ -140,5 +205,3 @@ The main reason for this is the unexpectedly large power draw of the encoder and
 The DS26LS32CM RS422 decoder draws 52mA at 5V.
 The Rolin Encoders are available in versions which output TTL signals meaning that the decoder could be removed. 
 Unfortunately, the encoders with this output do not have a unique reference mark and as such it would not be possible to properly calibrate the joint.
-% subsubsection circuit_power_draw_and_runtime (end)
-% subsection implementation_and_verification (end)
