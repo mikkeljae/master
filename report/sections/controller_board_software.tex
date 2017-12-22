@@ -103,7 +103,7 @@ Programming a FPGA will be done using VHDL,
 In order to   
 \mikkel{Some more.}
 Concurrent computing has the advantage that it is executed in true parallel.
-Inherently real time....
+Inherently real-time....
 
 \paragraph{Sequential Computing} % (fold)
 \label{par:sequential_computing}
@@ -125,7 +125,7 @@ There are three different implementations of the AXI bus:
 	\item \textbf{AXI4-Stream:} This implementation foregoes the use of addresses and allows a continuous stream of data.
 \end{itemize}
 Since the data exchanged between PL and PS in this project is mostly the setting of control registers and reading cart positions at a steady rate the simpler AXI4-Lite implementation is going to be used for the components created in this project.
-\subsubsection{Real Time} % (fold)
+\subsubsection{Real-Time Software} % (fold)
 \label{ssub:real_time}
 \thomas{nice section on some of the reasons why real time is required}
 bla.bla.bla.
@@ -133,7 +133,7 @@ bla.bla.bla.
 \subsubsection{VHDL and Coding Practices} % (fold)
 \label{ssub:vhdl_and_coding_practices}
 The low level control is written in VHDL.
-This is done to leverage the hard real time nature of the FPGA to create robust and dependable control of the pendulum.
+This is done to leverage the hard real-time nature of the FPGA to create robust and dependable control of the pendulum.
 As the reader likely knows, programming in VHDL can be a complex venture.
 The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus.
 In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
@@ -184,7 +184,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 		\item Setup of \texttt{nRF24L01} settings.
 		\item Receive joint angle data form joint boards.
 	\end{itemize}
-	\item Real time behaviour of software.
+	\item Real-time behaviour of software.
 	\label{enum:real_time_behavior}
 \end{enumerate}
 
