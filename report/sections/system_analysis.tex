@@ -1,8 +1,6 @@
 %!TEX root = ../main.tex
 \section{State of the Art}
-\thomas{point mass assumption}
 \thomas{insert paragraph on current mode control in SotA}
-\mikkel{refer to model development section. We gained knowledge by doing it. other papers also use it}
 The system developed throughout this report is a proposal made by the project owner and developed by the authors.
 It is intended as a learning platform for students to experiment with and gain understanding of underactuated systems.
 An underactuated system is a system with more DoF (degrees of freedom) than actuators.
@@ -39,8 +37,10 @@ Both \cite{doubleinvertpendulum} and \cite{tripleinvertpendulum} utilize encoder
 \cite{doubleinvertpendulum} and \cite{tripleinvertpendulum} both use a 1ms sampling time.
 The underlying system is different between the two with \cite{tripleinvertpendulum} being based on DSpace and \cite{doubleinvertpendulum} a linux system with the real-time patch applied.
 \\~\\
-Often literature simplifies the inverted pendulum problem by assuming that all mass is placed in the joints \cite{doubleinvertpendulum}.
-\thomas{more on mass thingie}
+All of the literature mentioned above all utilize the Euler-Lagrange equation of motion for developing the mathematical model required to control their respective pendulum systems. 
+These equations assume point masses and massless links between them.
+The authors have derived these equations for the double pendulum in appendix \ref{sec:model_development}.
+\thomas{a note on its usefulness?}
 
 \section{System Analysis}
 This document is a development report detailing the creation of such a system.
