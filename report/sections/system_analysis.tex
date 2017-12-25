@@ -1,6 +1,5 @@
 %!TEX root = ../main.tex
 \section{State of the Art}
-\thomas{Elaborate on cites}
 \thomas{point mass assumption}
 \thomas{insert paragraph on current mode control in SotA}
 \mikkel{refer to model development section. We gained knowledge by doing it. other papers also use it}
@@ -19,11 +18,29 @@ This means that a gripper can be far more versatile and much less dependent on t
 In control of underactuated systems it is required to exploit the natural dynamics of the system \cite{mitunderactuated} in order to gain full control.
 Such systems are generally more agile and efficient than their fully actuated counter-parts.
 \\~\\
-A general example often used for teaching underactuated systems is the inverted pendulum mounted on a cart.
-Numerous examples of such systems are described in literature \cite{invertpendulum1} \cite{tripleinvertpendulum} \cite{invertpendulum3} \cite{doubleinvertpendulum}.
+A general example often used for teaching underactuated systems is the inverted pendulum.
+Numerous examples of such systems are described in literature, but three versions in particular are presented here to provide an overview:
+\begin{itemize}
+	\item The pendubot \cite{pendubot} is a pendulum system consisting of one unactuated pendulum mounted on the end of an actuated pendulum.
+	\item A rotary inverted pendulum \cite{rotarypendulum} mounts an unactuated pendulum on a crossbar which is mounted horizontally on the axle of an upright DC-motor.
+	\item The cart mounted inverted pendulum \cite{invertpendulum3} actuates a cart along a rail in order to generate motion in the pendulum.
+\end{itemize} 
+In common for all of the above systems is that the joint between the mounting platform and the platform is implements some form of encoder.
+This allows knowing the position of the pendulum and thereby controlling the system.
+The pendubot and the rotary inverted pendulum have the feature that they can control indefinetely without running out of space, as is the case with the cart-on-a-rail system.
+\\~\\
+The system under development throughout this report is of the cart-on-a-rail type.
+Despite the apparent short-coming of limited control range, this version of the inverted pendulum system is quite popular in literature.
+\cite{invertpendulum3} is an implementation of a single inverted pendulum while versions with series pendulums exist as well such as the double pendulum shown in \cite{doubleinvertpendulum} or the triple pendulum shown in \cite{tripleinvertpendulum}.
+\\~\\
+Both \cite{doubleinvertpendulum} and \cite{tripleinvertpendulum} utilize encoders with a resolution of 8192 counts per revolution, or $\approx 0.044^\circ$.
+\cite{invertpendulum3} is implemented using just 5000 counts per revolution, or $\approx 0.072^\circ$.
+
+\cite{doubleinvertpendulum} and \cite{tripleinvertpendulum} both use a 1ms sampling time.
+The underlying system is different between the two with \cite{tripleinvertpendulum} being based on DSpace and \cite{doubleinvertpendulum} a linux system with the real-time patch applied.
 \\~\\
 Often literature simplifies the inverted pendulum problem by assuming that all mass is placed in the joints \cite{doubleinvertpendulum}.
-
+\thomas{more on mass thingie}
 
 \section{System Analysis}
 This document is a development report detailing the creation of such a system.

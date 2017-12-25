@@ -353,11 +353,12 @@ For this reason it was decided to produce just a single PCB with extra copper an
 		\item Test points should exist for all voltage rails and relevant signals.
 		\item All test points should be wired to JST ZH-series connectors.
 	\end{itemize}
-	\item The PCB layout should be designed to accomodate appropriate power levels.
+	\item The PCB should be designed to accomodate appropriate power levels.
 	\label{enum:pcb_layout}
 	\begin{itemize}
 		\item Determine required trace width.
 		\item Ground planes should be segregated for power and digital circuitry.
+		\item Components of the motor driver should be sized to accomodate the stall current of the motor.
 	\end{itemize}
 	\item PCB soldering should be possible at SDUs facilities.
 	\label{enum:pcb_soldering}
@@ -367,7 +368,6 @@ For this reason it was decided to produce just a single PCB with extra copper an
 	\end{itemize}
 \end{enumerate}
 
-\thomas{Needs mentioning: stall current, emergency signal from microzed, relays}
 \paragraph{Safety:}
 \begin{enumerate}[resume]
 	\item Any triggered emergency condition should halt the cart.

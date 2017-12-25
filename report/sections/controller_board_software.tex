@@ -8,7 +8,7 @@ This section will seek to analyse the requirements for the software that runs on
 The software will need to serve as a base system, where control algorithms can be run for verification purposes.
 It is not intended as the final system as that system should be Linux based and imposes a completely different set of requirements on the system.
 
-\subsubsection{Cart Position}
+\subsubsection{Cart Position} 
 \label{ssub:cart_position}
 In order to control the position of the cart it is important to know its absolute position.
 The \texttt{HEDS5540} \cite{heds5540} encoder mounted on the motor has an \texttt{A}, \texttt{B} and \texttt{Z} incremental quadrature and can be used to measure the relative position of the cart. 
@@ -826,7 +826,9 @@ This requirement is tested and concluding remarks are given in section \ref{ssub
 \subsubsection{Verification of: Requirement \ref{enum:real_time_behavior}} % (fold)
 \label{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior}
 This requirement states that all software should be real-time.
-\thomas{Fill me up, Scotty....}
+\paragraph{Conclusion}
+It was the intention to collect all of the written software in a real-time system based on KHAos.
+This goal was not reached due to time constraints of the project. 
 
 \subsubsection{Verification of: Requirement \ref{enum:vhdl_implementation_practices}} % (fold)
 \label{ssub:verification_of_requirement_enum:vhdl_implementation_practices}
