@@ -49,13 +49,13 @@ A higher frequency means a higher loss in the MOSFETs and therefore a frequency 
 
 \subsubsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}
-The joint boards need to transmit joint angles to the controllerboard wirelessly using the \texttt{nRF24L01} module.
+The joint boards need to transmit joint angles to the controllerboard wirelessly using the \texttt{nRFM} module.
 In section  \ref{ssub:wireless_transmission_of_data} is determined that two bytes are needed to represent the joint angle data.
 The rate of transmission of joint angles should be as high as possible while still maintaining reliable transmission.
 Throughout this section this aspect is explored further.
 
 With knowledge of the message size, it is possible to determine the theoretical maximum transmission rate.
-The \texttt{nRF24L01} module is capable of transmitting up to 2Mbps.
+The \texttt{nRFM} module is capable of transmitting up to 2Mbps.
 It uses Enhanced Shockburst, a protocol developed by Nordic Semiconductor specifically for their RF modules.
 This protocol adds an overhead for each packet of 6 bytes, including a CRC check and an address, amongst a few other features.
 Each packet is therefore $\approx$ 8 bytes with only 25\% of the packet being the intended payload.
@@ -66,7 +66,7 @@ Transmission at this frequency does entail a few problems, discussed in the foll
 \paragraph{nRF24L01 Mode Cycling}~\\ % (fold)
 \label{par:nrf24l01_mode_cycling}
 When transmitting at a rate of 15625Hz a message is to be sent every 64$\mu$s
-According to the datasheet of the nRF24L01 it can be kept in transmit mode for no longer than 4ms, meaning that at the most 62 packets can be sent before cycling to standby-mode and back to TX-mode.
+According to the datasheet of the \texttt{nRFM} it can be kept in transmit mode for no longer than 4ms, meaning that at the most 62 packets can be sent before cycling to standby-mode and back to TX-mode.
 Before entering TX-mode a 130$\mu$s settling period is inferred.
 This means that at least two packets are lost during this time.
 The problem can be overcome by lowering the transmission frequency such that the time between packets is above 130$\mu$s.
@@ -81,13 +81,13 @@ The lowered transmission frequency alleviates this issue somewhat, but there is 
 Air collisions could be handled by using the acknowledge feature in the Enhanced Shockburst protocol, this enables the module to resend a message if an ACK message has not been received within 250$\mu$s.
 After 250$\mu$s however, the previous position is outdated and the new position should be sent rather than the lost position.
 Additionally, the ACK message adds 15 bytes to the transmission of each packet, greatly lowering the possible throughput.
-The nRF24L01 is capable of operating on different frequency-bands.
+The \texttt{nRFM} is capable of operating on different frequency-bands.
 By adding a second receiver on the controller board the two joints can communicate on different frequencies, eliminating the risk of air collisions altogether.
-This realisation was made after the controller board was produced and so the additional \texttt{nRF24L01} has to be retrofitted on the board. 
+This realisation was made after the controller board was produced and so the additional \texttt{nRFM} has to be retrofitted on the board. 
 % paragraph air_collisions (end)
 \\~\\
 In order to simplify communication between the joint boards and the controller board communcation will be one way only.
-This allows the nRF24L01's on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
+This allows the \texttt{nRFM}'s on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
 The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
 
 \subsubsection{Utilizing the Zynq Platform} % (fold)
@@ -179,11 +179,11 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 		\item Adjustable dutycycle.
 		\item Control \texttt{DIS} signal.
  	\end{itemize}
-	\item Receive joint angle data from the two joint boards using the \texttt{nRF24L01} module
+	\item Receive joint angle data from the two joint boards using the \texttt{nRFM}.
 	\label{enum:receive_joint_angle}
 	\begin{itemize}
 		\item Setup of Microzed as SPI master.
-		\item Setup of \texttt{nRF24L01} settings.
+		\item Setup of \texttt{nRFM} settings.
 		\item Receive joint angle data form joint boards.
 	\end{itemize}
 	\item Real-time behaviour of software.
@@ -512,25 +512,25 @@ Rather than checking both the calibration status and the position, both can be d
 \subsubsection{Interfacing the nRF24L01} % (fold)
 \label{ssubs:nrf24l01}
 ~\\
-The \texttt{nRF24L01} is interfaced through a standard SPI connection and a \texttt{CE} pin that is used to activate the chip. 
+The \texttt{nRFM} is interfaced through a standard SPI connection and a \texttt{CE} pin that is used to activate the chip. 
 It also has an interrupt pin, but it was chosen not to use it and instead poll the device. 
 Configuration of the device is done through SPI.
 
 \paragraph{Setup} % (fold)
 \label{par:nrfsetup}
 ~\\
-The \texttt{nRF24L01} has multiple different modes of operations and care should be taken when setting it up.
+The \texttt{nRFM} has multiple different modes of operations and care should be taken when setting it up.
 The flowchart of figure \ref{fig:nrf_setup} gives an overview of what registers are set in order to gain the settings used in this project.
 A description of each step and register is given below.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.8\linewidth]{graphics/nfr_setup}
-	\caption{Flowchart showing the setup process of the nRF24L01 module.}
+	\caption{Flowchart showing the setup process of the \texttt{nRFM} module.}
 	\label{fig:nrf_setup}
 \end{figure}
 \begin{itemize}
 	\item \texttt{SETUP} register is set in order to gain 1Mbps air transmission and maximum output power in TX mode.
-	\item \texttt{RF\_CH} register is used to set the channel used. It should be set differently for each \texttt{nRF24L01} pairs.
+	\item \texttt{RF\_CH} register is used to set the channel used. It should be set differently for each \texttt{nRFM} pairs.
 	\item \texttt{SETUP\_AW} register is set to use the shortest available address width of three bytes.
 	\item \texttt{EN\_AA} register is set to disable auto acknowledgement.
 	\item \texttt{SETUP\_RETR} register is set to disable automatic retransmission.
@@ -549,7 +549,7 @@ Hereafter \texttt{CE} is set \texttt{high} to initiate the transition to \texttt
 \paragraph{Writing to a Register} % (fold)
 \label{par:writing_to_a_register}
 ~\\
-Figure \ref{fig:rw_register} illustrates the bits that are sent to the \texttt{nRF24L01} in order to write a value to a register. 
+Figure \ref{fig:rw_register} illustrates the bits that are sent to the \texttt{nRFM} in order to write a value to a register. 
 The three command bits specify if the action to be done is read or write.
 The five address bits specify address of the register that is to be written to. 
 The next one to five bytes is the value that are to be written to the register.
@@ -557,14 +557,14 @@ The next one to five bytes is the value that are to be written to the register.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/rw_register.eps}
-	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRF24L01} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
+	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRFM} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
 
 The C code in listing \ref{code:rf_write_register_code} is used to write a value to a register. 
 Line 5 makes sure that a valid address and command is sent, regardless of the inputs.
 Line 6 collects all bits that needs to be sent in one variable. 
-The 2 bytes are sent using SPI in line 7, where it can also be seen that the answer from the \texttt{nRF24L01} is ignored as the \texttt{NULL} pointer is given as the input buffer.  
+The 2 bytes are sent using SPI in line 7, where it can also be seen that the answer from the \texttt{nRFM} is ignored as the \texttt{NULL} pointer is given as the input buffer.  
 
 \begin{listing}[!h]
 \begin{minted}{c}
@@ -577,41 +577,41 @@ void RF_write_register(XSpiPs *SPI_inst, u8 reg, u8 value){
 	XSpiPs_PolledTransfer(SPI_inst, output_buffer, NULL, 2);
 }
 \end{minted}
-\caption{Implementation of a C function that writes a register value to a specific register on the \texttt{nRF24L01}. Macros are shown for clarity.}
+\caption{Implementation of a C function that writes a register value to a specific register on the \texttt{nRFM}. Macros are shown for clarity.}
 \label{code:rf_write_register_code}
 \end{listing}
 
 The corresponding SPI signals are measured and plotted in figure \ref{fig:nrf24_spi}.
 It can be seen that the \texttt{MOSI} signal corresponds to \texttt{0b00100000, 0b00110101}, which means that the value \texttt{0b00110101} is written to the \texttt{RF\_CONFIG} register which has address \texttt{0x00}.
 It can also be noted that data is available on the \texttt{MISO} signal. 
-The \texttt{nRF24L01} always responds with the value of the \texttt{STATUS} when detecting a falling edge on \texttt{SS}.
+The \texttt{nRFM} always responds with the value of the \texttt{STATUS} when detecting a falling edge on \texttt{SS}.
 
 \begin{figure}[h]
 	\centering
     %\input{graphics/nrf24_spi.tex}
-	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRF24} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total. The SPI transmission is setup and measured at 625kHz, for readability.}
+	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRFM} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total. The SPI transmission is setup and measured at 625kHz, for readability.}
 	\label{fig:nrf24_spi}
 \end{figure}
 
 \paragraph{Reading a Payload} % (fold)
 \label{par:reading_a_payload}
 ~\\
-Reading a payload from the \texttt{nRF24L01} is done as shown in figure \ref{fig:rxtx_payload}.
+Reading a payload from the \texttt{nRFM} is done as shown in figure \ref{fig:rxtx_payload}.
 In general the first byte corresponds to the command given. 
 In this case it would be \texttt{0b01100001} in order to read a payload.
-The payload is the next one to 32 bytes sent by the \texttt{nRF24L01}.
+The payload is the next one to 32 bytes sent by the \texttt{nRFM}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.6\linewidth]{graphics/rxtx_payload.eps}
-	\caption[Reading a payload on the nRF24L01.]{Bits written to and received from the \texttt{nRF24L01} when reading a payload. \texttt{Command} specifies the command given and \texttt{Payload} is the bits written from the \texttt{nRF24L01}.}
+	\caption[Reading a payload on the nRF24L01.]{Bits written to and received from the \texttt{nRFM} when reading a payload. \texttt{Command} specifies the command given and \texttt{Payload} is the bits written from the \texttt{nRFM}.}
 	\label{fig:rxtx_payload}
 \end{figure}
 
 Listing \ref{code:rf_read_payload} shows how a payload of 32 bytes are read in C code. 
 Line 5 defines the input and output buffers and line 6 assigns the read payload command to the first byte of the output buffer.
-33 bytes of data is sent in line 7, this is needed in order to create the clock signal for the \texttt{nRF24L01}, when it sends the 32 bytes payload.
+33 bytes of data is sent in line 7, this is needed in order to create the clock signal for the \texttt{nRFM}, when it sends the 32 bytes payload.
 The payload is also read and assigned to the input buffer in line 7.
-Line 8-11 extracts the 32 bytes payload and ignores the first byte sent from the \texttt{nRF24L01}, which is the value of the \texttt{STATUS} register.
+Line 8-11 extracts the 32 bytes payload and ignores the first byte sent from the \texttt{nRFM}, which is the value of the \texttt{STATUS} register.
 
 \begin{listing}[!h]
 \begin{minted}{c}
@@ -629,7 +629,7 @@ void RF_read(XSpiPs *SPI_inst, u8 *buffer){
 	}
 }
 \end{minted}
-\caption{Implementation of a C function that reads 32 bytes payload from the \texttt{nRF24L01}. Macros are shown for clarity.}
+\caption{Implementation of a C function that reads 32 bytes payload from the \texttt{nRFM}. Macros are shown for clarity.}
 \label{code:rf_read_payload}
 \end{listing}
 
@@ -816,7 +816,7 @@ The motor was successfully stopped by setting the \texttt{DIS} variable \texttt{
 
 \subsubsection{Verification of: Requirement \ref{enum:receive_joint_angle}} % (fold)
 \label{ssub:verificatation_of_requirement_enum:receive_joint_angle}
-This requirement states that the software should receive joint angle data from the two joint boards using the \texttt{nRF24L01} module.
+This requirement states that the software should receive joint angle data from the two joint boards using the \texttt{nRFM} module.
 
 \paragraph{Conclusion}~\\
 Testing this requirement requires software to run on the joint board.

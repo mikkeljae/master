@@ -87,7 +87,7 @@ In order to accomplish this task some form of microcontroller is required along 
 The microcontroller must fulfill the following requirements:
 \begin{itemize}
  	\item Must have support for three interrupt pins, one for each channel of the encoder.
- 	\item Must have an SPI interface to maintain communication with the\\ \texttt{nRF24L01} module.
+ 	\item Must have an SPI interface to maintain communication with the\\ \texttt{nRFM}.
  	\item Must have non-volatile memory to store the program through power cycling the board.
 \end{itemize}
 The ATtiny84 \cite{attiny84} fulfills these requirements and provides sufficient I/O pins for the design.
@@ -115,7 +115,7 @@ This requirement essentially narrows the battery choices to LiPo cells as these 
 1S LiPo cells are rated at 3.7V and so some form of convertion is required to reach both the 5V and 3.3V rails.
 In order to correctly dimension the converters it is necessary to determine the power draw from each rail:
 \begin{itemize}
- 	\item \textbf{3.3V:} This rail powers the NRF24 module which has a maximum supply current of 12.3mA \cite{NFR24L01} as well as the ATTiny84.
+ 	\item \textbf{3.3V:} This rail powers the \texttt{nRFM} which has a maximum supply current of 12.3mA \cite{nRFM} as well as the ATTiny84.
  	According to the datasheet of the ATtiny84 it uses approximately 3.6mA at 3.3V when run at 8MHz.   
  	This yields a total of 15.9mA at 3.3V or 52.5mW.
  	Additional digital circuitry placed on this rail is considered negligible in the power budget.
@@ -149,7 +149,7 @@ One rail capable of delivering 100mA at 3.3V$\pm$0.2V.
 	\end{itemize}
 	\item Joint should be able to rotate freely about the mounting axis.
 	\label{enum:rotate_freely_joint}
-	\item Include the \texttt{nRF24L01} module for communication.
+	\item Include the \texttt{nRFM} for communication.
 	\label{enum:joint_include_nrf}
 	\item Correcly interface the RS-422 interface of the \texttt{RL2IC} encoder.
 	\label{enum:interface_rs422_enc}

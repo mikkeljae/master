@@ -88,7 +88,7 @@ Component names are referenced to the controller board schematics found in appen
 	Standard TO220 heatsink used.
 	\item Footprint of Motor cabacitors reversed: Capacitors mounted in reverse to negate the reversed footprint.
 	\item Inhibit signals of \texttt{PTN78020} and \texttt{PTH08080} connected: Trace cut between the two so that \texttt{PTN78020} is still connected to the net.
-	\item nRFM close to copper: nRFM mounting using wires to clear the copper of the board.
+	\item \texttt{nRF24L01} module, \texttt{nRFM} (see section \ref{ssubs:nrf24l01}) close to copper: \texttt{nRFM} mounting using wires to clear the copper of the board.
 \end{itemize}
 \begin{figure}[h]
 	\centering
@@ -251,12 +251,12 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 	\label{fig:controllerboardv2_gate_b_deadtime}
 \end{figure}
 
-\paragraph{Verify NRF24L01 Module functionality} % (fold)
+\paragraph{Verify nRF24L01 Module functionality} % (fold)
 \label{par:verify_nrf24l01_module_functionality}
 \begin{itemize}
 	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE} one at a time.
 	\begin{itemize}
-		\item[\cmark] Verify that 3.3V is present on the corresponding signals on the \texttt{nRF24L01} module (component \texttt{U1}).
+		\item[\cmark] Verify that 3.3V is present on the corresponding signals on the \texttt{nRFM} (component \texttt{U1}).
 	\end{itemize}
 \end{itemize}
 % paragraph verify_nrf24l01_module_functionality (end)
@@ -465,7 +465,7 @@ Once the system is finished a test should be designed which moves the cart back 
 This requirement specifies that hardware for wireless communication using RF should be implemented on the controllerboard.
 
 \paragraph{Conclusion}~\\
-The \texttt{nRF24L01} was chosen and placed on the board with a SPI connection to the Microzed.
+The \texttt{nRFM} was chosen and placed on the board with a SPI connection to the Microzed.
 
 \subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}

@@ -151,11 +151,10 @@ This functionality was verified.
 
 \subsubsection{Verification of: Requirement \ref{enum:joint_include_nrf}} % (fold)
 \label{ssub:verification_of_requirement_enum:joint_include_nrf}
-This requirement specifies that the \texttt{nRF24L01} module should be included for communication.
+This requirement specifies that the \texttt{nRFM} should be included for communication.
 
 \paragraph{Conclusion}~\\
-The \texttt{nRF24L01} was included in the joint board PCB and wired to the \texttt{ATtiny84}.
-
+The \texttt{nRFM} was included in the joint board PCB and wired to the \texttt{ATtiny84}.
 
 \subsubsection{Verification of: Requirement \ref{enum:interface_rs422_enc}} % (fold)
 \label{ssub:verification_of_requirement_enum:interface_rs422_enc}
@@ -171,7 +170,7 @@ This requirement specifies that the design should allow programming of the \text
 
 \paragraph{Conclusion}~\\
 Programming the \texttt{ATtiny84} using 5V SPI was made possible using voltage level shifting.
-While developing software for the \texttt{ATtiny84} it was revealed that the \texttt{74LCX244} and \texttt{ATtiny84} both attempt to drive the \texttt{SCLK} and \texttt{MOSI} nets, resulting in the communication with the nRF24L01 module not functioning.
+While developing software for the \texttt{ATtiny84} it was revealed that the \texttt{74LCX244} and \texttt{ATtiny84} both attempt to drive the \texttt{SCLK} and \texttt{MOSI} nets, resulting in the communication with the \texttt{nRFM} not functioning.
 This is a design error and should be fixed in later versions of the design.
 A temporary fix was done by soldering a wire to the enable pin of the \texttt{74LCX244} and connecting it to a switch connected to \texttt{GND} and \texttt{5V}, effectively creating a programming mode and a running mode.
 In the programming mode the \texttt{74LCX244} is enabled and has control over the affected nets.

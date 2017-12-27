@@ -23,24 +23,24 @@ It is estimated that the maximum angular velocity is  $\approx$20Hz, which means
 \mikkel{It would be nice with some sort of reasoning/reference.}
 
 \subsubsection{Wireless Transmission of Data}
-As mentioned in section \ref{ssub:interboard_communication}, communication between the controller board and the joint boards is to happen wirelessly using the \texttt{nRF24L01} module and a period between packets of more than 130$\mu$s.
-The software needs to communicate with the \texttt{nRF24L01} through a SPI connection with the \texttt{ATtiny} as the master.
-The \texttt{nRF24L01} has a number of options that needs to be set according to the wanted functionality.
+As mentioned in section \ref{ssub:interboard_communication}, communication between the controller board and the joint boards is to happen wirelessly using the \texttt{nRFM} and a period between packets of more than 130$\mu$s.
+The software needs to communicate with the \texttt{nRFM} through a SPI connection with the \texttt{ATtiny} as the master.
+The \texttt{nRFM} has a number of options that needs to be set according to the wanted functionality.
 As described in \ref{ssub:interboard_communication}, it was found that the two joints needs to send using two separate frequency bands to avoid air collisions. 
-This needs to be set up individually in each \texttt{nRF24L01} module. 
+This needs to be set up individually in each \texttt{nRFM}. 
 Latency should be minimized by reducing overhead in transmitted packages and sending the smallest possible payload that correctly conveys the joint data.
-The data sheet describes that the \texttt{nRF24L01} can operate at air rates of 250kbps, 1Mbps and 2Mbps.
+The data sheet describes that the \texttt{nRFM} can operate at air rates of 250kbps, 1Mbps and 2Mbps.
 Based on the somewhat unstable transmission explained in section \ref{subs:wireless_transmission_joint} it was chosen to use a transmission rate of 1Mbps, as it is more noise resistance than when using 2Mbps.
 
 \paragraph{Transmission Rate} % (fold)
 \label{par:transmission_rate}~\\
-The datasheet of the \texttt{nRF24L01} module specifies that there is a settling time of 130$\mu$s when entering the transmit state.
+The datasheet of the \texttt{nRFM} module specifies that there is a settling time of 130$\mu$s when entering the transmit state.
 Several aspects should be considered in order to determine the required period time associated with transmission of one data packet.
 An overview is given in figure \ref{fig:tiny_period}.
 Transmission of a two byte payload through SPI takes $\approx$ 36 $\mu$s as will be shown in \ref{ssub:spi}.
 The \texttt{CE} should be \texttt{high} for at least 10$\mu$s in order for the transition to transmit mode is initiated.
 Hereafter a settling time of 130$\mu$s occurs.
-Then the \texttt{nRF24L01} will transmit the two byte payload in an eight byte data packet, which will take 68$\mu$s using an air transmission rate of 1Mbps.
+Then the \texttt{nRFM} will transmit the two byte payload in an eight byte data packet, which will take 68$\mu$s using an air transmission rate of 1Mbps.
 This totals 244$\mu$s, in which the computation time needed is not included.
 Therefore it was decided to use a period time of 333$\mu$s, which yields 84$\mu$s to computation and a sampling frequency of $\approx$3kHz.
 A sample latency of at least 249$\mu$s is incurred on the joint board software including air transfer before the data is available to the controller board nRFM.
@@ -69,7 +69,7 @@ This requires the joint board software to be programmed as real-time software, w
 		\item Ensure no data is corrupted by interrupts.
 		\item Ensure no interrupts lost at angular frequencies below 20Hz.
 	\end{itemize}
-	\item Transmit joint angle using the \texttt{nRF24L01} module.
+	\item Transmit joint angle using the \texttt{nRFM}.
 	\label{enum:joint_transmit}
 	\begin{itemize}
 		\item \texttt{ATtiny} should be setup as SPI master.
@@ -102,7 +102,7 @@ This requires the joint board software to be programmed as real-time software, w
 \end{figure}
 A software design was made based on the requirement specification for the joint board software.
 The main functionality of the software is illustrated in the flowchart of figure \ref{sfig:joint_main_flowchart}.
-Upon startup the \texttt{nRF24L01} is setup as explained in section \ref{par:nrfsetup}.
+Upon startup the \texttt{nRFM} is setup as explained in section \ref{par:nrfsetup}.
 A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpacket}, is sent every 333$\mu$s.
 Now the copying procedure is started after which the packet is transmitted and the program is idling until 333$\mu$s has passed and the process starts over.
 An interrupt can happen at any given time and the ISR, will update the measured joint angle. 
@@ -140,7 +140,7 @@ Before returning execution to the main loop the current phase is stored.
 The joint board should transmit the angular position of the joint and whether calibration has occured since startup.
 The \texttt{RL2IC} encoder used in the joint produces 7200 counts per revolution, requiring 13 bits to represent a full revolution of the joint.
 The calibration status is binary and represents one bit. 
-16 bit is required to transmit this information, since the \texttt{nRF24L01} payload needs be an integer number of bytes.
+16 bit is required to transmit this information, since the \texttt{nRFM} payload needs to be an integer number of bytes.
 See figure \ref{fig:rfpacket} for a visual representation of the message.
 
 \begin{figure}[h]
@@ -195,16 +195,16 @@ Using these numbers the theoretical maximum angular velocity possible while stil
 The \texttt{ATtiny84} does not have a SPI controller, but it does have a Universal Serial Interface, USI, which is compatible with SPI, when it is used in its three wire mode.
 In this mode the interface has the pins, Data Out \texttt{DO}, Data In \texttt{DI} and a clock \texttt{USCK}.
 In order to comply with the SPI standard a Slave Select \texttt{SS} pin should be implemented using a general IO pin and custom written software.
-The \texttt{nRF24L01} also has a non SPI pin, \texttt{CE} that also needs to be controlled from the \texttt{ATtiny}.
+The \texttt{nRFM} also has a non SPI pin, \texttt{CE} that also needs to be controlled from the \texttt{ATtiny}.
 The full interface between the two is shown in figure \ref{fig:tiny_nrf_com}.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.35\linewidth]{graphics/tiny_nrf_com}
-	\caption[Interface between ATtiny84 and nRF24L01.]{Interfacing the \texttt{ATtiny84}s USI and \texttt{nRF24L01}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
+	\caption[Interface between ATtiny84 and nRF24L01.]{Interfacing the \texttt{ATtiny84}s USI and \texttt{nRFM}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
 	\label{fig:tiny_nrf_com}
 \end{figure}
-The \texttt{ATtiny84} is used as the SPI master and controls \texttt{MOSI}, \texttt{SCLK}, \texttt{SS} and \texttt{CE} on the \texttt{nRF24L01} module.
+The \texttt{ATtiny84} is used as the SPI master and controls \texttt{MOSI}, \texttt{SCLK}, \texttt{SS} and \texttt{CE} on the \texttt{nRFM}.
 
 With the two modules interfaced correctly, data can be transmitted between them.
 The function shown in listing \ref{code:tiny_spi_transfer} implements this functionality on the \texttt{ATtiny84}.
@@ -235,33 +235,33 @@ void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
   PORTB |= _BV(SS);
 }
 \end{minted}
-\caption{Function that transmits \texttt{n} bytes of data between the \texttt{ATtiny84} and the \texttt{nRF24L01}.}
+\caption[Data transmission between the \texttt{ATtiny84} and the \texttt{nRF24L01} ]{Function that transmits \texttt{n} bytes of data between the \texttt{ATtiny84} and the \texttt{nRFM}.}
 \label{code:tiny_spi_transfer}
 \end{listing}
 
-This functions enables setup of the \texttt{nRF24L01}, which is done with the same settings as explained in section \ref{ssubs:nrf24l01}.
+This functions enables setup of the \texttt{nRFM}, which is done with the same settings as explained in section \ref{ssubs:nrf24l01}.
 The frequency of the SPI clock is $\approx$675kHz and transmission of one byte takes 12$\mu$s.
 
 
 \subsubsection{Development of Wireless Transmission}
 \label{subs:wireless_transmission_joint}
-During implementation of the software for the \texttt{nRF24L01} a lot of testing was done to verify that the developed code worked.
-Initially two \texttt{nRF24L01} modules were wired up to two Arduinos running example code from the arduino community libraries. 
-This was done to verify wiring and functionality of the \texttt{nRF24L01} modules.
+During implementation of the software for the \texttt{nRFM} a lot of testing was done to verify that the developed code worked.
+Initially two \texttt{nRFM}s were wired up to two Arduinos running example code from the arduino community libraries. 
+This was done to verify wiring and functionality of the \texttt{nRFM}s.
 \\~\\
-Afterwards an Arduino was programmed to receive data and the software was written to the \texttt{ATtiny84} to transmit data using the \texttt{nRF24L01}.
+Afterwards an Arduino was programmed to receive data and the software was written to the \texttt{ATtiny84} to transmit data using the \texttt{nRFM}.
 The functionality of the joint board software was verified by transmitting data from the \texttt{ATtiny84} to an Arduino successfully.
-Afterwards an \texttt{nRF24L01} was wired to the Microzed and the software was written.
+Afterwards an \texttt{nRFM} was wired to the Microzed and the software was written.
 \\~\\
-The transmission of data between the \texttt{ATtiny84} and the Microzed was verified by transmitting data from the joint board \texttt{nRF24L01} to a \texttt{nRF24L01} module in free air connected to the Microzed.
+The transmission of data between the \texttt{ATtiny84} and the Microzed was verified by transmitting data from the joint board \texttt{nRFM} to an \texttt{nRFM} in free air connected to the Microzed.
 The transmission was successful.
 \\~\\
-The same software was used to to test the \texttt{nRF24L01} module wired on the controller board. 
+The same software was used to to test the \texttt{nRFM} wired on the controller board. 
 Tests showed that no data was received in this setup.
 Thoroughly inspection of the schematic and PCB revealed no errors. 
-Further testing with a \texttt{nRF24L01} module in free air connected to the Microzed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRF24L01}.
+Further testing with a \texttt{nRFM} in free air connected to the Microzed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRFM}.
 The problem is believed to be due to the large amount of copper in the controller board PCB.
-The error was fixed by desoldering the \texttt{nRF24L01} and wiring it with longer wires.
+The error was fixed by desoldering the \texttt{nRFM} and wiring it with longer wires.
 \thomas{check datasheet for mounting information, explain better fix}
 
 \subsubsection{Software Timer}
@@ -330,15 +330,15 @@ The test was done and by visual inspection the functionality was verified.
 
 \subsubsection{Requirement \ref{enum:joint_transmit}} % (fold)
 \label{ssub:requirement_enum:joint_transmit}
-This requirement specifies that the joint angle should be transmitted using the nRF24L01 module.
+This requirement specifies that the joint angle should be transmitted using the \texttt{nRFM} module.
 
 \paragraph{Test}~\\
-The two \texttt{nRF24L01} modules should be faced towards each other with a short distance between them.
+The two \texttt{nRFM}s should be faced towards each other with a short distance between them.
 Data should be transmitted from one of them to the other and it should be counted how many packets are received.
 This test should be conducted with the pendulum being held still and being moved to determine if movement affects the transmission.
 
 \paragraph{Conclusion}~\\
-The test was conducted by letting the two \texttt{nRF24L01} modules face each other with a distance of $\approx$10cm.
+The test was conducted by letting the two \texttt{nRFM}s face each other with a distance of $\approx$10cm.
 A 32 byte payload was sent from the joint board every 1ms. 
 The payload including a id, that was incremented for each packet.
 The joint board was programmed to send 10000 packets before stopping transmitting. 
@@ -405,5 +405,5 @@ The measured signals are shown in figure \ref{fig:runtime_joint_software}.
 \end{figure}
 
 It can be seen that the \texttt{on} time of the output pin is $\approx$75$\mu$s, which leaves 258$\mu$s before the deadline.
-It should be noted that following the SPI transmission another 213$\mu$s are required for the \texttt{nRF24L01} to go to TX mode and transmit the data.
+It should be noted that following the SPI transmission another 213$\mu$s are required for the \texttt{nRFM} to go to TX mode and transmit the data.
 
