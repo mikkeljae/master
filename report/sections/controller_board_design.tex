@@ -372,8 +372,19 @@ Measuring current in an H-Bridge with a shunt resistor can be done in a number o
 The shunt resistor can be placed in various positions in the H-bridge.
 The three main ones are high-side, in-line and low-side placement of the shunt resistor.
 \cite{shunt_placement} and \cite{Current_Sense_Circuit_Collection} specifies the advantages and disadvantages of the three configurations.
-\mikkel{add a quick summary of each and highlight the selected one?} 
-It was decided to use the low-side configuration as it has low common voltage, it only needs a single sided supply and because bi-directional current measurement is not needed in this application.
+
+\paragraph{High-side:} 
+Placing the shunt resistor in a high-side configuring gives the possibility to detect if the power supply is accidentally shorted anywhere in the H-bridge. 
+The downside is a high common mode voltage.
+
+\paragraph{In-line:} 
+This configuring allows for bi-directional current sensing and direct measurement of the motor current, but has wide voltage changes of the common mode voltage.
+
+\paragraph{Low-side:} 
+This configuration has a low input common mode voltage, the output voltage is referenced to ground and has a single-supply design.
+A downside is that the load is lifted slightly from ground.
+\\~\\
+It was decided to use the low-side configuration as it has low common mode voltage, it only needs a single sided supply and because lifting the load from ground has no effect in this application.
 
 \paragraph{Requirements for the Current Measuring Circuit} ~\\% (fold)
 \label{par:requirements_for_the_current_measuring_circuit}
