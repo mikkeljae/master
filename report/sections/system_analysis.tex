@@ -22,9 +22,9 @@ Numerous examples of such systems are described in literature, but three version
 	\item A rotary inverted pendulum \cite{rotarypendulum} mounts an unactuated pendulum on a crossbar which is mounted horizontally on the axle of an upright DC-motor.
 	\item The cart mounted inverted pendulum \cite{invertpendulum3} actuates a cart along a rail in order to generate motion in the pendulum.
 \end{itemize} 
-In common for all of the above systems is that the joint between the mounting platform and the platform is implements some form of encoder.
+In common for all of the above systems is that the joint between the mounting platform and the pendulum assembly implements some form of encoder.
 This allows knowing the position of the pendulum and thereby controlling the system.
-The pendubot and the rotary inverted pendulum have the feature that they can control indefinetely without running out of space, as is the case with the cart-on-a-rail system.
+The pendubot and the rotary inverted pendulum have the feature that they can control indefinetely without running out of space, as will eventually happen with the cart-on-a-rail system.
 \\~\\
 The system under development throughout this report is of the cart-on-a-rail type.
 Despite the apparent short-coming of limited control range, this version of the inverted pendulum system is quite popular in literature.
@@ -38,19 +38,16 @@ CMC is a method whereby the voltage across a system can be controlled and, in th
 \cite{doubleinvertpendulum} and \cite{tripleinvertpendulum} both use a 1ms sampling time.
 The underlying system is different between the two with \cite{tripleinvertpendulum} being based on DSpace and \cite{doubleinvertpendulum} a linux system with the real-time patch applied.
 \\~\\
-All of the literature mentioned above all utilize the Euler-Lagrange equation of motion for developing the mathematical model required to control their respective pendulum systems. 
+All of the literature mentioned above utilize the Euler-Lagrange equation of motion for developing the mathematical model required to control their respective pendulum systems. 
 These equations assume point masses and massless links between them.
 The authors have derived these equations for the double pendulum in appendix \ref{sec:model_development}.
 The original intent was to derive these equations for use in the control of the system.
 Since control was never done most of the value gained from this exercise was in gaining an understanding of the dynamics of the system to be developed.
 
 \section{System Analysis}
-This document is a development report detailing the creation of such a system.
-The authors have taken inspiration from the aforementioned literature to develop requirements and implementation ideas.
-\\~\\
-Throughout the remainder of this section an analysis of the system will be done and the overall design requirements of the system determined.
+Throughout this section an analysis of the system will be done and the overall design requirements of the system determined.
+\thomas{change from all systems to cart mounted systems}
 In common for all of the cited systems is that they consist of a cart capable of moving along a rail with a pendulum mounted to it.
-The cited systems include single inverted pendulums \cite{invertpendulum1} \cite{invertpendulum3}, a double pendulum \cite{doubleinvertpendulum} and a triple pendulum \cite{tripleinvertpendulum}.
 This project will aim to create a double pendulum system.
 By actuating only the cart, the pendulums will not be directly actuated and the entire system therefore underactuated.
 The connection-point between the cart and the first pendulum and between every consecutive pendulum should be a joint capable of rotating freely.
@@ -65,6 +62,7 @@ The authors have prior knowledge of the use and design of systems with the Micro
 The original intent was to develop and implement a kernel driver which would present the system to the user as a \texttt{tty} interface, however this quickly turned infeasible due to the time constraints of the project and will be left for future projects.
 Further design of the system should still maintain focus on the eventual goal of making the system accessible through Linux.
 \\~\\
+\thomas{make more general, remove emergency condition.}
 Safety around the system is important since the movement of a double pendulum is chaotic and therefore inherently unpredictable.
 A means of disabling power to the motor in case of emergency should be present.  
 Engaging an emergency condition should be possible both manually and automatically.
@@ -74,32 +72,34 @@ This is done to avoid damage to the system in case of a run-away cart.
 It is likely that the system should remain caged once finished so as to ensure that no person is in the path of the pendulum during run-time but the requirements to such a safety system are very much dependent on the system around which it should be developed and will be left as a future project to be handled before the pendulum system is given to a user.
 In addition to the above, the system should also be tolerable to some amount of misuse such as blocking of the cart and similar unexpected situations.
 \\~\\
+\thomas{elaborate on finished solutions}
 Since the focus of the authors is electronics and embedded systems design, this will also be the main focus of this project.
 Therefore the design of electronics will be done by the authors. 
-The electronics include a board for motor control and main computation as well as a board for interfacing the incoder in the joints, the specifics of which are discussed throughout the report.
+The electronics include a board for motor control and main computation as well as a board for interfacing the encoder in the joints, the specifics of which are discussed throughout the report.
 \\~\\
 Since creating the final version of the software is infeasible given the time frame, another solution is required to validate the functionality of the system.
 For this reason a real-time software system should be developed which correctly exercises every part of the developed pendulum system.
 Additionally the distribution of functionality between the FPGA and the ARM cores should be determined to optimally make use of their abilities.
 The overall software design should be determined prior to initiating programming.
-Programming of individual components such as drivers for sensory equipment can be done bottom-up and integrated into a larger context once confirmed functioning.
+Programming of individual components such as drivers for sensory equipment should be done bottom-up and integrated into a larger context once confirmed functioning.
 \\~\\
 Early in the process the authors inherited the rail and cart system from a previous project.
-This includes a Maxon 148867 motor with an included HEDS5540 encoder, both of which will be explored further in later sections.
+This includes a Maxon 148867 motor with an included \texttt{HEDS5540} encoder, both of which will be explored further in later sections.
 The rail system is used as-is since it is expected that any shortcomings of the rail system in relation to the double pendulum application will be revealed in using the finished system.
 An evaluation of the usefulness of the rail system should be done on the finished system.
+\thomas{Actually do the evaluation}
 
 \subsection{Requirement Specification}
 \label{sub:requirements}
-The requirements specified below are tested and verified in section \ref{sub:verification_of_requirement_enum:system_accessible_to_users}.
+The requirements specified below are tested and verified in section \ref{sec:system_verification}.
 
 \paragraph{Functional:}
 \begin{enumerate}	
-	\item System should consists of double pendulum mounted on a moveable cart.
+	\item System should consists of a double pendulum mounted on a moveable cart.
 	\label{enum:system_consists_double_pendulum}
-	\item Cart should be actuated by a motor. 
+	\item Cart should be actuated by the Maxon 148867. 
 	\label{enum:cart_actuated_by_motor}
-	\item The pendulum system should be controlled by a Microzed.
+	\item The pendulum system should be controlled by a MicroZed.
 	\label{enum:controlled_by_microzed}
 	\item Position of the cart and joint angles should be measured.
 	\label{enum:position_cart_joint_angle_measure}

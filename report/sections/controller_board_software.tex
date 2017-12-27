@@ -26,7 +26,7 @@ Therefore it was decided to implement the functionality of measuring absolute ca
 \subsubsection{Controlling the Motor Driver} % (fold)
 \label{ssub:controlling_the_motor_driver}
 The motor driver has three inputs that need to be produced by the controller board software.
-More Specifically, two PWM inputs and a disable pin that disables the outputs of the motor driver.
+More specifically, two PWM inputs and a disable pin that disables the outputs of the motor driver.
 The PWM signals will be applied to the motor and therefore it was chosen to use a frequency of 22kHz in order to be outside of the audible range.
 It was decided to only apply a PWM signal to one channel in order to reduce the stress and current through the MOSFET and the motor.
 This means that in order to change direction of the motor, the PWM signal needs to be switched between the two PWM channels.
@@ -34,6 +34,7 @@ The duty cycle of the PWM needs to be adjustable in order to control the speed o
 \\
 As described earlier, the current through the motor needs to be sampled using an ADC. 
 By sampling at the t
+\mikkel{SQUIRREL!}
 It is beneficial to implement the PWM generation on the FPGA part of the MicroZed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
 
 \subsubsection{General Peripheral Hardware Control} % (fold)
@@ -43,19 +44,19 @@ An inrush relay that allows for safe charging of the capacitor bank and the main
 Both are controlled by controlling the logic level of an output pin.
 Furthermore the software needs to control the three RGB LEDs on the controller board. 
 In order to utilize the full functionality of the RGB LEDs each channel of the LED should be controlled by a PWM signal.
-Using this method the LED can be illuminated in all colours.
-The frequency of the PWM is not of great concern as long as it is faster than human eye. 
+Using this method an LED can be illuminated in all colours.
+The frequency of the PWM is not of great concern as long as it is faster than a human eye. 
 A higher frequency means a higher loss in the MOSFETs and therefore a frequency of 1kHz was chosen, this is fast enough to avoid visible flickering.
 
 \subsubsection{Interboard Communication} % (fold)
 \label{ssub:interboard_communication}
-The joint boards need to transmit joint angles to the controller board wirelessly using the \texttt{nRFM} module.
-In section  \ref{ssub:wireless_transmission_of_data} is determined that two bytes are needed to represent the joint angle data.
+The joint boards need to transmit joint angles to the controller board wirelessly using the \texttt{nRFM}.
+In section  \ref{ssub:wireless_transmission_of_data} it is determined that two bytes are needed to represent the joint angle data.
 The rate of transmission of joint angles should be as high as possible while still maintaining reliable transmission.
 Throughout this section this aspect is explored further.
 
 With knowledge of the message size, it is possible to determine the theoretical maximum transmission rate.
-The \texttt{nRFM} module is capable of transmitting up to 2Mbps.
+The \texttt{nRFM} is capable of transmitting up to 2Mbps.
 It uses Enhanced Shockburst, a protocol developed by Nordic Semiconductor specifically for their RF modules.
 This protocol adds an overhead for each packet of 6 bytes, including a CRC check and an address, amongst a few other features.
 Each packet is therefore $\approx$ 8 bytes with only 25\% of the packet being the intended payload.
@@ -87,7 +88,7 @@ This realisation was made after the controller board was produced and so the add
 % paragraph air_collisions (end)
 \\~\\
 In order to simplify communication between the joint boards and the controller board communcation will be one way only.
-This allows the \texttt{nRFM}'s on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
+This allows the \texttt{nRFM}s on the controller board to stay in RX-mode, listening for new positions from the joints continuously.
 The joint boards will, upon powering up, immediately start transmitting the packet mentioned in figure \ref{fig:rfpacket}.
 
 \subsubsection{Utilizing the Zynq Platform} % (fold)
@@ -100,20 +101,20 @@ The two parts are connected through the AXI bus.
 \paragraph{Concurrent Computing}~\\ % (fold)
 \label{par:concurrent_computing}
 Programming an FPGA will be done using VHDL, which is a description of hardware rather than a programming language. 
-Everything in an FPGA is essentially electronics which makes it possible to do commutation in true parallel. 
+Everything in an FPGA is essentially electronics which makes it possible to do computation in true parallel. 
 An FPGA is inherently real-time as it can be analysed exactly how many clock cycles propagation delay there is through a system.
 
 \paragraph{Sequential Computing}~\\ % (fold)
 \label{par:sequential_computing}
 Programming on a processing systems such as the ARM processor is sequential computing. 
-Everything that should be calculated is done by the CPU, which means that code needs to be run one at a time.
-True parallel computing cannot be done on such a chip, but using an OS and tasks it is possible to achieve something similar to parallel computing.
+Everything that should be calculated is done by the CPU, which means that code is run sequentially.
+True parallel computing cannot be done on such a chip, but using an OS and tasks it is possible to achieve an approximation to parallel computing.
 It is possible to make real-time software on a processing system if care is taken by the programmer to meet the required deadlines. 
 
-\paragraph{The AXI Bus and IP Cores} % (fold)
+\paragraph{The AXI Bus and IP Cores}~\\ % (fold)
 \label{par:the_axi_bus}
-The AXI, Advance eXtensible Interface, standard is part of Arm AMBA, an industry standard for communication between components on SoC's.
-AXI4 has been co-developed with Xilinx in an effort to tailor it for use in FPGA's.
+The AXI, Advance eXtensible Interface, standard is part of Arm AMBA, an industry standard for communication between components on SoCs.
+AXI4 has been co-developed with Xilinx in an effort to tailor it for use in FPGAs.
 Perhaps not surprisingly, Xilinx uses this protocol extensively in their IP, Intellectual Property.
 It increases portability by allowing a single interface between different components.
 The use of IP allows companies to share functionality without disclosing the underlying code, but also simplifies the connection of various components since every component can be verified independently of the others and can be easily connected using the Block Design feature of Vivado.
@@ -132,11 +133,11 @@ Since the data exchanged between PL and PS in this project is mostly the setting
 In general control systems are created as real-time systems.
 This ensures that any time-stepping done in the mathematics of the system is well-defined and that the control is therefore well-defined.
 Also the literature used as an inspiration for this project \cite{invertpendulum1} \cite{doubleinvertpendulum} \cite{tripleinvertpendulum} describe real-time systems based on real-time linux and DSpace.
+Therefore the software developed here, will also be real-time.
 
 \subsubsection{VHDL and Coding Practices} % (fold)
 \label{ssub:vhdl_and_coding_practices}
-The low level control is written in VHDL.
-This is done to leverage the hard real-time nature of the FPGA to create robust and dependable control of the pendulum.
+Some of the software components are written in VHDL.
 As the reader likely knows, programming in VHDL can be a complex venture.
 The Zynq platform adds another layer of complexity in requiring communication through the AXI Bus.
 In order to minimize the complexity of the VHDL programming task a number of practices will be employed by the authors:
@@ -153,8 +154,6 @@ In order to minimize the complexity of the VHDL programming task a number of pra
 	They also provide a means to more easily build a system by connecting several IP cores of arbitrary complexity.
 \end{itemize}
 In addition to the points made above, it is the expectation that future developers will develop Linux drivers which provide an intuitive interface to the firmware developed in this project.
-Therefore, any tasks which may be more easily handled in C and are not necessarily as time critical as the remainder of the task will not be implemented in VHDL and is left for a future project.
-
 
 \subsubsection{Requirement Specification} % (fold)
 \label{ssub:controller_requirements}
@@ -183,7 +182,7 @@ The requirements specified below are tested and verified in section \ref{ssub:ve
 	\item Receive joint angle data from the two joint boards using the \texttt{nRFM}.
 	\label{enum:receive_joint_angle}
 	\begin{itemize}
-		\item Setup of MicroZed as SPI master.
+		\item MicroZed as SPI master.
 		\item Setup of \texttt{nRFM} settings.
 		\item Receive joint angle data form joint boards.
 	\end{itemize}
@@ -213,6 +212,7 @@ The requirements specified below are tested and verified in section \ref{ssub:ve
 
 \subsection{Design and Implementation} % (fold)
 \label{sub:implementation}
+\thomas{introduction to section}
 \subsubsection{Implementation of Cart Position Counter} % (fold)
 \label{ssub:vhdl_components}
 A number of VHDL components were designed and implemented for use on the MicroZed.
@@ -221,7 +221,7 @@ An indepth description of each is not necessary and the authors have decided to 
 The cart position counter is, as the name implies, responsible for maintaining knowledge of the current position of the cart.
 This is done by decoding the incremental quadrature of the motor and reading the state of the endstops.
 Absolute knowledge of the cart position can be maintained by initially moving the cart to one of the endstops, setting the position to zero and then keeping the cart between the two endstops.
-The decoding task is done by a seperate component which is then instansiated in the counting component.
+The decoding task is done by a seperate component which is then instantiated in the counting component.
 
 \paragraph{Incremental Quadrature Decoding}~\\ % (fold)
 \label{par:incremental_quadrature}
@@ -230,7 +230,6 @@ Figure \ref{fig:quadrature} is a depiction of this quadrature scheme.
 The two signals \texttt{A} and \texttt{B} are 90$^\circ$ out of phase and their frequency is determined by the angular velocity of the joint.
 As can be seen from the figure the signals create four unique stages, counting these allows knowledge of both the direction, position and, potentially, the velocity of the joint.
 The \texttt{Z} signal is a unique pulse which happens on every revolution of the motor.
-This signal is not used in this VHDL component as the angular position of the motor is irrelevant in relation to the position of the cart.
 
 \begin{figure}[h]
 	\centering
@@ -334,7 +333,7 @@ when st3_dir =>
 \end{listing}
 As can be seen in the code there is a reference to phase 0.
 This is required since the initial phase is unknown.
-During the first run the direction-determination is skipped and \texttt{last\_phase} is initialized to phase.
+During the first run the direction-determination is skipped and \texttt{last\_phase} is initialized to \texttt{phase}.
 On every subsequent run, depending on the direction, \texttt{next\_state} is set to either \texttt{st4\_cw} or \texttt{st5\_ccw}.
 \paragraph{st4\_cw and st5\_ccw:} % (fold)
 The SM is in these states for one clock cycle to allow for the outputs to be adjusted and a tick to be generated.
@@ -357,6 +356,7 @@ Moving the cart will now increment the position with leftward motion and decreme
 \end{figure}
 
 The SM of the system can be seen in figure \ref{fig:countstatemachine}.
+In this figure \texttt{C} is \texttt{counter\_i}, \texttt{D} is \texttt{direction} and \texttt{T} is \texttt{tick}.
 It should be noted that the end signal is treated as a reset signal and as such is not part of the actual SM.
 Since it is essentially a reset signal handling of it is placed in the \texttt{sync process} to avoid an asynchronous reset of the values.
 The code in question can be seen in listing \ref{code:cart_sync_proc}.
@@ -385,7 +385,7 @@ SYNC_PROC:  process(clk)
 The SM has only three simple states.
 \texttt{st1\_idle} which is the state where the SM waits for a rising edge on the tick signal, \texttt{T}.
 If the direction signal, \texttt{D} is low when a tick arrives the SM proceeds to \texttt{st2\_cw} if the opposite is true it proceeds to \texttt{st3\_ccw}.
-In those states the position variable, \texttt{C} is either decremented or incremented.
+In those states the position variable, \texttt{counter\_i} is either decremented or incremented.
 
 \paragraph{Test Benches}~\\ % (fold)
 \label{par:test_benches}
@@ -394,12 +394,13 @@ VHDL was originally thought as a language to describe and simulate hardware and 
 All of the original features of the language are still present and as such it is possible to create a component which fully exercises whichever component is under development, the unit-under-test or UUT.
 \\~\\
 The test bench written for the cart position counter is comprised of three processes, the \texttt{clk\_proc} which is responsible for generating the driving clock for the component, \texttt{quad\_proce\_ccw} or \texttt{quad\_proce\_cw} for simulating the quadrature signal in either the counter-clockwise or the clockwise direction and finally the \texttt{stim\_proc} which is responsible for exercising any of the input signals.
+\thomas{insert code snippet from testbench}
 \\~\\
 The UUT is instantiated as a component in the test bench and Vivado provides tools for investigating the flow of execution.
 An excerpt illustrating the functionality can be seen in figure \ref{fig:testbench}.
-As can be seen \texttt{B\_i} is leading \texttt{A\_i}, resulting in \texttt{D\_i} going high.
-Since \texttt{emend\_i} is high the component starts counting on every rising edge of \texttt{T\_i}.
-When \texttt{emend\_i} goes low the counter is reset and future ticks are ignored until \texttt{emend\_i} returns to high.
+As can be seen \texttt{B\_i} is leading \texttt{A\_i}, resulting in \texttt{D\_i} going \texttt{high}.
+Since \texttt{emend\_i} is \texttt{high} the component starts counting on every rising edge of \texttt{T\_i}.
+When \texttt{emend\_i} goes \texttt{low} the counter is reset and future ticks are ignored until \texttt{emend\_i} returns to \texttt{high}.
 
 \begin{figure}[h]
 	\centering
@@ -420,7 +421,8 @@ Every user-defined port is brought out through the AXI component so that they ca
 Since every component is made as an IP core the system can be created using a block design.
 For illustration purposes the block design of the full system has been included in figure \ref{fig:blockdesign}.
 The rightmost blocks include three of the authors' designs and a Xilinx \texttt{axi\_gpio} block.
-The GPIO block is used to handle hardware signals for creating an emergency state, enabling the motor driver and similar tasks.
+The GPIO block is used to handle hardware signals for creating a safety condition, enabling the motor driver and similar tasks.
+\thomas{rewrite for proper safety condition}
 As can be seen, a simple RGB LED controller has been written to handle the debug LEDs on the board.
 By creating the component to control just a single LED, that code can be instantiated as many times as is required by the application and in any application.
 In common for all of these blocks is that they require at least some of their input from the AXI bus.
@@ -470,23 +472,19 @@ In code this is handled as seen in listing \ref{code:axiconnectionps}
 \begin{minted}{c}
 #define CART_BASEADDR XPAR_ZYBO_CART_COUNTER_V1_0_0_BASEADDR
 
-#define CAL_ADDR		0x00
-#define DIR_ADDR		0x00
-#define POS_ADDR		0x04
+#define CAL_ADDR    0x00
+#define DIR_ADDR    0x00
+#define POS_ADDR    0x04
 	
-#define CALIBRATED		0x01
+#define CALIBRATED  0x01
 		@$\vdots$@
 	
 void get_position(uint32_t *position)
 {
 	if(is_calibrated() == CALIBRATED)
-	{
 		*position = Xil_In32(CART_BASEADDR+POS_ADDR);
-	}
 	else
-	{
 		position = NULL;
-	}
 }
 
 		@$\vdots$@
@@ -506,7 +504,7 @@ void cart_task(void)
 
 Here a wrapper function for \texttt{Xil\_In32()} is shown.
 A number of these are written to simplify the code and reduce the risk of errors.
-In this case the position is only valid if the calibration bit is set high.
+In this case the position is only valid if the calibration bit is set \texttt{high}.
 When it is not, a null pointer is returned.
 Rather than checking both the calibration status and the position, both can be done using a single function call.
 
@@ -530,14 +528,14 @@ A description of each step and register is given below.
 	\label{fig:nrf_setup}
 \end{figure}
 \begin{itemize}
-	\item \texttt{SETUP} register is set in order to gain 1Mbps air transmission and maximum output power in TX mode.
-	\item \texttt{RF\_CH} register is used to set the channel used. It should be set differently for each \texttt{nRFM} pairs.
+	\item \texttt{RF\_SETUP} register is set in order to gain 1Mbps air transmission and maximum output power in TX mode.
+	\item \texttt{RF\_CH} register is used to set the channel used. It should be set differently for each \texttt{nRFM} pair.
 	\item \texttt{SETUP\_AW} register is set to use the shortest available address width of three bytes.
 	\item \texttt{EN\_AA} register is set to disable auto acknowledgement.
 	\item \texttt{SETUP\_RETR} register is set to disable automatic retransmission.
 \end{itemize}
 
-The \texttt{PWR\_UP} bit is then set \texttt{1} to power up the module. 
+The \texttt{PWR\_UP} bit is then set to \texttt{1} to power up the module. 
 A wait of 4.5ms is then initiated to allow for proper start-up of the crystal.
 \\~\\
 If receive mode, \texttt{RX}, is needed the \texttt{PRIM\_RX} bit should be set to \texttt{1} and the receive address written to \texttt{RX\_ADDR\_P0}.
@@ -561,6 +559,7 @@ The next one to five bytes is the value that are to be written to the register.
 	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRFM} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
+\thomas{fix figure to include arbitrary length value}
 
 The C code in listing \ref{code:rf_write_register_code} is used to write a value to a register. 
 Line 5 makes sure that a valid address and command is sent, regardless of the inputs.
@@ -608,11 +607,11 @@ The payload is the next one to 32 bytes sent by the \texttt{nRFM}.
 	\label{fig:rxtx_payload}
 \end{figure}
 
-Listing \ref{code:rf_read_payload} shows how a payload of 32 bytes are read in C code. 
+Listing \ref{code:rf_read_payload} shows how a payload of 32 bytes is read in C code. 
 Line 5 defines the input and output buffers and line 6 assigns the read payload command to the first byte of the output buffer.
-33 bytes of data is sent in line 7, this is needed in order to create the clock signal for the \texttt{nRFM}, when it sends the 32 bytes payload.
-The payload is also read and assigned to the input buffer in line 7.
-Line 8-11 extracts the 32 bytes payload and ignores the first byte sent from the \texttt{nRFM}, which is the value of the \texttt{STATUS} register.
+33 bytes of data is sent in line 7-8, this is needed in order to create the clock signal for the \texttt{nRFM}, when it sends the 32 bytes payload.
+The payload is also read and assigned to the input buffer in line 7-8.
+Line 9-12 extracts the 32 bytes payload and ignores the first byte sent from the \texttt{nRFM}, which is the value of the \texttt{STATUS} register.
 
 \begin{listing}[!h]
 \begin{minted}{c}
@@ -649,7 +648,7 @@ The designed PWM generator IP core has three inputs and three outputs as illustr
 A counter is incremented to a high limit and decremented to zero using a state machine.
 The high limit for the counter when using the MicroZed and a PWM frequency of 22KHz is calculated by:
 \begin{equation}
-	H_{limit} = \frac{F_{Microzed}}{F_{PWM}\cdot 2} = \frac{100\cdot 10^6}{22\cdot 10^6 \cdot 2} = 2272.7 \simeq 2273
+	H_{limit} = \frac{F_{Microzed}}{F_{PWM}\cdot 2} = \frac{100\cdot 10^6}{22\cdot 10^3 \cdot 2} = 2272.7 \simeq 2273
 \end{equation}
 Where $H_{limit}$ is the high counting limit, $F_{MicroZed}$ and $F_{PWM}$ are the frequencies of the MicroZed and the PWM, respectively. 
 The PWM output will be set \texttt{high}, when the counter value is greater than a compare value.
@@ -678,8 +677,8 @@ The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where t
     \label{fig:vhdl_pwm_gen}
 \end{figure}
 
-Generating the PWM signal from the counter and compare values is done in lines 5 to 11 of listing \ref{code:vhdl_pwm_gen}.
-Setting the PWM on to the correct channel is done in lines 12 to 16.
+Generating the PWM signal from the counter and compare values is done in lines 4 to 10 of listing \ref{code:vhdl_pwm_gen}.
+Setting the PWM on to the correct channel is done in lines 11 to 15.
 As \texttt{pwm\_a\_l} and \texttt{pwm\_b\_l} are written to while in a process, they will only be updated with the last written value, at the end of the process.
 
 \begin{listing}[H]
@@ -709,7 +708,7 @@ end process;
 \label{ssub:khaos}
 KHAos is a run-to-complete scheduler written by Karsten Holm Andersen, lecturer at SDU.
 It is written to provide a simple operating system, OS, for use on bare-metal systems.
-The OS includes of a timer module and a CPU config module which are written specifically for the platform that the OS should be running on.
+The OS includes a timer module and a CPU config module which are written specifically for the platform that the OS should be running on.
 The software also includes the scheduler itself, \texttt{schedule.c} and a pair of configuration files \texttt{rtcs.h} and \texttt{rtcscnf.h}.
 \\~\\
 It should be noted that while the authors did set up a functioning KHAos system it saw no actual use in the verification of features due to time constraints.
@@ -763,25 +762,25 @@ void alive_task(void)
 	_wait(MILLI_SEC(500));
 }
 \end{minted}
-\caption[Alive task in KHAos.]{Alive task in KHAos. This task repeatedly switches one of the RGB LEDs on the controller board to green and off.}
+\caption[Alive task in KHAos.]{Alive task in KHAos. This task repeatedly switches one of the RGB LEDs on the controller board to green and \texttt{off}.}
 \label{code:alive_task}
 \end{listing}
 % subsubsection khaos (end)
 
 \subsection{Verification} % (fold)
 \label{ssub:verification_controller_board_software}
-
+\thomas{introduction to section}
 \subsubsection{Verification of: Requirement \ref{enum:correct_cart_position}} % (fold)
 \label{ssub:verification_of_requirement_enum:correct_cart_position}
 This requirement states that correct cart position should be known at all times.
 
 \paragraph{Test}~\\
-Cart should by moved back and forth and the cart position variable should be be incremented and decremented accordingly.
+Cart should by moved back and forth and the cart position variable should increment and decrement accordingly.
 The position should be set to zero, when moving the cart to the position of endstop 1.
 \\
-Drifting of the counter should be tested by placing the cart at at fixed position and noting the position variable.
+Drifting of the counter should be tested by placing the cart at a fixed position and noting the position variable.
 Then the cart should be moved back and forth for some time and then placed at the initial fixed position. 
-The position value should have the same value as when initially held at the fixed position.
+The position variable should have the same value as when initially held at the fixed position.
 
 \paragraph{Conclusion}~\\
 The test procedure described above was followed and it was found that the cart position variable is correctly increased, decreased and it was set to zero when reaching endstop 1.
@@ -803,7 +802,7 @@ Furthermore it was tested that the three RGB LEDs could be illuminated in all co
 
 \subsubsection{Verification of: Requirement \ref{enum:software_correct_motor_driver_signals}} % (fold)
 \label{ssub:verification_of_requirement_enum:software_correct_motor_driver_signals}
-This requirement specifies that software should produce correct signals to motor driver that allows for control of speed and direction of the motor.
+This requirement specifies that software should produce correct signals to the motor driver that allows for control of speed and direction of the motor.
 
 \paragraph{Test}~\\
 PWM outputs and I/O pin \texttt{DIS} of the MicroZed should be applied to the motor through the controller board circuitry.
@@ -827,7 +826,7 @@ This requirement is tested and concluding remarks are given in section \ref{ssub
 \subsubsection{Verification of: Requirement \ref{enum:real_time_behavior}} % (fold)
 \label{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior}
 This requirement states that all software should be real-time.
-\paragraph{Conclusion}
+\paragraph{Conclusion}~\\
 It was the intention to collect all of the written software in a real-time system based on KHAos.
 This goal was not reached due to time constraints of the project. 
 
@@ -846,7 +845,7 @@ This was successfully done as described in section \ref{ssub:vhdl_components}.
 \subsubsection{Verification of: Requirement \ref{enum:software_should_handle_emergency}} % (fold)
 \label{ssub:verification_of_requirement_enum:software_should_handle_emergency}
 This requirement specifies that software should handle emergency situations.
-
+\thomas{do safety condition transformation}
 \paragraph{Test}~\\
 Detecting a safety condition should be tested by triggering an emergency condition e.g. moving the cart to one of the endstop and record this using the MicroZed.
 \\

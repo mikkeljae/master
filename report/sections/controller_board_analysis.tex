@@ -7,14 +7,14 @@ This section will constitute an analysis of this functionality and of possible s
 
 \subsubsection{Communication} % (fold)
 \label{ssub:communication}
-The controller board should be able to communicate wirelessly with the joints as discussed in section \ref{ssub:mechanics}.
+The controller board should be able to communicate wirelessly with the joints as will be discussed in section \ref{ssub:mechanics}.
 The wireless link should provide sufficient bandwidth that the angular position of the joint can be transmitted sufficiently frequently.
 From section \ref{ssub:encoder} it can be seen that the encoder chosen for the joints allows 7200 counts per revolution.
 This can be represented using 13 bit. 
 Adding a 3 bit identifier makes the payload of a message 16 bit.
 This is a rough estimate which will be used for the purposes of this analysis.
 A number of different protocols exist which could be used in this project.
-Three were under consideration for this project:
+Three were under consideration:
 \begin{itemize}
 	\item \textbf{TCP/IP over WiFi:} TCP/IP is the defacto standard for communication between computers, both wired and wirelessly.
 	This, along with the very large throughput, makes it an enticing option.
@@ -25,24 +25,23 @@ Three were under consideration for this project:
 	\item \textbf{Radio Frequency:} While not strictly a protocol, using an RF transceiver eliminates the additional overhead associated with the previously mentioned protocols.
 	RF transceivers come with a number of different interfaces such as SPI or I2C and will simply transmit the data received through that interface.
 	This makes it easy to communicate using this method through bare-metal code or even VHDL.
+	\thomas{note in verification that a protocol DOES exist in the RF module.}
 \end{itemize}
 Considering the above it was chosen to use an RF transceiver to facilitate the communication between the joints and the controller board.
-An RF transceiver can be implemented using very low power, making it ideal for the battery powered joints.
 % subsubsection communication (end)
 
 \subsubsection{The MicroZed Development Platform} % (fold)
 \label{ssub:microcontroller}
 The MicroZed \cite{microzed} development platform is a Zynq-7000 series based platform which the authors have worked extensively with in previous projects \cite{isaswarm}.
-It was developed by Avnet specifically to be implemented in a product and as such there are fewer built-in features to the board, resulting in a reasonably small footprint and an efficient interface.
+It was developed by Avnet specifically to be implemented in a product and as such there are few built-in features to the board, resulting in a reasonably small footprint and an efficient interface.
 Most of the design done by the authors in \cite{isaswarm} can be reused with limited modifications.
-For these reasons the MicroZed will be used in this project.
 \\~\\
 One thing of note is that the Zynq-7000 series of chips requires a specific startup/shutdown sequency, detailed in \cite{carrier_card_design_guide}, which ensures that signal integrity is maintained during startup and shutdown of the platform.
 This functionality should also be verified in this project.
 % subsubsection microcontroller (end)
 
 \subsubsection{Motor Driver}
-It is necessary to device some form of driving circuitry for the motor driving the timing belt.
+It is necessary to device some form of driving circuitry for the motor driving the belt.
 The motor should be able to move in both directions. 
 An H-bridge allows this bidirectional movement.
 By properly switching the MOSFETs in the bridge the average voltage across the motor can be controlled and therefore also the speed and direction of the motor.
@@ -74,7 +73,7 @@ The components chosen for the system all impose some requirement as to what volt
 	Therefore a 24V rail will be created to supply the motor.
 	In addition to the motor, the 24V rail will also be used to generate any subsequent rails.
 	The maximum current draw possible by the Maxon motor is its stall current. 
-	According to the datasheet this is 80.2A.
+	According to the datasheet \cite{maxon} this is 80.2A.
 	The authors wish for the system to be able to handle the stall current so the 24V rail should be capable of supplying at least that plus the current draw of any subsequent rails.
 	\item  \textbf{MicroZed:} This board is powered from a 5V rail and requires a 3.3V rail to power the I/O banks of the Zynq-7020 chip.
 	The design of the power delivery for this board was done by the authors in the aforementioned project \cite{isaswarm} and it was found that the MicroZed can draw a maximum of 1.8A from the 5V rail and up to 1A from the 3.3V rail.
@@ -86,17 +85,17 @@ The components chosen for the system all impose some requirement as to what volt
 	\item \textbf{HIP4081:} This component is the motor driver used in the project.
 	The choice of this component is discussed in more detail in section \ref{ssub:h_bridge}.
 	A 12V rail will be used to power this component. 
-	This voltage is used by the HIP4081 to generate the gate signals.
+	This voltage is used by the \texttt{HIP4081} to generate the gate signals.
 	The 12V rail will also be used to generate the 5V rail.
 	This is within the specification for input voltage of the DC/DC converter of the 5V rail. 
-	Due to the choice of using the HIP4081, it is necessary to do bootstrapping (see section \ref{ssub:bootstrap_circuit}). 
+	Due to the choice of using the \texttt{HIP4081}, it is necessary to do bootstrapping (see section \ref{ssub:bootstrap_circuit}). 
 	The current drawn from the bootstrap circuit is decided in large part by the designer and as such the current requirement of the 12V rail is somewhat flexible.
 	For this reason the current rating of the 12V rail should be as high as is practically and economically possible.
 \end{itemize}
 A number of additional components are likely to be required on the controller board which will all impose additional current draw on their respective rails.
 These are considered negligible when compared to the major consumers mentioned above.
 \\~\\
-An overview of the hierarchy of the different rails can be seen in figure
+An overview of the hierarchy of the different rails can be seen in figure \ref{fig:voltage_hierarchy}.
 The required accuracy of each rail is determined by the most sensitive component on that rail and is presented in table \ref{tab:powerrails}.
 Since the 24V and 12V rails do not have any strict requirements imposed on them, a $\pm$1V requirement is set. 
 The 2.5V reference is used only as a reference voltage and therefore does not have a formal current requirement.
@@ -104,8 +103,8 @@ The 2.5V reference is used only as a reference voltage and therefore does not ha
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.75\linewidth]{graphics/rail_hierarchy}
-	\caption[Voltage rail hierarchy on the controller board.]{Overview of the voltage rail hierarchy in the controller board design. The 24V rail is external and is used to genereate the 12V rail which generates the 5V rail which, finally, generates the 3.3V rail and 2.5V reference.}
-	\label{fig:figure1}
+	\caption[Voltage rail hierarchy on the controller board.]{Overview of the voltage rail hierarchy in the controller board design. The 24V rail is external and is used to generate the 12V rail which generates the 5V rail which, finally, generates the 3.3V rail and 2.5V reference.}
+	\label{fig:voltage_hierarchy}
 \end{figure}
 
 \begin{table}[h]
@@ -120,6 +119,7 @@ The 2.5V reference is used only as a reference voltage and therefore does not ha
 \end{table}
 
 \subsubsection{Motor Current Sensing}
+\thomas{generate requirement for current mode control}
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
 Current measurements are generally done by either hall effect based sensors or shunt resistors as described in \cite{current_measure_vishay}.
 Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
@@ -133,12 +133,12 @@ For this project a shunt resistor will be used since it is regarded as the simpl
 \label{subsub:safety}
 It is expected that, eventually, an error may occur that causes the cart to move uncontrollably.
 A safety system should be constructed in such a way that it will prevent the cart from crashing violently or the electronics to self-destruct.
-It should be isolated from the remaining system and no programming should be involved in determining whether a safety condition is met.
+It should be independent from the remaining system and no programming should be involved in determining whether a safety condition is met.
 \\~\\
 A safety condition is defined as a situation that, when not met, indicates that a critical or dangerous situation has occured with the system.
 When a condition is met, that situation has not occured.
 \\~\\
-The safety system for this platform should be designed in such a way that, when activated, it will cut power to the motors.
+The safety system for this platform should be designed in such a way that, when activated, it will cut power to the motor.
 In order to more easily identify the cause of the fault, the remaining electronics should remain operational to maintain the current program status.
 Clearly, the system should function only if all safety conditions are met.
 This will be ensured by creating an aggregation circuit which compares all of the safety conditions, creating one signal which will be capable of closing the main relay if necessary.
@@ -183,6 +183,7 @@ When using this sensor the circuit should be designed in such a way that only th
 \\~\\
 While all of the above have their drawbacks, it was decided to use the infrared transceiver.
 This sensor allows the greatest reliability while being reasonably simple to mount on the platform in that it requires no modification to the cart or rail.
+A simple 3D print can be done to mount the sensor.
 \\~\\
 In addition to the endstops, also an emergency button, preferably red, should be able to cut power to the motors.
 
@@ -193,7 +194,7 @@ In addition to the endstops, also an emergency button, preferably red, should be
 From experience of the authors, a PCB layout is never error free in the first revision. 
 This has been true even though a tremendous amount of work went into designing the PCB.
 Therefore a strategy was devised to increase the likelihood of producing an error free PCB.
-The strategy consist of five steps that needs to be completed after finishing the design of the board:
+The strategy consist of five steps that should be done during the design of the board:
 
 \begin{itemize}
 	\item Documentation
@@ -207,7 +208,7 @@ The content of each step will be elaborated here.
 
 \paragraph{Documentation:}
 Each circuit should be documented to ensure that the design is done correctly.
-Documenting a circuit requires studying the components datasheets and ensuring that they each meets the requirement.
+Documenting a circuit requires studying the datasheet of the components and ensuring that each component meets the requirement.
 Furthermore it requires a thorough inspection of the expected functionality of the circuit.
 This step leads to correcting errors where a component is used incorrectly in respect to the desired functionality of the circuit.
 
@@ -222,8 +223,8 @@ One could think that this step is irrelevant, but the authors believe it is impo
 After completion of this step, all circuits have been checked at least two times and the schematic should be correct. 
 
 \paragraph{Footprint Inspection:}
-Provided that the schematic is correct, the only possibly source of errors is the components footprints. 
-Inspecting the footprint consist of verifying the correct pin assignment and the correct land patterns.
+Provided that the schematic is correct, the only possibly source of errors is the component footprints. 
+Inspecting the footprint consists of verifying the correct pin assignment and the correct land patterns.
 Both are done by inspecting the datasheet of each component. 
 After completion of this step, both the schematic and footprints should be correct and the board is expected to be free from errors.
 
@@ -249,6 +250,8 @@ This may cause issues in the digital circuitry.
 
 Having several ground planes can cause issues with currents circulating in them.
 In order to avoid this it is crucial that the ground planes are connected in one place only.
+This is known as a star connection.
+\thomas{find source for stars}
 \\~\\
 Since at least part of the PCB is likely to carry significant currents it is necessary to appropriately size the width of traces and the thickness of the copper.
 
@@ -286,7 +289,7 @@ For this reason it was decided to produce just a single PCB with extra copper an
 
 \clearpage
 \subsubsection{Requirement Specification}
-The requirements specified below are tested and verified in section \ref{ssub:verification_controller_board_software}.
+The requirements specified below are tested and verified in section \ref{ssub:verifaction_controller_board}.
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Speed and direction of the motor should be adjustable through PWM from the MicroZed.
@@ -300,7 +303,7 @@ The requirements specified below are tested and verified in section \ref{ssub:ve
 	\item Motor current measurement through ADC input on the MicroZed.
 	\label{enum:motor_current}
 	\begin{itemize}
-		\item Shunt resistor to measure the motor current.
+		\item Shunt resistor to allow for measurement of the motor current.
 	\end{itemize}
 
 	\item Voltage rails for the various components in the circuit.
@@ -380,7 +383,7 @@ The requirements specified below are tested and verified in section \ref{ssub:ve
 				\item[$\circ$] Emergency signal from the MicroZed.
 			\end{itemize}
 			\item Relay should switch power to motor.
-			\item Relay should be active only when emergency conditions are inactive.
-			\item Power to remaining electronics and MicroZed should not be affected by an emergency condition.
+			\item Relay should be active only when safety conditions are met.
+			\item Power to remaining electronics and MicroZed should not be affected by a safety condition.
 		\end{itemize}
 \end{enumerate}

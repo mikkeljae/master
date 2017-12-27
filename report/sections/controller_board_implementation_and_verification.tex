@@ -7,21 +7,22 @@ Hereafter the manufacturing process of the controller board is shown.
 
 \subsubsection{Prototyping}
 \label{sub:controller_board_prototyping}
-In order to test important parts of the controller board a home-made prototype PCB was made at the University's PCB lab.
+In order to test important parts of the controller board a home-made prototype PCB was made at the Universitys PCB lab.
 
 Three main functionalities should be verified on the board:
 
 \begin{itemize}
-	\item Schmitt-trigger circuitry and \texttt{AND} gate circuit
-	\item PWM logic level shifting
-	\item Motor driver circuit
+	\item Schmitt-trigger circuitry and \texttt{AND} gate circuit.
+	\item PWM logic level shifting.
+	\item Motor driver circuit.
 \end{itemize}
 
 The remaining functionalities have either been tested previously or were too trivial to test. 
+\thomas{comment on the shunt resistor not being tested.}
 
-\paragraph{Schmitt-trigger Circuitry and \texttt{AND} Gate Circuit}~\\
+\paragraph{Schmitt-trigger Circuitry and AND-Gate Circuit}~\\
 The Schmitt-triggers were tested by varying the input voltage and verifying the switching threshold along with the the hysteresis levels. 
-Testing the \texttt{AND} gate was done by applying different logic levels and verifying the results.
+Testing the \texttt{AND}-gate was done by applying different logic levels and verifying the results.
 The complete circuit was found to work as intended and can be seen in appendix \ref{app:controller_board_schem}, at component \texttt{U7} and \texttt{Q14}.
 
 \paragraph{PWM Logic-Level-Shifting}~\\
@@ -29,18 +30,16 @@ The functionality of the logic-level-shifter \texttt{74LVC2G17} was verified by 
 
 \paragraph{Motor Driver Circuit}~\\
 By measuring the outputs of the inverter \texttt{SN74LVC2G04} it was concluded that there was a design error in the way the component was used and the output signals were invalid.
-A thorough investigation of the schematic revealed that the component could be omitted, without changing the functionality of the board.
+A thorough investigation of the schematic revealed that the component could be omitted without changing the functionality of the board.
 The motor driver circuit on the PCB could not be tested because of this design error.
 Therefore it was decided to develop another prototype PCB with the sole purpose of testing the motor driver circuit.
-The circuit can be seen in \ref{fig:m_drive_circuit_schem}
+The schematic of the circuit can be seen in \ref{fig:m_drive_circuit_schem} and a picture of the developed PCB in figure \ref{fig:m_drive_circuit}.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\linewidth]{graphics/hip_testboard_prototype}
-	\caption[Prototype PCB with motor driver schematics]{Schematics of the PCB PCB developed to test the functionality of the motor drive circuitry.}
+	\caption[Prototype PCB with motor driver schematics]{Schematics of the PCB developed to test the functionality of the motor drive circuitry.}
 	\label{fig:m_drive_circuit_schem}
 \end{figure}
-
-A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
 
 \begin{figure}
 	\centering
@@ -48,9 +47,9 @@ A picture of the developed PCB is shown in figure \ref{fig:m_drive_circuit}.
 	\caption[Prototype PCB with motor driver.]{Picture of PCB developed to test the functionality of the motor drive circuitry.}
 	\label{fig:m_drive_circuit}
 \end{figure}
-The board's gate signals were wired to the gates of four MOSFETs.
+The boards gate signals were wired to the gates of four MOSFETs in a full-bridge configuration.
 A power resistor was used as a load and PWM signals were applied to the motor driver input pins. 
-Measuring the gate signals showed strange behaviour and after a thorough inspection of the board and the schematic it was found that the bootstrap diodes were facing in the wrong direction. 
+Measuring the gate signals showed strange behaviour and after a thorough inspection of the board and the schematic it was found that the bootstrap diodes were facing the wrong direction. 
 The source of this was an error in the footprint of the component. 
 After correcting the issue the driver and the bootstrap circuit was found to function as intended. 
 The measured signals are shown in figure \ref{fig:test_hip_signals}.
@@ -86,7 +85,7 @@ Component names are referenced to the controller board schematics found in appen
 	\item \texttt{EM\_END} signals not wired to header: Wire soldered from R44 to JX2 Pin30
 	\item MOSFETs are reversed in footprint: MOSFETs are reversed in design to negate the reversed footprint.
 	Standard TO220 heatsink used.
-	\item Footprint of Motor cabacitors reversed: Capacitors mounted in reverse to negate the reversed footprint.
+	\item Footprint of motor capacitors reversed: Capacitors mounted in reverse to negate the reversed footprint.
 	\item Inhibit signals of \texttt{PTN78020} and \texttt{PTH08080} connected: Trace cut between the two so that \texttt{PTN78020} is still connected to the net.
 	\item \texttt{nRF24L01} module, \texttt{nRFM} (see section \ref{ssubs:nrf24l01}) close to copper: \texttt{nRFM} mounting using wires to clear the copper of the board.
 \end{itemize}
@@ -125,12 +124,12 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
  			\begin{itemize}
  				\item[-] None of the voltage rails were present.
  				This lead to an investigation of \texttt{PTN78020}, which should produce the 12V rail. 
- 				The \texttt{PTN78020}s \texttt{inhibit} pin is insufficiently floating.
+ 				The \texttt{PTN78020}s inhibit pin is insufficiently floating.
  				It has an internal pull-up resistor which should bring the pin voltage up to 1.5V when the signal is left floating externally, but the pin voltage was approximately 0V.
  				Applying a 3V signal to the pin brings the 12V rail up, followed by the 5V and 3.3V rails.
  				The issue was found to be that the inhibit pins of \texttt{PTN78020} and \texttt{PTH08080} are connected to the same net, \texttt{DCDC\_EN}.
  				The \texttt{PTN78020} is not able to correctly raise the voltage on its inhibit pin, because of \texttt{PTH08080}. 
- 				Cutting the DCDC\_EN track such that the two are effectively on separate nets fixed the issue.
+ 				Cutting the \texttt{DCDC\_EN} track such that the two are effectively on separate nets fixed the issue.
             	This results in not being able to disable the \texttt{PTH08080} manually, however this will happen in an acceptable manner by simply turning off the \texttt{PTN78020}.
  			\end{itemize}
  	\end{itemize}
@@ -215,7 +214,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 	\item Apply 3.3V PWM to signals \texttt{PWMA} and \texttt{PWMB}.
 	\begin{itemize}
 		\item[\cmark] Verify corresponding 5V PWM on signals \texttt{PWM\_AL} and \texttt{PWM\_BL}.
-		\item[\cmark] Verify that 0V is present on signals \texttt{MGATE\_BH}, \texttt{MGATE\_BL}, \texttt{MGATE\_AH} and \texttt{MGATE\_AL}
+		\item[\cmark] Verify that 0V is present on signals \texttt{MGATE\_BH}, \texttt{MGATE\_BL}, \texttt{MGATE\_AH} and \texttt{MGATE\_AL}.
 	\end{itemize}
 	\item Apply 0V to \texttt{DIS}.
 	\item Ensure that 24V is still present on \texttt{POWER\_IN}.
@@ -225,7 +224,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 			\item[-] \texttt{MGATE\_BL} works as intended.
 			\texttt{MGATE\_AL} follows the correct switching pattern but is at 4.8V low and 7V high.  
 		\end{itemize}
-		\item Verify that 35V PWM is present on signals \texttt{MGATE\_AH} and \texttt{MGATE\_BH}.
+		\item[\xmark] Verify that 35V PWM is present on signals \texttt{MGATE\_AH} and \texttt{MGATE\_BH}.
 		\begin{itemize}
 			\item [-] \texttt{MGATE\_BH} works as intended.
 			\texttt{MGATE\_AH} behaves similarly to \texttt{MGATE\_AL}, indicating a short circuit between the two signals.
@@ -247,9 +246,10 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 \begin{figure}[h]
 	\centering
     \input{graphics/controllerboardv2_gate_b_deadtime.tex}
-	\caption[Dead time on hate signals.]{Gate signals as produced by the motor driver. It is verified that dead time exists.}
+	\caption[Dead time on gate signals.]{Gate signals as produced by the motor driver. It is verified that dead time exists.}
 	\label{fig:controllerboardv2_gate_b_deadtime}
 \end{figure}
+\mikkel{some text for figure5.19 gate signals on CB.}
 
 \paragraph{Verify nRF24L01 Module functionality} % (fold)
 \label{par:verify_nrf24l01_module_functionality}
@@ -293,10 +293,10 @@ The test was done on both channels and it was verified that direction and speed 
 The gate signals for channel \texttt{B} are shown in figure \ref{fig:controllerboardv2_gate_b}, where it can be seen that the high side gate signals are correctly bootstrapped.
 
 \paragraph{Addendum}~\\
-During the further testing of the system the H-bridge suddenly gave up and released its smoke.
+During further testing of the system the H-bridge suddenly gave up and released its smoke.
 This spurred an extensive quest to determine the root cause of the issue.
 Eventually the data in figure \ref{fig:current_w_load} was found.
-This data suggests that a large current, $>20$A is drawn when \texttt{DIS} is set to low and the motor driver is first starting.
+This data suggests that a large current, $>20$A is drawn when \texttt{DIS} is set to \texttt{low} and the output of the motor driver is enabled.
 
 \begin{figure}[h]
 	\centering
@@ -316,11 +316,11 @@ At low PWM duty cycle the 24V rail recovers before the failure happens.
 	\label{fig:current_w_load_closeup}
 \end{figure}
 
-By inspecting the data of the time immediately after \texttt{DIS} is set low, as seen in figure \ref{fig:current_w_load_closeup} it is apparent that the gate signal on the high side MOSFET is never pulled below 12V and as a result the MOSFET is always conducting, creating shoot-through on the 24V rail when the low-side MOSFET is conducting.
+By inspecting the data of the time immediately after \texttt{DIS} is set \texttt{low}, as seen in figure \ref{fig:current_w_load_closeup}, it is apparent that the gate signal on the high side MOSFET is never pulled below 12V and as a result the MOSFET is always conducting, creating shoot-through on the 24V rail when the low-side MOSFET is conducting.
 Due to this the current can be seen to step up at every pulse of PWM until at approximately 0.2ms where a steady state occurs.
 This steady state is maintained until approximately 4ms have passed where suddenly the gate signal does correctly go to 0V, meaning that the high-side MOSFET no longer conducts, allowing the 24V rail to recover.
 \\~\\
-In an attempt to work around the issue the first 4ms after setting \texttt{DIS} low, were spent with 0\% PWM, yielding the result seen in figure \ref{fig:current_w_load_slow}.
+In an attempt to work around the issue the first 4ms after setting \texttt{DIS} \texttt{low}, were spent with 0\% PWM, yielding the result seen in figure \ref{fig:current_w_load_slow}.
 This is the expected behaviour.
 PWM starts, slight current increase at the supply, steady 24V rail.
 \\~\\
@@ -330,7 +330,7 @@ Since the 12V and therefore the 5V rail were unaffected by the dipping 24V rail 
 
 \begin{figure}[h]
 	\centering
-%	\input{graphics/current_w_load_slow.tex}
+	\input{graphics/current_w_load_slow.tex}
 	\caption[Main power supply current draw, 0\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 0\% duty cycle PWM to the high side MOSFET of channel B for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
 	\label{fig:current_w_load_slow}
 \end{figure}
@@ -349,7 +349,7 @@ This results in a voltage drop of 1.6$\mu$V which should result in a measurable 
 \paragraph{Conclusion}~\\
 The output was measured and is shown in figure \ref{fig:controllerboardv2_current_sense}.
 As can be seen the output is approximately 300mV, twice as large as the expected output, 160mV.
-Furthermore the signal is very noisy with noise spikes as large as 200mV peak-to-peak. 
+Furthermore the signal is very noisy with spikes as large as 200mV peak-to-peak. 
 
 \begin{figure}[h]
 \centering
@@ -361,7 +361,7 @@ Furthermore the signal is very noisy with noise spikes as large as 200mV peak-to
 \paragraph{Addendum}~\\
 The data was gathered with NO switching of the MOSFETs.
 Further tests revealed that additional noise is introduced when the MOSFETs are actively switching.
-Spikes appeared in the data that do not in anyway represent the current flowing through the load.
+Spikes appeared in the data that do not in any way represent the current flowing through the load.
 \\~\\
 During design the necessity of an analog ground was overlooked, despite the obvious need for one when handling signals as delicate as are seen here.
 Unfortunately it is unlikely that this feature can be used without a redesign of the board.
@@ -369,7 +369,6 @@ This redesign would include the addition of an analog ground and possibly an att
 While this would cause more power loss due to the higher resistance to ground it would also make the signals more robust and therefore easier to measure correctly.
 \\~\\
 Lacking the current measuring feature is unfortunate but only excludes the possibility of current mode control.
-Complete control and swing is still possible without this feature.
 
 \subsubsection{Verification of: Requirement \ref{enum:voltage_rails}} % (fold)
 \label{ssub:requirement_enum:voltage_rails}
@@ -399,11 +398,11 @@ This requirement states that voltage transients on voltage rails should be minim
 The voltage across the H-bridge should be measured while driving the motor in order to detect voltage transients. 
 
 \paragraph{Conclusion}~\\
-While conducting the test as described abobe it was not possible to detect any voltage transient due to the current draw by the motor.
-This is also as expected, because of the capacitor bank.
-The motor current and the current draw from the main power supply was measared while driving the motor.
+While conducting the test as described above it was not possible to detect any voltage transient due to the current draw by the motor.
+This is as expected, because of the capacitor bank.
+The motor current and the current draw from the main power supply was measured while driving the motor.
 The measured waveforms are shown in figure \ref{fig:controllerboardv2_currents}.
-Here it can be seen that even though the motor current alternating the supply current is mostly DC.
+Here it can be seen that even though the motor current is alternating the supply current is mostly DC.
 \begin{figure}[h]
 	\centering
     \input{graphics/controllerboardv2_current_motor_supply.tex}
@@ -418,29 +417,27 @@ This includes start-up and power-down sequences.
 
 \paragraph{Test}~\\
 
-Testing if the board complies with the correct start-up and power-off sequence, by measuring the important signals when turning the board \texttt{on} and \texttt{off}.
+Testing if the board complies with the correct start-up and power-down sequence should be done by measuring the appropriate signals when turning the board \texttt{on} and \texttt{off}.
 
 \paragraph{Conclusion}
-All important signals during startup where measured and are plotted in figure \ref{fig:controllerboardv2_startup}.
-It should be noted that the \texttt{VCCIO\_EN} signal is controlled by the MicroZed and not the developed controller board. 
-It can be verified that the voltage on the 3.3V rail does not rise when the voltage of \texttt{VCCIO\_EN} is lower than 1.3V.
-This level is the high threshold of the comparator that enables the DCDC converter that generates the 3.3V rail.
-Furthermore, using the work done in \cite{isaswarm}, it can be verified that the measured signals correspond to the ones produced when powering ON the MicroZed using Avnets own MicroZed carrier card.
-\\~\\
-The important signals when shutting down the controller board and the MicroZed are measured and plotted in figure \ref{fig:controllerboardv2_shutdown}.
-It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in the correct order. 
-
-\begin{figure}[h]
+All appropriate signals during startup where measured and are plotted in figure \ref{fig:controllerboardv2_startup}.
+\begin{figure}[H]
 	\centering
 	\input{graphics/controllerboardv2_startup.tex}
-	\caption[Signals measured doing startup of controller board.]{Important signals measured doing startup of controller board with the MicroZed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
+	\caption[Signals measured doing startup of controller board.]{Signals measured doing startup of controller board with the MicroZed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
 	\label{fig:controllerboardv2_startup}
 \end{figure}
-
-\begin{figure}[h]
+It should be noted that the \texttt{VCCIO\_EN} signal is controlled by the MicroZed and not the developed controller board. 
+It isverified that the voltage on the 3.3V rail does not rise when the voltage of \texttt{VCCIO\_EN} is lower than 1.3V.
+This level is the high threshold of the comparator that enables the DCDC converter that generates the 3.3V rail.
+Furthermore, using the work done in \cite{isaswarm}, it is verified that the measured signals correspond to the ones produced when powering \texttt{on} the MicroZed using Avnets own MicroZed carrier card.
+\\~\\
+The appropriate signals when shutting down the controller board and the MicroZed are measured and plotted in figure \ref{fig:controllerboardv2_shutdown}.
+It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in the correct order. 
+\begin{figure}[H]
 	\centering
     \input{graphics/controllerboardv2_shutdown.tex}
-	\caption[Signals measured doing shutdown of controller board.]{Important signals measured doing shutdown of controller board with the MicroZed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
+	\caption[Signals measured doing shutdown of controller board.]{Signals measured doing shutdown of controller board with the MicroZed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
 	\label{fig:controllerboardv2_shutdown}
 \end{figure}
 
@@ -449,7 +446,7 @@ It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN}
 Requirement \ref{enum:cool_mosfets} specifies that MOSFETs should be cooled to avoid overheating. 
 
 \paragraph{Test}~\\
-MOSFETs should run the motor for several minutes at a high velocity. 
+The MOSFETs should run the motor for several minutes at a high velocity. 
 During the test, the MOSFETs should not get hot.
 
 \paragraph{Conclusion}~\\
@@ -464,15 +461,16 @@ Once the system is finished a test should be designed which moves the cart back 
 This requirement specifies that hardware for wireless communication using RF should be implemented on the controller board.
 
 \paragraph{Conclusion}~\\
-The \texttt{nRFM} was chosen and placed on the board with a SPI connection to the MicroZed.
+The \texttt{nRFM} was chosen and placed on the board with an SPI connection to the MicroZed.
 
 \subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}
 This requirement specifies that important parts of the circuitry should be tested on prototype PCB.
 \paragraph{Conclusion}~\\
-This was done by making two prototype PCBs which lead to correction of two errors and verification of the rest of the functionality.
+Two prototype PCBs were created which lead to correction of two errors and verification of the rest of the functionality.
 Time and money was saved this way, by correcting the errors before ordering the full board from a professional PCB vendor at a higher cost and a long delivery time.
-
+\\~\\
+\thomas{add note on current measurement}
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_strategy}} % (fold)
 \label{ssub:requirement_enum:pcb_strategy}
@@ -483,6 +481,7 @@ The fact that the final PCB contained errors indicates that the steps were not f
 Two of the errors originated in a difference between a components footprint and the symbol in the schematic.
 Therefore it should be added to the footprint inspection step that it should be checked for all components if their footprint is in accordance with the symbol in the schematic.
 The conclusion on the rest of the errors was that the steps should have been followed more thoroughly.
+\thomas{Try harder is insufficient.}
 Especially it would have been beneficial to use the peer-review step more comprehensively.
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_debugging}} % (fold)
@@ -499,22 +498,22 @@ This requirement specifies that the PCB should be designed to accomodate appropr
 Three trace widths are used, 8 mil for signals, 20 mil for power and 40 mil for high power.
 MOSFETs, full-bridge driver and the accompanying components were sized to accomodate 80A, the stall current of the motor.
 \\~\\
-A power and a digital ground plane was created on the main PCB.
+A power and a digital ground plane was created on the PCB of the controller board.
 It was found during debugging that an additional analog ground plane is required to properly utilize the current measurement capabilities designed into the PCB.
-The debugging leading to this conclusion can be seen in section \ref{par:verify_shunt_amplifier_functionality}
+The debugging leading to this conclusion can be seen in section \ref{par:verify_shunt_amplifier_functionality}.
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_soldering}} % (fold)
 \label{ssub:requirement_enum:pcb_soldering}
-According to this requirement all PCB soldering should be possible at SDUs facilities
+According to this requirement all PCB soldering should be possible at SDUs facilities.
 \paragraph{Conclusion}~\\
 The PCB soldering was successfully done using SDUs facilities.
 
 \subsubsection{Verification of: Requirement \ref{enum:any_trigger_em}} % (fold)
 \label{ssub:requirement_enum:any_trigger_em}
-This requirement states that any triggered emergency condition should halt the cart.
+This requirement states that any unmet safety conditions should halt the cart.
 
 \paragraph{Conclusion}~\\
-Signals from emergency button, endstops and emergency signal from MicroZed are inferred to an \texttt{AND} gate, providing one signal that determines if an emergency condition is present: \texttt{EM\_DIS}.
+Signals from emergency button, endstops and emergency signal from MicroZed are wired to an \texttt{AND}-gate, resulting in one signal that determines if a safety condition is unmet: \texttt{EM\_DIS}.
 \\
 The power delivery to the H-bridge is delivered by the main relay.
-The \texttt{EM\_DIS} signal is used to the control relay effectively cutting the power to the motor when an emergency condition is present.
+The \texttt{EM\_DIS} signal is used to the control relay effectively cutting the power to the motor when a safety condition is unmet.
