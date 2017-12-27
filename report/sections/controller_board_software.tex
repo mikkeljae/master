@@ -235,7 +235,7 @@ This signal is not used in this VHDL component as the angular position of the mo
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/quadrature}
-	\caption[Incremental quadrature scheme as implemented on\\ the \texttt{HEDS5540}]{Incremental quadrature scheme as implemented on the \texttt{HEDS5540}.}
+	\caption[Incremental quadrature as implemented on the \texttt{HEDS5540}]{Incremental quadrature scheme as implemented on the \texttt{HEDS5540}.}
 	\label{fig:quadrature}
 \end{figure}
 
@@ -260,7 +260,7 @@ As can be seen, the SM is comprised of six states, explained in more detail in t
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.85\linewidth]{graphics/quad_state_machine}
-	\caption{State machine of the incremental quadrature decoder created for the MicroZed.}
+	\caption[State machine of incremental quadrature decoder.]{State machine of the incremental quadrature decoder created for the MicroZed.}
 	\label{fig:quadstatemachine}
 \end{figure}
 \paragraph{st1\_idle:} % (fold)
@@ -329,7 +329,7 @@ when st3_dir =>
         next_state <= st1_idle;
     end if;
 \end{minted}
-\caption{VHDL for determining direction of movement in incremental quadrature.}
+\caption[VHDL for determining direction of movement.]{VHDL for determining direction of movement in incremental quadrature.}
 \label{code:determine_direction}
 \end{listing}
 As can be seen in the code there is a reference to phase 0.
@@ -352,7 +352,7 @@ Moving the cart will now increment the position with leftward motion and decreme
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.75\linewidth]{graphics/count_state_machine}
-	\caption{State machine of the cart position counter created for the MicroZed.}
+	\caption[State machine of the cart position counter]{State machine of the cart position counter created for the MicroZed.}
 	\label{fig:countstatemachine}
 \end{figure}
 
@@ -454,7 +454,7 @@ cart_counter_inst : cart_counter
 	    pos => slv_reg1
 	);
 \end{minted}
-\caption{Code showing the connection of AXI registers to the cart position counter signals.}
+\caption[Code showing the connection of AXI registers]{Code showing the connection of AXI registers to the cart position counter signals.}
 \label{code:axiconnection}
 \end{listing}
 
@@ -500,7 +500,7 @@ void cart_task(void)
 		@$\vdots$@
 }
 \end{minted}
-\caption[Excerpt from the code written to handle the communication with the cart position counter.]{Excerpt from the code written to handle the communication with the cart position counter. \texttt{is\_calibrated()} returns the status of calibration.}
+\caption[Code handling communication with the cart position counter.]{Excerpt from the code written to handle the communication with the cart position counter. \texttt{is\_calibrated()} returns the status of calibration.}
 \label{code:axiconnectionps}
 \end{listing}
 
@@ -578,7 +578,7 @@ void RF_write_register(XSpiPs *SPI_inst, u8 reg, u8 value){
 	XSpiPs_PolledTransfer(SPI_inst, output_buffer, NULL, 2);
 }
 \end{minted}
-\caption{Implementation of a C function that writes a register value to a specific register on the \texttt{nRFM}. Macros are shown for clarity.}
+\caption[C function that writes a value to a register on the nRFM]{Implementation of a C function that writes a register value to a specific register on the \texttt{nRFM}. Macros are shown for clarity.}
 \label{code:rf_write_register_code}
 \end{listing}
 
@@ -630,7 +630,7 @@ void RF_read(XSpiPs *SPI_inst, u8 *buffer){
 	}
 }
 \end{minted}
-\caption{Implementation of a C function that reads 32 bytes payload from the \texttt{nRFM}. Macros are shown for clarity.}
+\caption[C function that reads 32 bytes payload from the nRFM]{Implementation of a C function that reads 32 bytes payload from the \texttt{nRFM}. Macros are shown for clarity.}
 \label{code:rf_read_payload}
 \end{listing}
 
