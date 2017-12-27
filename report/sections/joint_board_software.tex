@@ -260,9 +260,14 @@ The same software was used to to test the \texttt{nRFM} wired on the controller 
 Tests showed that no data was received in this setup.
 Thoroughly inspection of the schematic and PCB revealed no errors. 
 Further testing with a \texttt{nRFM} in free air connected to the MicroZed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRFM}.
-The problem is believed to be due to the large amount of copper in the controller board PCB.
+The problem is due to the large amount of copper in the controller board PCB.
 The error was fixed by desoldering the \texttt{nRFM} and wiring it with longer wires.
-\thomas{check datasheet for mounting information, explain better fix}
+\\~\\
+Further investingating the datasheet of the \texttt{nRFM} reveals that it is recommended to make a cutout in the ground plane for the PCB antenna.
+It is also possible to add an SMA connector instead and use an external antenna for added signal power.
+Both of these require design of a new version of the PCB.
+
+The joint board did function but it is likely that signal integrity will be increased by also making a cutout on this board to accomodate the PCB antenna.
 
 \subsubsection{Software Timer}
 \label{ssub:software_timer}

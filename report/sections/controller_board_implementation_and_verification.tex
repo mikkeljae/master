@@ -494,9 +494,14 @@ The debugging headers were used extensively in the debugging process.
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_layout}} % (fold)
 \label{ssub:requirement_enum:pcb_layout}
-blabla.....
-WE ALSO NEED ANALOG GROUND
-\mikkel{Help me, please!}
+This requirement specifies that the PCB should be designed to accomodate appropriate power levels.
+\paragraph{Conclusion}~\\
+Three trace widths are used, 8 mil for signals, 20 mil for power and 40 mil for high power.
+MOSFETs, full-bridge driver and the accompanying components were sized to accomodate 80A, the stall current of the motor.
+\\~\\
+A power and a digital ground plane was created on the main PCB.
+It was found during debugging that an additional analog ground plane is required to properly utilize the current measurement capabilities designed into the PCB.
+The debugging leading to this conclusion can be seen in section \ref{par:verify_shunt_amplifier_functionality}
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_soldering}} % (fold)
 \label{ssub:requirement_enum:pcb_soldering}
