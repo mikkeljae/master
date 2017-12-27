@@ -129,8 +129,9 @@ There are three different implementations of the AXI bus:
 Since the data exchanged between PL and PS in this project is mostly the setting of control registers and reading cart positions at a steady rate the simpler AXI4-Lite implementation is going to be used for the components created in this project.
 \subsubsection{Real-Time Software} % (fold)
 \label{ssub:real_time}
-\thomas{nice section on some of the reasons why real time is required}
-bla.bla.bla.
+In general control systems are created as real-time systems.
+This ensures that any time-stepping done in the mathematics of the system is well-defined and that the control is therefore well-defined.
+Also the literature used as an inspiration for this project \cite{invertpendulum1} \cite{doubleinvertpendulum} \cite{tripleinvertpendulum} describe real-time systems based on real-time linux and DSpace.
 
 \subsubsection{VHDL and Coding Practices} % (fold)
 \label{ssub:vhdl_and_coding_practices}
@@ -234,7 +235,7 @@ This signal is not used in this VHDL component as the angular position of the mo
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/quadrature}
-	\caption{Incremental quadrature scheme as implemented on the \texttt{HEDS5540}.}
+	\caption[Incremental quadrature scheme as implemented on\\ the \texttt{HEDS5540}]{Incremental quadrature scheme as implemented on the \texttt{HEDS5540}.}
 	\label{fig:quadrature}
 \end{figure}
 
@@ -403,7 +404,7 @@ When \texttt{emend\_i} goes low the counter is reset and future ticks are ignore
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{graphics/test_bench_narrow}
-	\caption{State machine of the cart position counter created for the MicroZed.}
+	\caption{Excerpt of testbench simulation results.}
 	\label{fig:testbench}
 \end{figure}
 

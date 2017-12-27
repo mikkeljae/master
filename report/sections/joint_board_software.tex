@@ -20,7 +20,8 @@ This needs to be avoided and can be done by temporarily disabling interrupts and
 The code that temporarily disables interrupts and copies the variable needs to be executed faster than two consecutive interrupts can occur, otherwise information on joint movement is lost.
 The time between two consecutive interrupts is only dependent on the angular velocity of the joint.
 It is estimated that the maximum angular velocity is  $\approx$20Hz, which means that no interrupts should go unnoticed at this frequency.
-\mikkel{It would be nice with some sort of reasoning/reference.}
+From visual inspection of graphs in \cite{doubleinvertpendulum} the maximum angular velocity of that system during swing-up is $\approx$2Hz. 
+While the maximum velocity is influenced heavily by the setup in general, this is still well below the aforementioned 20Hz and this estimation is considered reasonable.
 
 \subsubsection{Wireless Transmission of Data}
 As mentioned in section \ref{ssub:interboard_communication}, communication between the controller board and the joint boards is to happen wirelessly using the \texttt{nRFM} and a period between packets of more than 130$\mu$s.

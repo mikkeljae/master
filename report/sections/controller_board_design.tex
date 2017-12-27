@@ -468,8 +468,7 @@ As described in section \ref{subsub:safety} it was decided to use infrared trans
 It was decided to use the \texttt{TCST2103} \cite{tcst2103} as it has the wanted functionality.
 It contains an infrared emitter pointing at a photo transistor, that conducts current proportional to the infrared light received.
 In this project it will be used to detect if the infrared light is blocked by the cart or not. 
-The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the current conducted to a voltage level. 
-The output is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
+The output of the \texttt{TCST2103} is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
 The schmitt-trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V.
 The circuit can be seen in appendix \ref{app:controller_board_schem}.
 \\~\\
