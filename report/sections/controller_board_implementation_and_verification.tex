@@ -309,10 +309,9 @@ This current draw continues for approximately 4ms and then disappears.
 While the current draw is present the 24V rail falls which, eventually, will cause the 12V rail to fail, causing the 5V rail to fail and, finally, the MicroZed to power down.
 At low PWM duty cycle the 24V rail recovers before the failure happens.
 
-\mikkel{change figure to have second axis in amperes, fix legend}
 \begin{figure}[h]
 	\centering
-	%\input{graphics/current_w_load_closeup.tex}
+	\input{graphics/current_w_load_closeup.tex}
 	\caption{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load_closeup}
 \end{figure}
@@ -331,7 +330,7 @@ Since the 12V and therefore the 5V rail were unaffected by the dipping 24V rail 
 
 \begin{figure}[h]
 	\centering
-	%\input{graphics/current_w_load_slow.tex}
+	\input{graphics/current_w_load_slow.tex}
 	\caption{Current draw when setting \texttt{DIS} low and applying a 0\% duty cycle PWM to the high side MOSFET of channel B for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
 	\label{fig:current_w_load_slow}
 \end{figure}
