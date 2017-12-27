@@ -589,7 +589,7 @@ The \texttt{nRFM} always responds with the value of the \texttt{STATUS} when det
 
 \begin{figure}[h]
 	\centering
-    %\input{graphics/nrf24_spi.tex}
+    \input{graphics/nrf24_spi.tex}
 	\caption[SPI communication between nRF24 and the MicroZed]{SPI communication between \texttt{nRFM} and the MicroZed. Shown is a write command of \texttt{RF\_CONFIG} register, \texttt{0x00}. The value written to the \texttt{RF\_CONFIG} register is \texttt{0b00110101}. 2 bytes are exchanged in total. The SPI transmission is setup and measured at 625kHz, for readability.}
 	\label{fig:nrf24_spi}
 \end{figure}
@@ -665,12 +665,12 @@ The described mechanism is illustrated in figure \ref{sfig:pwm_gen_int}, where t
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
-        %\input{graphics/vhdl_pwm_gen_int.tex}
+        \input{graphics/vhdl_pwm_gen_int.tex}
         \caption{Internal VHDL signals illustrated by a Matlab plot.}
         \label{sfig:pwm_gen_int}
     \end{subfigure}
     \begin{subfigure}[b]{0.45\textwidth}
-        %\input{graphics/vhdl_pwm_gen.tex}
+        \input{graphics/vhdl_pwm_gen.tex}
         \caption{External PWM signal measured using an oscilloscope. }
         \label{sfig:pwm_gen_ext}
     \end{subfigure}
