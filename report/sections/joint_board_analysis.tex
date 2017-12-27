@@ -90,14 +90,14 @@ The microcontroller must fulfill the following requirements:
  	\item Must have an SPI interface to maintain communication with the\\ \texttt{nRFM}.
  	\item Must have non-volatile memory to store the program through power cycling the board.
 \end{itemize}
-The ATtiny84 \cite{attiny84} fulfills these requirements and provides sufficient I/O pins for the design.
+The \texttt{ATtiny84} \cite{attiny84} fulfills these requirements and provides sufficient I/O pins for the design.
 The design of the PCB and the layout in general should accomodate the joint design.
 By minimizing the height of the PCB design, the joint can be made thinner, reducing the stress on the pendulum assembly along the Z-axis.
 It should also be noted that any connectors should be placed with the expectation that the border of the PCB is not accessible during normal operation.
 \\~\\
 Since the PCB is powered from a battery the design should be optimized to be reasonably power efficient.
 As is explained in section \ref{par:power_delivery} the design has a 3.3V rail and a 5V rail.
-Generally microcontrollers become more power efficient at lower voltages and as such the ATtiny84 will be driven from the 3.3V rail.
+Generally microcontrollers become more power efficient at lower voltages and as such the \texttt{ATtiny} will be driven from the 3.3V rail.
 The authors have immediate access to an AVR programmer which uses 5V signals for the programming.
 The design should be made to accept this voltage when programming.
 This can be done using level-shifting between the two voltage levels.
@@ -115,8 +115,8 @@ This requirement essentially narrows the battery choices to LiPo cells as these 
 1S LiPo cells are rated at 3.7V and so some form of convertion is required to reach both the 5V and 3.3V rails.
 In order to correctly dimension the converters it is necessary to determine the power draw from each rail:
 \begin{itemize}
- 	\item \textbf{3.3V:} This rail powers the \texttt{nRFM} which has a maximum supply current of 12.3mA \cite{nRFM} as well as the ATTiny84.
- 	According to the datasheet of the ATtiny84 it uses approximately 3.6mA at 3.3V when run at 8MHz.   
+ 	\item \textbf{3.3V:} This rail powers the \texttt{nRFM} which has a maximum supply current of 12.3mA \cite{nRFM} as well as the \texttt{ATTiny}.
+ 	According to the datasheet of the \texttt{ATtiny} it uses approximately 3.6mA at 3.3V when run at 8MHz.   
  	This yields a total of 15.9mA at 3.3V or 52.5mW.
  	Additional digital circuitry placed on this rail is considered negligible in the power budget.
  	\item \textbf{5V:} This rail powers the encoder with a maximum supply current of 30mA \cite{RLC2IC} as well as the RS422 receiver which has a supply current of 52mA \cite{rs422rec}.
@@ -153,7 +153,7 @@ One rail capable of delivering 100mA at 3.3V$\pm$0.2V.
 	\label{enum:joint_include_nrf}
 	\item Correcly interface the RS-422 interface of the \texttt{RL2IC} encoder.
 	\label{enum:interface_rs422_enc}
-	\item The design should allow programming of the \texttt{ATtiny84} using 5V SPI.
+	\item The design should allow programming of the \texttt{ATtiny} using 5V SPI.
 	\label{enum:program_5v_spi}
 	\item An LED should be employed for debugging purposes.
 	\label{enum:led_debugging_joint}

@@ -407,13 +407,13 @@ Here it can be seen that even though the motor current alternating the supply cu
 \begin{figure}[h]
 	\centering
     %\input{graphics/controllerboardv2_current_motor_supply.tex}
-	\caption[Measured supply and load currents.]{Measured supply and load currents while driving the motor using 50\% dutycycle on one channel and 0\% on the other.}
+	\caption[Measured supply and load currents.]{Measured supply and load currents while driving the motor using 50\% duty cycle on one channel and 0\% on the other.}
 	\label{fig:controllerboardv2_currents}
 \end{figure}
 
 \subsubsection{Verification of: Requirement \ref{enum:microzed_interface}} % (fold)
 \label{ssub:requirement_enum:microzed_interface}
-According to requirement  \ref{enum:microzed_interface}, the Microzed should be interfaced correctly. 
+According to requirement  \ref{enum:microzed_interface}, the MicroZed should be interfaced correctly. 
 This includes start-up and power-down power sequences.
 
 \paragraph{Test}~\\
@@ -422,25 +422,25 @@ Testing if the board complies with the correct start-up and power-off sequence, 
 
 \paragraph{Conclusion}
 All important signals during startup where measured and are plotted in figure \ref{fig:controllerboardv2_startup}.
-It should be noted that the \texttt{VCCIO\_EN} signal is controlled by the Microzed and not the developed controllerboard. 
+It should be noted that the \texttt{VCCIO\_EN} signal is controlled by the MicroZed and not the developed controller board. 
 It can be verified that the voltage on the 3.3V rail does not rise when the voltage of \texttt{VCCIO\_EN} is lower than 1.3V.
 This level is the high threshold of the comparator that enables the DCDC converter that generates the 3.3V rail.
-Furthermore, using the work done in \cite{isaswarm}, it can be verified that the measured signals correspond to the ones produced when powering ON the Microzed using Avnets own Microzed carrier card.
+Furthermore, using the work done in \cite{isaswarm}, it can be verified that the measured signals correspond to the ones produced when powering ON the MicroZed using Avnets own MicroZed carrier card.
 \\~\\
-The important signals when shutting down the controllerboard and the Microzed are measured and plotted in figure \ref{fig:controllerboardv2_shutdown}.
+The important signals when shutting down the controller board and the MicroZed are measured and plotted in figure \ref{fig:controllerboardv2_shutdown}.
 It is verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in the correct order. 
 
 \begin{figure}[h]
 	\centering
 	%\input{graphics/controllerboardv2_startup.tex}
-	\caption[Signals measured doing startup of controllerboard.]{Important signals measured doing startup of controllerboard with the Microzed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
+	\caption[Signals measured doing startup of controller board.]{Important signals measured doing startup of controller board with the MicroZed inserted. The 3.3V rail does only rise in voltage, when \texttt{VCCIO\_EN} has a higher voltage level than 1.3V.}
 	\label{fig:controllerboardv2_startup}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
     %\input{graphics/controllerboardv2_shutdown.tex}
-	\caption[Signals measured doing shutdown of controllerboard.]{Important signals measured doing shutdown of controllerboard with the Microzed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
+	\caption[Signals measured doing shutdown of controller board.]{Important signals measured doing shutdown of controller board with the MicroZed inserted. It can be verified that \texttt{VCCIO\_EN}, \texttt{POWER\_EN} and \texttt{DCDC\_EN} are set to \texttt{GND} in that order, which is as inteded.}
 	\label{fig:controllerboardv2_shutdown}
 \end{figure}
 
@@ -455,16 +455,16 @@ During the test, the MOSFETs should not get hot.
 \paragraph{Conclusion}~\\
 During production of the board an error in the footprint of the MOSFETs was found, causing the solution with the large common heatsink to be unachievable.
 Therefore individual standard TO-220 heatsinks were connected to each MOSFET.
-The motor was driven by the MOSFETs for several minutes with a dutycycle of 95\%, while not getting warm.
+The motor was driven by the MOSFETs for several minutes with a duty cycle of 95\%, while not getting warm.
 It should be noted that this test does not necessarily stress the motor sufficiently to fully conclude sufficient cooling.
 Once the system is finished a test should be designed which moves the cart back and  forth repeatedly to have more current flow through the MOSFETs.
 
 \subsubsection{Verification of: Requirement \ref{enum:hardware_for_wireless_implemented}} % (fold)
 \label{ssub:requirement_enum:hardware_for_wireless_implemented}
-This requirement specifies that hardware for wireless communication using RF should be implemented on the controllerboard.
+This requirement specifies that hardware for wireless communication using RF should be implemented on the controller board.
 
 \paragraph{Conclusion}~\\
-The \texttt{nRFM} was chosen and placed on the board with a SPI connection to the Microzed.
+The \texttt{nRFM} was chosen and placed on the board with a SPI connection to the MicroZed.
 
 \subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}

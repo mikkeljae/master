@@ -141,7 +141,7 @@ Where $Q_{gate}$ is the maximum total gate charge, $I_{lkgs}$ is the gate-source
  $Q_{gate}$ 	& $Q_{ls}$ 	& $I_{lkgs}$ 	& $I_{qbs}$ 		& $I_{lk}$ 			& $I_{lkdiode}$ 	& $t_{on}$ 		\\ 	\hline
  $116$ [nC]		& $3$ [nC]	& $100$ [nA]	&$-30$ [$\mu$A]		& $1$ [$\mu$A]		& $1$ [nA]			& $43$ [$\mu$S]	\\ 	\hline
 \end{tabular}
-\caption[Parameter values used to determine total charge.]{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver data sheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET data sheet values and $I_{lkdiode}$  is a diode data sheet value. $t_{on}$ is calculated using 95\% dutycycle and 22kHz switching.}
+\caption[Parameter values used to determine total charge.]{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver datasheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET datasheet values and $I_{lkdiode}$  is a diode datasheet value. $t_{on}$ is calculated using 95\% duty cycle and 22kHz switching.}
 \label{tab:bootstrap_parameter}
 \end{table}
 $t_{on}$ can be calculated knowing that the worst case duty cycle for the high side MOSFET is 95\% and the switching frequency is 22 kHz.
@@ -253,7 +253,7 @@ Using the found ripple current and a maximum voltage ripple of 1 V, the minimum 
 It can now be decided which capacitors should be used.
 It was chosen to use electrolytic capacitors as they are generally cheaper in this range of capacitance. 
 Another reason to choose electrolytic capacitors is their equivalent series resistance, ESR, that will dampen the oscillations introduced by the LC circuit of the capacitors and the parasitic inductance of the wires.
-When inspecting capacitor data sheets the ripple current is given in RMS values. 
+When inspecting capacitor datasheets the ripple current is given in RMS values. 
 The RMS value of the load current is calculated to be 1.9A.
 It was chosen to use the \texttt{MAL215099911E3} \cite{sup_cap} capacitors and connecting them in parallel. 
 The relevant parameters of this capacitor is shown in table \ref{tab:cap_parameters}.
@@ -487,7 +487,7 @@ The RF Transceiver used in this project, however, requires only up to 15mA when 
 \paragraph{5V:} % (fold)
 \label{par:5v}
 This rail supplies, mainly, the MicroZed.
-The maximum expected current draw from the microzed is 1.85A at 5V \cite{microzed}.
+The maximum expected current draw from the MicroZed is 1.85A at 5V \cite{microzed}.
 This includes the current drawn from the 3.3V rail.
 In addition, in this design, the 5V rail also powers the encoders, endstops and emergency circuitry.
 The \texttt{HEDS-5540} \cite{heds5540} encoder requires a maximum of 85mA.

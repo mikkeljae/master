@@ -29,7 +29,7 @@ The \texttt{nRFM} has a number of options that needs to be set according to the 
 As described in \ref{ssub:interboard_communication}, it was found that the two joints needs to send using two separate frequency bands to avoid air collisions. 
 This needs to be set up individually in each \texttt{nRFM}. 
 Latency should be minimized by reducing overhead in transmitted packages and sending the smallest possible payload that correctly conveys the joint data.
-The data sheet describes that the \texttt{nRFM} can operate at air rates of 250kbps, 1Mbps and 2Mbps.
+The datasheet describes that the \texttt{nRFM} can operate at air rates of 250kbps, 1Mbps and 2Mbps.
 Based on the somewhat unstable transmission explained in section \ref{subs:wireless_transmission_joint} it was chosen to use a transmission rate of 1Mbps, as it is more noise resistance than when using 2Mbps.
 
 \paragraph{Transmission Rate} % (fold)
@@ -154,7 +154,7 @@ When information is to be transmitted the calibration and angle variables needs 
 The act of copying a variable takes several clock cycles and if an interrupt occurs while the variable is being transmitted the data can be corrupted.
 In order to avoid this problem it is necessary to temporarily disable interrupts while copying the original variable into a temporary variable. 
 In effect the resulting code is as seen in listing \ref{code:critical_section_c}.
-Disabling interrupts means that any incoming interrupts will not be processed until interrupts are reenabled, as described in the datasheet of the ATtiny84 \cite{attiny84}.
+Disabling interrupts means that any incoming interrupts will not be processed until interrupts are reenabled, as described in the datasheet of the ATtiny \cite{attiny84}.
 Interrupts should therefore not be disabled for longer than the shortest expected time between two edges on any single signal.
 
 The \texttt{AVR-GCC} compiler has the option to only compile the code, leaving a human readable assembly file.
@@ -192,7 +192,7 @@ Using these numbers the theoretical maximum angular velocity possible while stil
 
 \subsubsection{SPI} % (fold)
 \label{ssub:spi}
-The \texttt{ATtiny84} does not have a SPI controller, but it does have a Universal Serial Interface, USI, which is compatible with SPI, when it is used in its three wire mode.
+The \texttt{ATtiny} does not have a SPI controller, but it does have a Universal Serial Interface, USI, which is compatible with SPI, when it is used in its three wire mode.
 In this mode the interface has the pins, Data Out \texttt{DO}, Data In \texttt{DI} and a clock \texttt{USCK}.
 In order to comply with the SPI standard a Slave Select \texttt{SS} pin should be implemented using a general IO pin and custom written software.
 The \texttt{nRFM} also has a non SPI pin, \texttt{CE} that also needs to be controlled from the \texttt{ATtiny}.
@@ -201,13 +201,13 @@ The full interface between the two is shown in figure \ref{fig:tiny_nrf_com}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.35\linewidth]{graphics/tiny_nrf_com}
-	\caption[Interface between ATtiny84 and nRF24L01.]{Interfacing the \texttt{ATtiny84}s USI and \texttt{nRFM}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
+	\caption[Interface between ATtiny84 and nRF24L01.]{Interfacing the \texttt{ATtiny}s USI and \texttt{nRFM}s SPI. \texttt{PB0} and \texttt{PA7} are general purpose IO pins.}
 	\label{fig:tiny_nrf_com}
 \end{figure}
-The \texttt{ATtiny84} is used as the SPI master and controls \texttt{MOSI}, \texttt{SCLK}, \texttt{SS} and \texttt{CE} on the \texttt{nRFM}.
+The \texttt{ATtiny} is used as the SPI master and controls \texttt{MOSI}, \texttt{SCLK}, \texttt{SS} and \texttt{CE} on the \texttt{nRFM}.
 
 With the two modules interfaced correctly, data can be transmitted between them.
-The function shown in listing \ref{code:tiny_spi_transfer} implements this functionality on the \texttt{ATtiny84}.
+The function shown in listing \ref{code:tiny_spi_transfer} implements this functionality on the \texttt{ATtiny}.
 It takes pointers to \texttt{data}, \texttt{input} and the number of bytes that needs to be sent as inputs.
 Line 2 sets \texttt{SS} \texttt{low} to initiate an SPI transfer.
 The loop in lines 4 to 11 is run \texttt{n} times to send and receive \texttt{n} bytes.
@@ -235,7 +235,7 @@ void spi_transfer(uint8_t *data, uint8_t *input, uint8_t n){
   PORTB |= _BV(SS);
 }
 \end{minted}
-\caption[Data transmission between the \texttt{ATtiny84} and the \texttt{nRF24L01} ]{Function that transmits \texttt{n} bytes of data between the \texttt{ATtiny84} and the \texttt{nRFM}.}
+\caption[Data transmission between the \texttt{ATtiny84} and the \texttt{nRF24L01} ]{Function that transmits \texttt{n} bytes of data between the \texttt{ATtiny} and the \texttt{nRFM}.}
 \label{code:tiny_spi_transfer}
 \end{listing}
 
@@ -249,24 +249,24 @@ During implementation of the software for the \texttt{nRFM} a lot of testing was
 Initially two \texttt{nRFM}s were wired up to two Arduinos running example code from the arduino community libraries. 
 This was done to verify wiring and functionality of the \texttt{nRFM}s.
 \\~\\
-Afterwards an Arduino was programmed to receive data and the software was written to the \texttt{ATtiny84} to transmit data using the \texttt{nRFM}.
-The functionality of the joint board software was verified by transmitting data from the \texttt{ATtiny84} to an Arduino successfully.
-Afterwards an \texttt{nRFM} was wired to the Microzed and the software was written.
+Afterwards an Arduino was programmed to receive data and the software was written to the \texttt{ATtiny} to transmit data using the \texttt{nRFM}.
+The functionality of the joint board software was verified by transmitting data from the \texttt{ATtiny} to an Arduino successfully.
+Afterwards an \texttt{nRFM} was wired to the MicroZed and the software was written.
 \\~\\
-The transmission of data between the \texttt{ATtiny84} and the Microzed was verified by transmitting data from the joint board \texttt{nRFM} to an \texttt{nRFM} in free air connected to the Microzed.
+The transmission of data between the \texttt{ATtiny} and the MicroZed was verified by transmitting data from the joint board \texttt{nRFM} to an \texttt{nRFM} in free air connected to the MicroZed.
 The transmission was successful.
 \\~\\
 The same software was used to to test the \texttt{nRFM} wired on the controller board. 
 Tests showed that no data was received in this setup.
 Thoroughly inspection of the schematic and PCB revealed no errors. 
-Further testing with a \texttt{nRFM} in free air connected to the Microzed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRFM}.
+Further testing with a \texttt{nRFM} in free air connected to the MicroZed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRFM}.
 The problem is believed to be due to the large amount of copper in the controller board PCB.
 The error was fixed by desoldering the \texttt{nRFM} and wiring it with longer wires.
 \thomas{check datasheet for mounting information, explain better fix}
 
 \subsubsection{Software Timer}
 \label{ssub:software_timer}
-The timer shown in figure \ref{sfig:joint_main_flowchart}, is implemented on the \texttt{ATtiny84} using \texttt{Counter 1}, which is a 16 bit timer capable of generating software interrupts.
+The timer shown in figure \ref{sfig:joint_main_flowchart}, is implemented on the \texttt{ATtiny} using \texttt{Counter 1}, which is a 16 bit timer capable of generating software interrupts.
 \texttt{Counter 1} is setup by setting a prescaler to the CPU clock and a compare value.
 Using a prescaler of 1, the compare value for setting up an interrupt each 333$\mu$s is calculated as:
 \begin{equation}
@@ -290,7 +290,7 @@ ISR(TIM1_COMPA_vect)
 
 The ISR function associated with these interrupts are shown in \ref{code:timer_isr} together with the declaration of \texttt{timer}.
 The variable is declared as \texttt{volatile} to tell the compiler that its value can be changed whenever during run-time. 
-It is declared as a \texttt{char}, because this is the smallest datatype available on the \texttt{ATtiny84} and it only takes up one byte. 
+It is declared as a \texttt{char}, because this is the smallest datatype available on the \texttt{ATtiny} and it only takes up one byte. 
 In the main loop of the software, the \texttt{timer} variable is used determine if the process of transmitting data should be initiated.
 This mechanism provides real time performance of the software when the code used to transmit data is executed before the next deadline, which is the next \texttt{counter 1} interrupt.
 This means that the transmitting code needs to be executed in less than 333$\mu$s to ensure real-time performance.
@@ -316,14 +316,13 @@ The two assembly instructions that will be used to access the value of \texttt{t
 \subsection{Verification} % (fold)
 \label{sub:verification}
 
-
 \subsubsection{Verification of: Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
 This requirement specifies that the correct joint angle should be known at all times.
 
 \paragraph{Test}~\\
 This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
-A test should be conducted where the joint angle information was sent to the controllerboard and printed to a serial console.
+A test should be conducted where the joint angle information was sent to the controller board and printed to a serial console.
 
 \paragraph{Test and Conclusion}~\\
 The test was done and by visual inspection the functionality was verified.
@@ -345,7 +344,7 @@ The joint board was programmed to send 10000 packets before stopping transmittin
 
 In the first ten series of test the pendulum was held still.
 The number of received packets can be seen in table \ref{tab:received_still}.
-\begin{table}[]
+\begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
 \hline
@@ -360,7 +359,7 @@ The same test was then conducted, but with the pendulum moving back and forth.
 The number of received packets can be seen in table \ref{tab:received_moved}.
 The average number of received packets is 7191 which corresponds to $\approx$ 72\% of the transmitted packages.
 
-\begin{table}[]
+\begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
 \hline
