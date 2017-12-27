@@ -56,7 +56,7 @@ In order to produce reliable data for the controller board the joint angle shoul
 This requires the joint board software to be programmed as real-time software, where deadlines should be met.
 
 \subsection{Requirement Specification} 
-
+The requirements specified below are tested and verified in section \ref{sub:verification_joint_board_software}.
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Correct joint angle should be known at all times.
@@ -82,7 +82,7 @@ This requires the joint board software to be programmed as real-time software, w
 
 \subsection{Design and Implementation} % (fold)
 \label{sub:design_and_implementation}
-
+\mikkel{both flowcharts need doing!}
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}[b]{0.30\textwidth}
@@ -319,7 +319,7 @@ Accessing a variable that is written to in a \texttt{ISR} can result in corrupte
 The two assembly instructions that will be used to access the value of \texttt{timer} is \texttt{ldi} and \texttt{cpi}, which are both instructions that will be executed in one clock cycle and can therefore not be interrupted.
 
 \subsection{Verification} % (fold)
-\label{sub:verification}
+\label{sub:verification_joint_board_software}
 
 \subsubsection{Verification of: Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
@@ -329,7 +329,7 @@ This requirement specifies that the correct joint angle should be known at all t
 This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
 A test should be conducted where the joint angle information was sent to the controller board and printed to a serial console.
 
-\paragraph{Test and Conclusion}~\\
+\paragraph{Conclusion}~\\
 The test was done and by visual inspection the functionality was verified.
 
 \subsubsection{Requirement \ref{enum:joint_transmit}} % (fold)

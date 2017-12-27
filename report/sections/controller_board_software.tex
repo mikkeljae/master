@@ -157,7 +157,7 @@ Therefore, any tasks which may be more easily handled in C and are not necessari
 
 \subsubsection{Requirement Specification} % (fold)
 \label{ssub:controller_requirements}
-
+The requirements specified below are tested and verified in section \ref{ssub:verification_controller_board_software}.
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Correct cart position should be known at all times.
@@ -768,10 +768,10 @@ void alive_task(void)
 % subsubsection khaos (end)
 
 \subsection{Verification} % (fold)
-\label{sub:verification}
+\label{ssub:verification_controller_board_software}
 
 \subsubsection{Verification of: Requirement \ref{enum:correct_cart_position}} % (fold)
-\label{ssub:verification_of_requirement_}
+\label{ssub:verification_of_requirement_enum:correct_cart_position}
 This requirement states that correct cart position should be known at all times.
 
 \paragraph{Test}~\\
@@ -816,7 +816,7 @@ The motor was successfully stopped by setting the \texttt{DIS} variable \texttt{
 
 \subsubsection{Verification of: Requirement \ref{enum:receive_joint_angle}} % (fold)
 \label{ssub:verificatation_of_requirement_enum:receive_joint_angle}
-This requirement states that the software should receive joint angle data from the two joint boards using the \texttt{nRFM} module.
+This requirement states that the software should receive joint angle data from the two joint boards using the \texttt{nRFM}.
 
 \paragraph{Conclusion}~\\
 Testing this requirement requires software to run on the joint board.
