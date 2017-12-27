@@ -472,6 +472,19 @@ The circuit shown in figure \ref{fig:tcst_circuit} was realised to convert the c
 The output is fed to a schmitt trigger circuit in order to be able to use the result as a boolean reference.
 The schmitt-trigger circuit is designed to have a high threshold of 3V and a low threshold of 1V.
 The circuit can be seen in appendix \ref{app:controller_board_schem}.
+\\~\\
+The \texttt{TCST2103} is mounted on the rail using a purpose-made 3D print.
+A rendering of the print can be seen in figure \ref{fig:endstop}.
+The large hole in the bottom of the print is used as a cable lead-in for the rail.
+The cart will move parallel to the opening of the sensor.
+A pin is mounted underneath the cart which will block the IR transmitter and cause a safety condition.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\linewidth]{graphics/endstop}
+	\caption{Fixture for mounting the \texttt{TCST2103} to the rail.}
+	\label{fig:endstop}
+\end{figure}
 
 \subsubsection{Voltage Rails} % (fold)
 \label{subsub:voltage_rails}
