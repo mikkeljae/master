@@ -79,7 +79,8 @@ c = ax.Color;
 ax.YColor = [0 0.75 0];
 ylim([-5 40]);
 
-
+ xlim([0 1.4e-4])
+  ylim([-5 5])
 
 legend('MGATE_BH','24V Rail','Supply Current');
 

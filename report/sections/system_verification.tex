@@ -1,4 +1,92 @@
 %!TEX root = ../main.tex
 \section{System Verification}
 \label{sec:system_verification}
-\mikkel{Don't forget about me.}
+
+\subsection{Verification of: Requirements \ref{enum:system_consists_double_pendulum} and \ref{enum:cart_actuated_by_motor}} % (fold)
+\label{sub:verification_of_requirement_enum:system_consists_double_pendulum}
+These requirements specify that the system should consists of double pendulum mounted on a moveable cart and that the cart should be actuated by a motor.
+
+\paragraph{Conclusion}~\\
+The implemented system consists of the designed and implemented pendulum assembly mounted on the rail system inherited from an earlier project.
+A picture of the full system setup is shown in figure \ref{fig:pic_full_system}.
+Specific requirements for designing and implementing the pendulum assembly are described and verified in section \ref{sec:joint_development}.
+\begin{figure}
+	\centering
+	\missingfigure{Picture of full system}
+	\caption{Picture of full system.}
+	\label{fig:pic_full_system}
+\end{figure}
+The cart can be actuated by the maxon motor as they are connected by a belt. 
+This was never tested because of burnt electric components and time constraints, however it was tested that the developed controller board is able to drive the motor.
+
+
+
+\subsection{Verification of: Requirement \ref{enum:controlled_by_microzed}} % (fold)
+\label{sub:verification_of_requirement_enum:controlled_by_microzed}
+This requirement states that the pendulum system should be controlled by a Microzed.
+
+\paragraph{Conclusion}~\\
+\label{sec:controller_board}
+
+\subsection{Verification of: Requirement \ref{enum:position_cart_joint_angle_measure}} % (fold)
+\label{sub:verification_of_requirement_enum:position_cart_joint_angle_measure}
+According to this requirement the position of the cart and joint angles should be measured.
+
+\paragraph{Test?}~\\
+
+\paragraph{Conclusion}~\\
+
+\begin{figure}[h]
+	\centering
+	%\input{graphics/joint_angle_measured_full.tex}
+	\caption{}
+	\label{fig:joint_angle_measured_full}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	%\input{graphics/joint_angle_measured_zoom.tex}
+	\caption{}
+	\label{fig:joint_angle_measured_zoom}
+\end{figure}
+
+
+\subsection{Verification of: Requirement \ref{enum:software_developed_real_time}} % (fold)
+\label{sub:verification_of_requirement_enum:software_developed_real_time}
+This requirement specifies that any software developed for the pendulum system should be real-time.
+
+\paragraph{Conclusion}~\\
+
+
+\subsection{Verification of: Requirement \ref{enum:system_accessible_to_users}} % (fold)
+\label{sub:verification_of_requirement_enum:system_accessible_to_users}
+This requirement states that the system should be easily accessible to users.
+
+\paragraph{Conclusion}~\\
+
+
+\subsection{Verification of: Requirement \ref{enum:system_should_not_break_during_operation}} % (fold)
+\label{sub:verification_of_requirement_enum:system_should_not_break_during_operation}
+This requirement specifies that the system should not break during operation by users.
+
+\paragraph{Conclusion}~\\
+
+\subsection{Verification of: Requirement \ref{enum:safety_should_not_rely_on_programming}} % (fold)
+\label{sub:verification_of_requirement_enum:safety_should_not_rely_on_programming}
+According to this requirement the system safety should not rely on the programming of the system.
+
+\paragraph{Conclusion}~\\
+
+\subsection{Verification of: Requirement \ref{enum:software_top_down_bottom_up}} % (fold)
+\label{sub:verification_of_requirement_enum:software_top_down_bottom_up}
+This requirement states that software design should be done top-down, whereas subcomponents are written bottom-up.
+
+\paragraph{Conclusion}~\\
+
+
+\subsection{Verification of: Requirement \ref{enum:design_linux_possible}} % (fold)
+\label{sub:verification_of_requirement_enum:design_linux_possible}
+This requirement specifies that the system should be done so that adaption to Linux is as simple as possible.
+
+\paragraph{Conclusion}~\\
