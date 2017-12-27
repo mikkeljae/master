@@ -153,7 +153,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -250,7 +250,7 @@
          sodipodi:role="line"
          id="tspan4763-3-7"
          x="504.14597"
-         y="338.23981">Joint Assembly</tspan><tspan
+         y="338.23981">Pendulum Assembly</tspan><tspan
          sodipodi:role="line"
          x="504.14597"
          y="344.48981"
