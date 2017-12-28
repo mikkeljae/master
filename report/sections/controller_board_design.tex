@@ -58,7 +58,7 @@ In order to choose one, a few parameters must be fulfilled.
 	\item \textbf{Output Current:} The amount of current necessary to properly drive the MOSFET.
 	This value depends on the switching frequency of the application, the gate-to-source voltage ($V_{gs}$) and the total gate charge of the MOSFET.
 	\item \textbf{Driving Voltage:} In order to ensure that the MOSFET is turned on quickly and fully the driver should be able to supply a voltage well above the gate threshold of the MOSFET.
-	\item \textbf{High-Side Drive Capabilities:} The high side MOSFET of the full-bridge is referenced not to ground, but to a floating reference.
+	\item \textbf{High-Side Drive Capabilities:} The high-side MOSFET of the full-bridge is referenced not to ground, but to a floating reference.
 	This means that in order to switch on this MOSFET, $V_{\text{gate}}$ needs to be boosted compared to the floating reference. 
 	This is known as bootstrapping and is explained in more detail in section \ref{ssub:bootstrap_circuit}.
 	\item \textbf{Shoot-Through Protection and Deadtime:} Due to the structure of the full-bridge it is important that two MOSFETs on the same half-bridge are never \texttt{on} at the same time as this would result in a short from $V_{\text{cc}}$ to ground.
@@ -107,7 +107,7 @@ Finally, the component has a user-programmable dead time and shoot-through prote
 	\caption[Bootstrap circuitry]{Bootstrap circuitry consisting of a diode, \texttt{D1}, a capacitor, \texttt{C1} and a resistor, \texttt{R1}. }
 	\label{fig:hip_bootstrap}
 \end{figure}	
-The chosen gate driver has floating drive circuitry for the high side MOSFETs but needs external bootstrap circuitry for providing the higher voltage. 
+The chosen gate driver has floating drive circuitry for the high-side MOSFETs but needs external bootstrap circuitry for providing the higher voltage. 
 A standard bootstrap circuit consists of a diode, a capacitor and a resistor as shown in figure \ref{fig:hip_bootstrap}.
 The advantage of using a bootstrap circuit to supply a high voltage for the floating drive is that it is very simple. 
 The disadvantage is that it sets a limit for the maximum and minimum duty cycle as the bootstrap capacitor needs to be charged fully in each period.
@@ -145,7 +145,7 @@ Where $Q_{gate}$ is the maximum total gate charge, $I_{lkgs}$ is the gate-source
 \caption[Parameter values used to determine total charge.]{Parameter values used in equation \ref{eq:charge_total}. $I_{qbs}$ and $I_{lk}$ are found in the gate driver datasheet. $Q_{ls}$ is set to 3nC for all high voltage gate drivers \cite{bootstrap_ON}. $I_{lkgs}$ and $Q_{gate}$ are MOSFET datasheet values and $I_{lkdiode}$  is a diode datasheet value. $t_{on}$ is calculated using 95\% duty cycle and 22kHz switching.}
 \label{tab:bootstrap_parameter}
 \end{table}
-$t_{on}$ can be calculated knowing that the worst case duty cycle for the high side MOSFET is 95\% and the switching frequency is 22 kHz.
+$t_{on}$ can be calculated knowing that the worst case duty cycle for the high-side MOSFET is 95\% and the switching frequency is 22 kHz.
 Inserting the values, shown in table \ref{tab:bootstrap_parameter}, yields the minimum charge value of the capacitor:
 \begin{equation}
 	Q_{total} = 118 [nC]
@@ -188,12 +188,12 @@ T_{charge,init} = 5\cdot \tau = 5\cdot (R \cdot C) = 5\cdot (4.7 \cdot 100 \cdot
 Meaning that the diode can be exposed to a maximum of 2.6A for $2.35 \mu S $, which is well below the absolute maximum rating.
 It should also be noted that the bootstrap capacitor needs at least $2.35 \mu S $ for the initial charging.
 
-Lastly it should be calculated what the maximum allowed duty cycle for the high side MOSFETS are in this configuration, using the found components.
+Lastly it should be calculated what the maximum allowed duty cycle for the high-side MOSFETS are in this configuration, using the found components.
 The time it takes to charge the capacitor the energy that is used in each period is:
 \begin{equation}
 	T_{charge,period} = 5\cdot (R \cdot C_{boot}) = 5\cdot (4.7 \cdot  51.6 \cdot 10^{-9}) = 1.21 \mu S 
 \end{equation}
-The $1.21 \mu S$ is equivalent to 2.7\% duty cycle and the maximum theoretical duty cycle for the high side MOSFETS is thus 97.3\%.
+The $1.21 \mu S$ is equivalent to 2.7\% duty cycle and the maximum theoretical duty cycle for the high-side MOSFETS is thus 97.3\%.
 % subsection power_board (end)
 
 \subsubsection{Supply Capacitors}
