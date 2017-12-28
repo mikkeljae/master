@@ -18,8 +18,11 @@ It is believed that following these steps greatly decreased the number of errors
 They were, however, by no means error-free and would both benefit from a second iteration.
 The errors that are present on the boards can be either easily fixed or an acceptable work-around has been found which can be used until a second iteration of the PCBs is designed.
 
-Curiously, the \texttt{nRF24L01} module, perhaps the least analysed part of the project, is also the part that is least functional.
-It was found that it had a far larger protocol than initially assumed and was also mounted incorrectly.
+The \texttt{nRF24L01} module was used to do the wireless communication between the joint and the controller board.
+It was found that it had a far larger protocol than initially assumed but still had sufficient throughput to transmit the required positions.
+
+The mounting of the module was found to not be in accordance with the recommendation of the datasheet.
+While this issue was worked around simply by moving the module away from the controller board, this is possibly the component most urgently in need of a redesign.
 \\~\\
 The intention of the authors was to design a real-time software system based on KHAos to show that the system is functioning as desired.
 As has been explained previously, this goal was unfortunately not met.
@@ -34,3 +37,10 @@ A number of difficulties arose with the debugging of the full-bridge, but the is
 The motor of the cart system has been driven by the designed motor driver.
 
 Current measurement was not accomplished due to the noisy environment of the amplifier of the current signal.
+\\~\\
+Finally a safety system was implemented which is completely independent from any programming.
+This safety system is capable of cutting power to the motor using a relay whenever endstops or an emergency button are activated.
+In addition to these the software is capable of generating an emergency which will cut power to the motor.
+Power is maintained to the computational platform during an emergency so that the cause of the emergency can be recorded and investigated.
+\\~\\
+This concludes the work done in this project.
