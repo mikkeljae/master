@@ -1,7 +1,6 @@
 %!TEX root = ../main.tex
 \section{Controller Software Development} % (fold)
 \label{sub:controller_board_software}
-\thomas{done - section introduction}
 Throughout this section the software for the controller board is developed.
 An analysis is made to determine the required functionality of the software.
 An overview of the computing platform and the utilization of it in this project is also given.
@@ -41,7 +40,7 @@ The duty cycle of the PWM needs to be adjustable in order to control the speed o
 As described earlier, the current through the motor needs to be sampled using an ADC. 
 The current should be sampled at the center of a PWM period, as switching introduces noise that should not be measured.
 This is easily done by implementing center aligned PWM and sampling at the top signal.
-\mikkel{done - SQUIRREL!}
+\\~\\
 It is beneficial to implement the PWM generation on the FPGA part of the MicroZed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
 
 \subsubsection{General Peripheral Hardware Control} % (fold)
@@ -220,8 +219,7 @@ The requirements specified below are tested and verified in section \ref{ssub:ve
 \label{sub:implementation}
 This section presents the design and implementation of the software written for the controller board.
 The process used for writing VHDL components in this project is presented and the associated C code shown.
-Finally the setup of wireless communication for the MicroZed.
-\thomas{Done - introduction to design and implementation of control software section}
+Finally the setup of wireless communication for the MicroZed is described.
 \subsubsection{Implementation of Cart Position Counter} % (fold)
 \label{ssub:vhdl_components}
 A number of VHDL components were designed and implemented for use on the MicroZed.
@@ -420,8 +418,6 @@ clk_proc : process
 \label{code:clk_proc}
 \end{listing}
 
-\thomas{done - added code for testbench}
-
 The UUT is instantiated as a component in the test bench and Vivado provides tools for investigating the flow of execution.
 An excerpt illustrating the functionality can be seen in figure \ref{fig:testbench}.
 As can be seen \texttt{B\_i} is leading \texttt{A\_i}, resulting in \texttt{D\_i} going \texttt{high}.
@@ -448,7 +444,6 @@ Since every component is made as an IP core the system can be created using a bl
 For illustration purposes the block design of the full system has been included in figure \ref{fig:blockdesign}.
 The rightmost blocks include three of the authors' designs and a Xilinx \texttt{axi\_gpio} block.
 The GPIO block is used to signal an unmet safety condition from software, enabling the motor driver and similar tasks.
-\thomas{done - rewrite for proper safety condition}
 As can be seen, a simple RGB LED controller has been written to handle the debug LEDs on the board.
 By creating the component to control just a single LED, that code can be instantiated as many times as is required by the application and in any application.
 In common for all of these blocks is that they require at least some of their input from the AXI bus.
@@ -869,8 +864,7 @@ This was successfully done as described in section \ref{ssub:vhdl_components}.
 
 \subsubsection{Verification of: Requirement \ref{enum:software_should_handle_emergency}} % (fold)
 \label{ssub:verification_of_requirement_enum:software_should_handle_emergency}
-This requirement specifies that software should be able to handle safety condition.
-\thomas{done - do safety condition transformation}
+This requirement specifies that software should be able to handle safety conditions.
 \paragraph{Test}~\\
 The \texttt{EM\_DIS} signal should be driven high by moving the cart to one of the endstops.
 This indicates an unmet safety condition and the \texttt{EM\_DIS} should be recorded using the MicroZed.
