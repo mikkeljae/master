@@ -580,7 +580,6 @@ The next one to five bytes is the value that are to be written to the register.
 	\caption[Writing bits to a register on nRF24L01.]{Bits written to the \texttt{nRFM} in order to write a value to a register. \texttt{Command} specifies if it is a read or write action, \texttt{Address} specifies the register address and \texttt{Value} specifies the value written to or read from the register.}
 	\label{fig:rw_register}
 \end{figure}
-\thomas{fix figure to include arbitrary length value}
 
 The C code in listing \ref{code:rf_write_register_code} is used to write a value to a register. 
 Line 5 makes sure that a valid address and command is sent, regardless of the inputs.
