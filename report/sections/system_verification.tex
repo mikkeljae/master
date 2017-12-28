@@ -1,9 +1,6 @@
 %!TEX root = ../main.tex
 \section{System Verification}
 \label{sec:system_verification}
-\mikkel{Do you also want text here???}
-\thomas{done - Add verification subsection, indent every verification to subsubsection}
-\mikkel{done - insert pictures and referred to them}
 
 \subsection{Requirement Verification} % (fold)
 \label{sub:requirement_verification}
@@ -94,9 +91,7 @@ This requirement specifies that any software developed for the pendulum system s
 In section \ref{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior} it is described that due to time constraints the full real-time system is not realised.
 A number of smaller programs were written in order to verify the functionality of individual components.
 \\~\\
-\thomas{done - rewrite to full real-time}
 In section \ref{ssub:requirement_enum_joint_real_time} it is tested and verified that the joint board software is real-time.
-
 
 \subsubsection{Verification of: Requirement \ref{enum:system_accessible_to_users}} % (fold)
 \label{sub:verification_of_requirement_enum:system_accessible_to_users}
@@ -130,7 +125,6 @@ A test should be conducted where the cart is driven towards the endstop.
 It should be verified that the cart is stopped by the safety circuit before crashing into the motor.
 The test should be conducted again, but with a higher velocity of the cart.
 In this way the maximum allowed velocity can be determined or it can be determined that the endstops should be moved to another place on the rail.
-\thomas{done - add endstop test}
 
 \subsubsection{Verification of: Requirement \ref{enum:software_top_down_bottom_up}} % (fold)
 \label{sub:verification_of_requirement_enum:software_top_down_bottom_up}

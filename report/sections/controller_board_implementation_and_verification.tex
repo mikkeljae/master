@@ -232,7 +232,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 		\end{itemize}
 		\item[\cmark] Verify that deadtime exists between the two channels.
 		\begin{itemize}
-			\item Deadtime exists on the gate signals as is shown in figure \ref{fig:controllerboardv2_gate_b_deadtime}.
+			\item[-] Deadtime exists on the gate signals as is shown in figure \ref{fig:controllerboardv2_gate_b_deadtime}.
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
@@ -248,10 +248,9 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 \begin{figure}[h]
 	\centering
     %\input{graphics/controllerboardv2_gate_b_deadtime.tex}
-	\caption[Dead time on gate signals.]{Gate signals as produced by the motor driver. It is verified that dead time exists.}
+	\caption[Deadtime on gate signals.]{Gate signals as produced by the motor driver. It is verified that deadtime exists.}
 	\label{fig:controllerboardv2_gate_b_deadtime}
 \end{figure}
-\mikkel{done - some text for figure5.19 gate signals on CB.}
 
 \paragraph{Verify nRF24L01 Module functionality} % (fold)
 \label{par:verify_nrf24l01_module_functionality}
@@ -467,7 +466,6 @@ The \texttt{nRFM} was chosen and placed on the board with an SPI connection to t
 \\~\\
 Part of the reasoning behind choosing an RF module was the expectation that it would forego the need of an extensive protocol.
 The chosen module, the \texttt{nRF24L01}, does however, utilize a rather extensive protocol and transmission of the angular position is 75\% overhead, 25\% payload.
-\thomas{done - section on rf module.}
 
 \subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}
@@ -478,7 +476,7 @@ Time and money was saved this way, by correcting the errors before ordering the 
 \\~\\
 A prototype PCB should have been done to verify the functionality of the shunt resistor and current measurement circuit.
 While the layout certainly influences the functionality of this circuitry, it is believed that a prototype would have revealed the necessity of an analog ground plane.
-\thomas{done - added note on shunt resistor current measurement.}
+This was not done because the necessity of it was not apparent at the time.
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_strategy}} % (fold)
 \label{ssub:requirement_enum:pcb_strategy}
