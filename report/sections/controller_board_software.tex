@@ -33,8 +33,9 @@ This means that in order to change direction of the motor, the PWM signal needs 
 The duty cycle of the PWM needs to be adjustable in order to control the speed of the motor.
 \\
 As described earlier, the current through the motor needs to be sampled using an ADC. 
-By sampling at the t
-\mikkel{SQUIRREL!}
+The current should be sampled at the center of a PWM period, as switching introduces noise that should not be measured.
+This is easily done by implementing center aligned PWM and sampling at the top signal.
+\mikkel{done - SQUIRREL!}
 It is beneficial to implement the PWM generation on the FPGA part of the MicroZed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
 
 \subsubsection{General Peripheral Hardware Control} % (fold)
