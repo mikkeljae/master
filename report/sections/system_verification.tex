@@ -1,10 +1,14 @@
 %!TEX root = ../main.tex
 \section{System Verification}
 \label{sec:system_verification}
-\thomas{Add verification subsection, indent every verification to subsubsection}
+\mikkel{Do you also want text here???}
+\thomas{done - Add verification subsection, indent every verification to subsubsection}
 \mikkel{done - insert pictures and referred to them}
+
+\subsection{Requirement Verification} % (fold)
+\label{sub:requirement_verification}
 This final verification evaluates upon the initial requirements of the system found in the system analysis.
-\subsection{Verification of: Requirements \ref{enum:system_consists_double_pendulum} and \ref{enum:cart_actuated_by_motor}} % (fold)
+\subsubsection{Verification of: Requirements \ref{enum:system_consists_double_pendulum} and \ref{enum:cart_actuated_by_motor}} % (fold)
 \label{sub:verification_of_requirement_enum:system_consists_double_pendulum}
 These requirements specify that the system should consist of a double pendulum mounted on a moveable cart and that the cart should be actuated by a motor.
 
@@ -30,14 +34,13 @@ The cart can be actuated by the Maxon motor as they are connected by a belt.
 Even though the cart was never moved using the motor due to debugging troubles and time constraints, it was tested that the developed controller board is able to drive the motor.
 Since no actual control was done, it is still unknown whether the cart and rail system is sufficient for this application.
 
-\subsection{Verification of: Requirement \ref{enum:controlled_by_microzed}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:controlled_by_microzed}} % (fold)
 \label{sub:verification_of_requirement_enum:controlled_by_microzed}
 This requirement states that the pendulum system should be controlled by a MicroZed.
 
 \paragraph{Conclusion}~\\
-The controller board has been designed to fit the MicroZed and all relevant signals were wired to it as described in section \label{sec:controller_board}.
+The controller board has been designed to fit the MicroZed and all relevant signals were wired to it as described in section \ref{sec:controller_board}.
 \\~\\
-\thomas{insert correct reference}
 In section \ref{subs:requirement_enum:motor_speed_direction} it was verified that the MicroZed can control motor speed and direction through implemented VHDL modules, the motor driver and the H-bridge on the controller board. 
 \\~\\
 In section \ref{ssub:requrement_enum:motor_current_} it was found that it is not possible to determine the motor current using a shunt resistor and the \texttt{INA286}. 
@@ -47,7 +50,7 @@ In section \ref{ssub:requirement_enum:microzed_interface} it was verified that t
 
 
 
-\subsection{Verification of: Requirement \ref{enum:position_cart_joint_angle_measure}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:position_cart_joint_angle_measure}} % (fold)
 \label{sub:verification_of_requirement_enum:position_cart_joint_angle_measure}
 According to this requirement the position of the cart and joint angles should be measured.
 
@@ -83,7 +86,7 @@ From figures \ref{fig:joint_angle_measured_full} and \ref{fig:joint_angle_measur
 The full test was only realised on one of the joint boards, as only one board was finished due to time constraints.
 
 
-\subsection{Verification of: Requirement \ref{enum:software_developed_real_time}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:software_developed_real_time}} % (fold)
 \label{sub:verification_of_requirement_enum:software_developed_real_time}
 This requirement specifies that any software developed for the pendulum system should be real-time.
 
@@ -94,7 +97,7 @@ In section \ref{ssub:verification_of_requirement_of_requirement_enum:real_time_b
 In section \ref{ssub:requirement_enum_joint_real_time} it is tested and verified that the joint board software is real-time.
 
 
-\subsection{Verification of: Requirement \ref{enum:system_accessible_to_users}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:system_accessible_to_users}} % (fold)
 \label{sub:verification_of_requirement_enum:system_accessible_to_users}
 This requirement states that the system should be easily accessible to users.
 
@@ -105,7 +108,7 @@ Verification procedures have been developed for the joint and controller boards 
 \\~\\
 The usability of the controller board should be verified by using students as test subjects once the system is finished. 
 
-\subsection{Verification of: Requirement \ref{enum:system_should_not_break_during_operation}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:system_should_not_break_during_operation}} % (fold)
 \label{sub:verification_of_requirement_enum:system_should_not_break_during_operation}
 This requirement specifies that the system should not break during operation by users.
 
@@ -114,7 +117,7 @@ The design of the controller board electronics is done with the requirement that
 \\
 Section \ref{ssub:requirement_enum:any_trigger_em} verifies that the implemented endstops can cut off power to the H-bridge effectively stopping the motor.
 
-\subsection{Verification of: Requirement \ref{enum:safety_should_not_rely_on_programming}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:safety_should_not_rely_on_programming}} % (fold)
 \label{sub:verification_of_requirement_enum:safety_should_not_rely_on_programming}
 According to this requirement the system safety should not rely on the programming of the system.
 
@@ -122,7 +125,7 @@ According to this requirement the system safety should not rely on the programmi
 Signals from endstops and emergency button cuts off power to the H-bridge through digital electronics.
 The functionality is verified in section \ref{ssub:requirement_enum:any_trigger_em}.
 
-\subsection{Verification of: Requirement \ref{enum:software_top_down_bottom_up}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:software_top_down_bottom_up}} % (fold)
 \label{sub:verification_of_requirement_enum:software_top_down_bottom_up}
 This requirement states that software design should be done top-down, whereas subcomponents are written bottom-up.
 
