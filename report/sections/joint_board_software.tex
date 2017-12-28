@@ -349,32 +349,26 @@ The payload includes an ID, which is incremented for each packet.
 The joint board was programmed to send 10000 packets before stopping transmition. 
 
 In the first series of tests the pendulum was held still.
-The number of received packets can be seen in table \ref{tab:received_still}.
-\thomas{table experimentation, remember to fix text}
+The number of received packets can be seen in the \textbf{S} row in table \ref{tab:received_still}.
+\thomas{done - table experimentation, remember to fix text}
 \begin{table}[h]
 \centering
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
-7046 & 7245 & 7272 & 7241 & 7232 & 7212 & 7160 & 7217 & 7241 & 7221 \\ \hline
-\end{tabular}
-\caption[Number of received packets without movement.]{Number of received packets out of 10000 transmitted. The pendulum was held still during the test. The average of the number of received packets was 7208.}
+\textbf{\#} & \textbf{1} 	& \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{Avg} \\ \hline
+\textbf{S} & 7046 & 7245 & 7272 & 7241 & 7232 & 7212 & 7160 & 7217 & 7241 & 7221 & 7208\\ \hline
+\textbf{M} & 7148 & 7215 & 7208 & 7173 & 7221 & 7165 & 7138 & 7187 & 7274 & 7186 & 7191\\ \hline
+\end{tabular}}
+\caption[Number of received packets.]{Number of received packets out of 10000 transmitted. The \textbf{S} row represents the received packets while the pendulum was held still and the \textbf{M} row represents the received packets while moving the pendulum.}
 \label{tab:received_still}
 \end{table}
 The average number of received packets is 7208 which corresponds to $\approx$ 72\% of the transmitted packages.
 \\~\\
 The same test was then conducted, but with the pendulum moving back and forth.
-The number of received packets can be seen in table \ref{tab:received_moved}.
+The number of received packets can be seen in the \textbf{M} row of table \ref{tab:received_still}.
 The average number of received packets is 7191 which corresponds to $\approx$ 72\% of the transmitted packages.
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
-\hline
-7148 & 7215 & 7208 & 7173 & 7221 & 7165 & 7138 & 7187 & 7274 & 7186 \\ \hline
-\end{tabular}
-\caption[Number of received packets with movement.]{Number of received packets out of 10000 transmitted. The pendulum was moved during the test. The average of the number of received packets was 7191.}
-\label{tab:received_moved}
-\end{table}
 By looking at the two test results it can be determined that movement of the pendulum has no significant effect on the success rate of transmission.
 
 In order to determine if there was a pattern in how the 28\% of packages were lost the IDs of the received packages were plotted.
