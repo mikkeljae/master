@@ -33,8 +33,9 @@ This means that in order to change direction of the motor, the PWM signal needs 
 The duty cycle of the PWM needs to be adjustable in order to control the speed of the motor.
 \\
 As described earlier, the current through the motor needs to be sampled using an ADC. 
-By sampling at the t
-\mikkel{SQUIRREL!}
+The current should be sampled at the center of a PWM period, as switching introduces noise that should not be measured.
+This is easily done by implementing center aligned PWM and sampling at the top signal.
+\mikkel{done - SQUIRREL!}
 It is beneficial to implement the PWM generation on the FPGA part of the MicroZed as it has no dedicated PWM generating hardware and implementing it in software would require computational time on the processor.
 
 \subsubsection{General Peripheral Hardware Control} % (fold)
@@ -132,7 +133,7 @@ Since the data exchanged between PL and PS in this project is mostly the setting
 \label{ssub:real_time}
 In general control systems are created as real-time systems.
 This ensures that any time-stepping done in the mathematics of the system is well-defined and that the control is therefore well-defined.
-Also the literature used as an inspiration for this project \cite{invertpendulum1} \cite{doubleinvertpendulum} \cite{tripleinvertpendulum} describe real-time systems based on real-time linux and DSpace.
+Also the literature used as an inspiration for this project \cite{invertpendulum1} \cite{doubleinvertpendulum} \cite{tripleinvertpendulum} describe real-time systems based on real-time Linux and DSpace.
 Therefore the software developed here, will also be real-time.
 
 \subsubsection{VHDL and Coding Practices} % (fold)
