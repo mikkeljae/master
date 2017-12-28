@@ -740,14 +740,14 @@ As can be seen, every task created in the system is associated with an ID and is
 The init function is used to set up hardware and other pre-requisites for the task and eventually to start the task. 
 \begin{listing}[H]
 \begin{minted}{c}
-#define T_TICK 1
+#define T_TICK     1
 
-#define LAST_TASK 1
+#define LAST_TASK  1
 
-#define TASK0 alive_task
-#define TASK1 cart_task
-#define TASK2 NULL
-#define TASK3 NULL
+#define TASK0      alive_task
+#define TASK1      cart_task
+#define TASK2      NULL
+#define TASK3      NULL
 
 #define INIT_TASK0 init_alive_task
 #define INIT_TASK1 init_cart_task
@@ -755,7 +755,7 @@ The init function is used to set up hardware and other pre-requisites for the ta
 #define INIT_TASK3 NULL
 
 #define ALIVE_TASK 0
-#define CART_TASK 1
+#define CART_TASK  1
 \end{minted}
 \caption[Configuration file of KHAos.]{Excerpt of the configuration file of KHAos. Each task is given an ID for both the task itself and its init function. The number of tasks in the system is given in \texttt{LAST\_TASK}.}
 \label{code:khaos_config}
