@@ -442,8 +442,8 @@ Every user-defined port is brought out through the AXI component so that they ca
 Since every component is made as an IP core the system can be created using a block design.
 For illustration purposes the block design of the full system has been included in figure \ref{fig:blockdesign}.
 The rightmost blocks include three of the authors' designs and a Xilinx \texttt{axi\_gpio} block.
-The GPIO block is used to handle hardware signals for creating a safety condition, enabling the motor driver and similar tasks.
-\thomas{rewrite for proper safety condition}
+The GPIO block is used to signal an unmet safety condition from software, enabling the motor driver and similar tasks.
+\thomas{done - rewrite for proper safety condition}
 As can be seen, a simple RGB LED controller has been written to handle the debug LEDs on the board.
 By creating the component to control just a single LED, that code can be instantiated as many times as is required by the application and in any application.
 In common for all of these blocks is that they require at least some of their input from the AXI bus.
@@ -790,7 +790,7 @@ void alive_task(void)
 
 \subsection{Verification} % (fold)
 \label{ssub:verification_controller_board_software}
-\thomas{introduction to section}
+This section goes through the verification of the requirements set for the controller board software.
 \subsubsection{Verification of: Requirement \ref{enum:correct_cart_position}} % (fold)
 \label{ssub:verification_of_requirement_enum:correct_cart_position}
 This requirement states that correct cart position should be known at all times.
@@ -865,12 +865,13 @@ This was successfully done as described in section \ref{ssub:vhdl_components}.
 
 \subsubsection{Verification of: Requirement \ref{enum:software_should_handle_emergency}} % (fold)
 \label{ssub:verification_of_requirement_enum:software_should_handle_emergency}
-This requirement specifies that software should handle emergency situations.
-\thomas{do safety condition transformation}
+This requirement specifies that software should be able to handle safety condition.
+\thomas{done - do safety condition transformation}
 \paragraph{Test}~\\
-Detecting a safety condition should be tested by triggering an emergency condition e.g. moving the cart to one of the endstop and record this using the MicroZed.
+The \texttt{EM\_DIS} signal should be driven high by moving the cart to one of the endstops.
+This indicates an unmet safety condition and the \texttt{EM\_DIS} should be recorded using the MicroZed.
 \\
-Producing a safety condition should be done by setting the \texttt{EM\_MCU} signal \texttt{low}. 
+The \texttt{EM\_MCU} signal should be driven \texttt{low} to ensure that this causes an unmet safety conditions.
 
 \paragraph{Conclusion}~\\
 It was found that the \texttt{EM\_DIS} signal that indicates a safety condition was not wired to the MicroZed Bergstak connector.
