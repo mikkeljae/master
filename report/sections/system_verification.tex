@@ -124,6 +124,12 @@ According to this requirement the system safety should not rely on the programmi
 \paragraph{Conclusion}~\\
 Signals from endstops and emergency button cuts off power to the H-bridge through digital electronics.
 The functionality is verified in section \ref{ssub:requirement_enum:any_trigger_em}.
+\\~\\
+A test should be conducted where the cart is driven towards the endstop.
+It should be verified that the cart is stopped by the safety circuit before crashing into the motor.
+The test should be conducted again, but with a higher velocity of the cart.
+In this way the maximum allowed velocity can be determined or it can be determined that the endstops should be moved to another place on the rail.
+\thomas{done - add endstop test}
 
 \subsubsection{Verification of: Requirement \ref{enum:software_top_down_bottom_up}} % (fold)
 \label{sub:verification_of_requirement_enum:software_top_down_bottom_up}
