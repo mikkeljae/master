@@ -56,11 +56,11 @@ The measured signals are shown in figure \ref{fig:test_hip_signals}.
 \begin{figure}[h]
 	\centering
     %\input{graphics/test_motor_drive_signals.tex}
-	\caption[Measured gate and input signals.]{Measured low and high side gate signals along with low side motor driver input signals.}
+	\caption[Measured gate and input signals.]{Measured low and high-side gate signals along with low-side motor driver input signals.}
 	\label{fig:test_hip_signals}
 \end{figure}
-It was verified that the low side gate signal follows the waveform of low side input signal, but with a logic level of $\approx$12V as expected. 
-It was also verified that the high side gate signals are 180$^\circ$ out of phase of the low side signals and are correctly bootstrapped to $\approx$24V.
+It was verified that the low-side gate signal follows the waveform of low-side input signal, but with a logic level of $\approx$12V as expected. 
+It was also verified that the high-side gate signals are 180$^\circ$ out of phase of the low-side signals and are correctly bootstrapped to $\approx$24V.
 
 \subsubsection{Controller Board} % (fold)
 \label{ssub:controller_board}
@@ -292,7 +292,7 @@ Repeat for channel \texttt{B}.
 
 \paragraph{Conclusion}~\\
 The test was done on both channels and it was verified that direction and speed can be controlled through PWM signals on channel \texttt{A} and \texttt{B}.
-The gate signals for channel \texttt{B} are shown in figure \ref{fig:controllerboardv2_gate_b}, where it can be seen that the high side gate signals are correctly bootstrapped.
+The gate signals for channel \texttt{B} are shown in figure \ref{fig:controllerboardv2_gate_b}, where it can be seen that the high-side gate signals are correctly bootstrapped.
 
 \paragraph{Addendum}~\\
 During further testing of the system the H-bridge suddenly gave up and released its smoke.
@@ -303,7 +303,7 @@ This data suggests that a large current, $>20$A is drawn when \texttt{DIS} is se
 \begin{figure}[h]
 	\centering
 	%\input{graphics/current_w_load.tex}
-	\caption[Main power supply current draw, 0\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
+	\caption[Main power supply current draw, 0\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high-side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load}
 \end{figure}
 
@@ -314,11 +314,11 @@ At low PWM duty cycle the 24V rail recovers before the failure happens.
 \begin{figure}[h]
 	\centering
 	%\input{graphics/current_w_load_closeup.tex}
-	\caption[Main power supply current draw, 10\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high side MOSFET of channel B. Supply current is measured in amperes.}
+	\caption[Main power supply current draw, 10\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 10\% duty cycle PWM to the high-side MOSFET of channel B. Supply current is measured in amperes.}
 	\label{fig:current_w_load_closeup}
 \end{figure}
 
-By inspecting the data of the time immediately after \texttt{DIS} is set \texttt{low}, as seen in figure \ref{fig:current_w_load_closeup}, it is apparent that the gate signal on the high side MOSFET is never pulled below 12V and as a result the MOSFET is always conducting, creating shoot-through on the 24V rail when the low-side MOSFET is conducting.
+By inspecting the data of the time immediately after \texttt{DIS} is set \texttt{low}, as seen in figure \ref{fig:current_w_load_closeup}, it is apparent that the gate signal on the high-side MOSFET is never pulled below 12V and as a result the MOSFET is always conducting, creating shoot-through on the 24V rail when the low-side MOSFET is conducting.
 Due to this the current can be seen to step up at every pulse of PWM until at approximately 0.2ms where a steady state occurs.
 This steady state is maintained until approximately 4ms have passed where suddenly the gate signal does correctly go to 0V, meaning that the high-side MOSFET no longer conducts, allowing the 24V rail to recover.
 \\~\\
@@ -333,7 +333,7 @@ Since the 12V and therefore the 5V rail were unaffected by the dipping 24V rail 
 \begin{figure}[h]
 	\centering
 	%\input{graphics/current_w_load_slow.tex}
-	\caption[Main power supply current draw, 0\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 0\% duty cycle PWM to the high side MOSFET of channel B for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
+	\caption[Main power supply current draw, 0\% duty cycle.]{Current draw when setting \texttt{DIS} low and applying a 0\% duty cycle PWM to the high-side MOSFET of channel B for 4ms before applying 10\% PWM. Supply current is measured in amperes.}
 	\label{fig:current_w_load_slow}
 \end{figure}
 
