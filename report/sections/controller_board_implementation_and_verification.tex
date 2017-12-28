@@ -187,7 +187,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 			\begin{figure}[h]
 				\centering
 			    %\input{graphics/controllerboardv2_inrushcurrent.tex}
-				\caption[Chargin curve of capacitor bank.]{Voltage measured on \texttt{POWER\_IN}, when the inrush relay is conducting. It can be seen that charging the capacitors takes approximately 1s. }
+				\caption[Chargin curve of Capacitor bank.]{Voltage measured on \texttt{POWER\_IN}, when the inrush relay is conducting. It can be seen that charging the capacitors takes approximately 1s. }
 				\label{fig:controllerboardv2_inrushcurrent_charge}
 			\end{figure}
  
@@ -474,7 +474,9 @@ This requirement specifies that important parts of the circuitry should be teste
 Two prototype PCBs were created which lead to correction of two errors and verification of the rest of the functionality.
 Time and money was saved this way, by correcting the errors before ordering the full board from a professional PCB vendor at a higher cost and a long delivery time.
 \\~\\
-\thomas{add note on current measurement}
+A prototype PCB should have been done to verify the functionality of the shunt resistor and current measurement circuit.
+While the layout certainly influences the functionality of this circuitry, it is believed that a prototype would have revealed the necessity of an analog ground plane.
+\thomas{done - added note on shunt resistor current measurement.}
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_strategy}} % (fold)
 \label{ssub:requirement_enum:pcb_strategy}
@@ -484,9 +486,10 @@ Using this method a PCB layout was produced with significantly less errors than 
 The fact that the final PCB contained errors indicates that the steps were not followed thoroughly enough or that the method is flawed.
 Two of the errors originated in a difference between a components footprint and the symbol in the schematic.
 Therefore it should be added to the footprint inspection step that it should be checked for all components if their footprint is in accordance with the symbol in the schematic.
-The conclusion on the rest of the errors was that the steps should have been followed more thoroughly.
-\thomas{Try harder is insufficient.}
-Especially it would have been beneficial to use the peer-review step more comprehensively.
+The remainder of the errors are oversights from step four.
+This indicates that this step should be elaborated further so that these oversights are not possible.
+One example is the signals that are wired to a connector and the debug header, but not to the MicroZed.
+Additionally it would have been beneficial to further make use of the peer-review step.
 
 \subsubsection{Verification of: Requirement \ref{enum:pcb_debugging}} % (fold)
 \label{ssub:requirement_enum:pcb_debugging}
