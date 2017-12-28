@@ -565,7 +565,7 @@ The next one to five bytes is the value that are to be written to the register.
 The C code in listing \ref{code:rf_write_register_code} is used to write a value to a register. 
 Line 5 makes sure that a valid address and command is sent, regardless of the inputs.
 Line 6 collects all bits that needs to be sent in one variable. 
-The 2 bytes are sent using SPI in line 7, where it can also be seen that the answer from the \texttt{nRFM} is ignored as the \texttt{NULL} pointer is given as the input buffer.  
+The 2 bytes are sent using SPI in line 7, where it can also be seen that the answer from the \texttt{nRFM} is ignored as the null pointer is given as the input buffer.  
 
 \begin{listing}[!h]
 \begin{minted}{c}

@@ -315,8 +315,16 @@ The PLECS model is shown in figure \ref{fig:plecs_schem} and can be found in the
 \end{figure}	
 
 Simulating the system at 50\% duty cycle yields a voltage ripple of approximately 24mV, which is definitely acceptable. 
+The supply current and load current are shown in figure \ref{fig:supp_load_current}.
 
-It can also be noted that an effect of the inductance in the supply wires and the supply capacitors is that the supply current is low pass filtered and is thereby protected against the ripple current and only needs to supply the DC component of the load current.
+\begin{figure}[h]
+	\centering
+	%\input{graphics/currents_simul_supp_load.tex}
+	\caption[Current simulation in PLECS.]{Current drawn from the power supply and the load current, when simulating in PLECS. }
+	\label{fig:supp_load_current}
+\end{figure}
+
+It can seen that an effect of the inductance in the supply wires and the supply capacitors is that the supply current is low pass filtered and is thereby protected against the ripple current and only needs to supply the DC component of the load current.
 
 The current drawn from the capacitors is shown in figure \ref{fig:cap_currents}.
 Here it can be seen that the electrolytic capacitors supply the majority of the current, while the ceramic capacitors supply a small spike with high frequency content.
