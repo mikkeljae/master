@@ -1,5 +1,5 @@
 clear all; close all; clc;
-to_tikz = 1;
+to_tikz = 0;
 
 data = load('0_3w_850mah.csv');
 
@@ -13,7 +13,9 @@ xlabel('Time [Min]')
 ylabel('Voltage [V]')
 
 xlim([0 450])
-ylim([2.5 4.5])
+%ylim([2.5 4.5])
+ylim([0 4.5])
+
 yticks(2.5:0.5:4.5)
 
 hline = refline([0 3.3]);

@@ -212,11 +212,11 @@ The measured discharge curve is shown in figure \ref{fig:bat_discharge}.
 \end{figure}
 
 It can be observed that the battery voltage only drops below 3.3V for a very short time before the battery is completely discharged.
-
+It is calculated that $\approx$98.9\% of the battery capacity can be utilized.
 \paragraph{Conclusion}~\\
 The Buck converter solution has the highest efficiency and has a lower drop out voltage than the linear regulator solution.
-The disadvantage of using a Buck converter is that the full battery capacity cannot be utilized, but a test showed that almost all of the capacity can be used.
-\thomas{calculate actual utilizable capacity}
+The disadvantage of using a Buck converter is that the full battery capacity cannot be utilized, but a test showed that $\approx$98.9\% of the capacity can be used.
+\thomas{done - calculate actual utilizable capacity}
 Therefore it was chosen to use a Buck converter with the \texttt{TPS62220} regulator. 
 The Buck converter circuit used is based on the recommendations in the datasheet of the \texttt{TPS62220}.
 The circuit is shown in figure \ref{fig:tps62220_circuit}.
