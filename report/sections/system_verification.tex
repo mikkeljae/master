@@ -3,20 +3,29 @@
 \label{sec:system_verification}
 \thomas{Add verification subsection, indent every verification to subsubsection}
 \thomas{write introduction to this section}
+\mikkel{done - insert pictures and referred to them}
 \subsection{Verification of: Requirements \ref{enum:system_consists_double_pendulum} and \ref{enum:cart_actuated_by_motor}} % (fold)
 \label{sub:verification_of_requirement_enum:system_consists_double_pendulum}
 These requirements specify that the system should consist of a double pendulum mounted on a moveable cart and that the cart should be actuated by a motor.
 
 \paragraph{Conclusion}~\\
 The implemented system consists of the designed and implemented pendulum assembly mounted on the rail system inherited from an earlier project.
-A picture of the full system setup is shown in figure \ref{fig:pic_full_system}.
-Specific requirements for designing and implementing the pendulum assembly are described and verified in section \ref{sec:joint_development}.
+A picture of the full system setup is shown in figure \ref{fig:pic_full_system} and a picture of the controller board interfaced with the full system is shown in figure \ref{fig:pic_full_system_high}.
+Specific requirements for designing and implementing the pendulum assembly are described and verified in section \ref{sec:joint_development}. 
 \begin{figure}
 	\centering
-	\missingfigure{Picture of full system}
-	\caption{Picture of full system.}
+	\includegraphics[width=.9\linewidth]{graphics/full_system_finish.JPG}
+	\caption{Picture of the full system.}
 	\label{fig:pic_full_system}
 \end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=.9\linewidth]{graphics/full_system_finish_high.JPG}
+	\caption{Picture of the controller board interfaced with the full system.}
+	\label{fig:pic_full_system_high}
+\end{figure}
+
+
 The cart can be actuated by the Maxon motor as they are connected by a belt. 
 Even though the cart was never moved using the motor due to debugging troubles and time constraints, it was tested that the developed controller board is able to drive the motor.
 
