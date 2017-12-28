@@ -462,6 +462,10 @@ This requirement specifies that hardware for wireless communication using RF sho
 
 \paragraph{Conclusion}~\\
 The \texttt{nRFM} was chosen and placed on the board with an SPI connection to the MicroZed.
+\\~\\
+Part of the reasoning behind choosing an RF module was the expectation that it would forego the need of an extensive protocol.
+The chosen module, the \texttt{nRF24L01}, does however, utilize a rather extensive protocol and transmission of the angular position is 75\% overhead, 25\% payload.
+\thomas{done - section on rf module.}
 
 \subsubsection{Verification of: Requirement \ref{enum:important_prototype}} % (fold)
 \label{ssub:requirement_enum:important_prototype}

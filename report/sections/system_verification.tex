@@ -2,8 +2,8 @@
 \section{System Verification}
 \label{sec:system_verification}
 \thomas{Add verification subsection, indent every verification to subsubsection}
-\thomas{write introduction to this section}
 \mikkel{done - insert pictures and referred to them}
+This final verification evaluates upon the initial requirements of the system found in the system analysis.
 \subsection{Verification of: Requirements \ref{enum:system_consists_double_pendulum} and \ref{enum:cart_actuated_by_motor}} % (fold)
 \label{sub:verification_of_requirement_enum:system_consists_double_pendulum}
 These requirements specify that the system should consist of a double pendulum mounted on a moveable cart and that the cart should be actuated by a motor.
@@ -28,6 +28,7 @@ Specific requirements for designing and implementing the pendulum assembly are d
 
 The cart can be actuated by the Maxon motor as they are connected by a belt. 
 Even though the cart was never moved using the motor due to debugging troubles and time constraints, it was tested that the developed controller board is able to drive the motor.
+Since no actual control was done, it is still unknown whether the cart and rail system is sufficient for this application.
 
 \subsection{Verification of: Requirement \ref{enum:controlled_by_microzed}} % (fold)
 \label{sub:verification_of_requirement_enum:controlled_by_microzed}

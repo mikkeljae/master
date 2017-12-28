@@ -25,7 +25,6 @@ Three were under consideration:
 	\item \textbf{Radio Frequency:} While not strictly a protocol, using an RF transceiver eliminates the additional overhead associated with the previously mentioned protocols.
 	RF transceivers come with a number of different interfaces such as SPI or I2C and will simply transmit the data received through that interface.
 	This makes it easy to communicate using this method through bare-metal code or even VHDL.
-	\thomas{note in verification that a protocol DOES exist in the RF module.}
 \end{itemize}
 Considering the above it was chosen to use an RF transceiver to facilitate the communication between the joints and the controller board.
 % subsubsection communication (end)
@@ -119,7 +118,9 @@ The 2.5V reference is used only as a reference voltage and therefore does not ha
 \end{table}
 
 \subsubsection{Motor Current Sensing}
-\thomas{generate requirement for current mode control}
+\thomas{done - generate requirement for current mode control}
+In the State of the Art analysis an example of an inverted pendulum system using current mode control was presented \cite{invertpendulum1}.
+Allowing for this feature will further increase the usefulness of the platform for experimentation.
 In order to implement current mode control it is necessary to accurately measure the current being drawn by the motor at any given time.
 Current measurements are generally done by either hall effect based sensors or shunt resistors as described in \cite{current_measure_vishay}.
 Hall effect based sensors are usually better for high current applications where adding a resistor in series with the load is infeasible. 
@@ -250,10 +251,8 @@ This may cause issues in the digital circuitry.
 
 Having several ground planes can cause issues with currents circulating in them.
 In order to avoid this it is crucial that the ground planes are connected in one place only.
-This is known as a star connection.
+This is known as a star ground connection \cite{starground}.
 \\~\\
-\thomas{find source for stars}
-
 Since at least part of the PCB is likely to carry significant currents it is necessary to appropriately size the width of traces and the thickness of the copper.
 
 \subsubsection{Component Selection and Placement} % (fold)
@@ -301,10 +300,10 @@ The requirements specified below are tested and verified in section \ref{ssub:ve
 		\item High side drive capabilities.
 	\end{itemize}
 
-	\item Motor current measurement through ADC input on the MicroZed.
+	\item Motor current should be measurable through the ADC input on the MicroZed.
 	\label{enum:motor_current}
 	\begin{itemize}
-		\item Shunt resistor to allow for measurement of the motor current.
+		\item Shunt resistor should be added to allow for measurement of the motor current.
 	\end{itemize}
 
 	\item Voltage rails for the various components in the circuit.
