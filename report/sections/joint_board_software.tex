@@ -1,14 +1,14 @@
 %!TEX root = ../main.tex
 \section{Joint Board Software Development} % (fold)
 \label{sub:joint_board_software}
-
+\thomas{introduction to section}
 \subsection{Analysis} % (fold)
 \label{ssub:joint_board_analysis}
 The main responsibility of the joint software is to maintain knowledge of the angle of its joint and transmit that angle to the controller board.
-The following analysis will elaborate on the needed functionalities and requirements for the software.
+The following analysis will elaborate on the needed functionality and requirements for the software.
 
 \subsubsection{Joint Angle}
-The angle of the joint can be determined by analysing the signals from the RL2IC encoder mounted on the joint.
+The angle of the joint can be determined by analysing the signals from the \texttt{RL2IC} encoder mounted on the joint.
 This encoder implements incremental quadrature with three signals: \texttt{A}, \texttt{B} and \texttt{Z}.
 It is necessary to read all three signals using interrupts as missing a cycle in the counting procedure will cause the measured angle to drift.
 \texttt{Z} only goes \texttt{high} one time per revolution and can therefore be used to infer the absolute angle of the joint.
@@ -25,9 +25,9 @@ While the maximum velocity is influenced heavily by the setup in general, this i
 
 \subsubsection{Wireless Transmission of Data}
 As mentioned in section \ref{ssub:interboard_communication}, communication between the controller board and the joint boards is to happen wirelessly using the \texttt{nRFM} and a period between packets of more than 130$\mu$s.
-The software needs to communicate with the \texttt{nRFM} through a SPI connection with the \texttt{ATtiny} as the master.
-The \texttt{nRFM} has a number of options that needs to be set according to the wanted functionality.
-As described in \ref{ssub:interboard_communication}, it was found that the two joints needs to send using two separate frequency bands to avoid air collisions. 
+The software needs to communicate with the \texttt{nRFM} through an SPI connection with the \texttt{ATtiny} as the master.
+The \texttt{nRFM} has a number of options that needs to be set according to the desired functionality.
+As described in \ref{ssub:interboard_communication}, it was found that the two joints need to send using two separate frequency bands to avoid air collisions. 
 This needs to be set up individually in each \texttt{nRFM}. 
 Latency should be minimized by reducing overhead in transmitted packages and sending the smallest possible payload that correctly conveys the joint data.
 The datasheet describes that the \texttt{nRFM} can operate at air rates of 250kbps, 1Mbps and 2Mbps.
@@ -39,7 +39,7 @@ The datasheet of the \texttt{nRFM} module specifies that there is a settling tim
 Several aspects should be considered in order to determine the required period time associated with transmission of one data packet.
 An overview is given in figure \ref{fig:tiny_period}.
 Transmission of a two byte payload through SPI takes $\approx$ 36 $\mu$s as will be shown in \ref{ssub:spi}.
-The \texttt{CE} should be \texttt{high} for at least 10$\mu$s in order for the transition to transmit mode is initiated.
+The \texttt{CE} pin should be \texttt{high} for at least 10$\mu$s in order for the transition to transmit mode is initiated.
 Hereafter a settling time of 130$\mu$s occurs.
 Then the \texttt{nRFM} will transmit the two byte payload in an eight byte data packet, which will take 68$\mu$s using an air transmission rate of 1Mbps.
 This totals 244$\mu$s, in which the computation time needed is not included.
@@ -53,7 +53,7 @@ A sample latency of at least 249$\mu$s is incurred on the joint board software i
 \end{figure}
 
 \subsubsection{Real-Time Software}
-In order to produce reliable data for the controller board the joint angle should be sampled and transmitted at a constant rate.
+In order to produce reliable data for the controller board, the joint angle should be sampled and transmitted at a constant rate.
 This requires the joint board software to be programmed as real-time software, where deadlines should be met.
 
 \subsection{Requirement Specification} 
@@ -77,7 +77,7 @@ The requirements specified below are tested and verified in section \ref{sub:ver
 		\item Transmit data every 333$\mu$s.
 		\item Minimize latency.
 	\end{itemize}
-	\item Software should be written as real-time.
+	\item Software should be real-time.
 	\label{enum:joint_real_time}
 \end{enumerate}
 
@@ -104,7 +104,7 @@ The requirements specified below are tested and verified in section \ref{sub:ver
 A software design was made based on the requirement specification for the joint board software.
 The main functionality of the software is illustrated in the flowchart of figure \ref{sfig:joint_main_flowchart}.
 Upon startup the \texttt{nRFM} is setup as explained in section \ref{par:nrfsetup}.
-A timer is initiated to ensure that a packet, as shown in figure \ref{fig:rfpacket}, is sent every 333$\mu$s.
+A timer is initiated to ensure that a payload, as shown in figure \ref{fig:rfpacket}, is sent every 333$\mu$s.
 Now the copying procedure is started after which the packet is transmitted and the program is idling until 333$\mu$s has passed and the process starts over.
 An interrupt can happen at any given time and the ISR, will update the measured joint angle. 
 The coming sections will elaborate on the different elements of the software.
@@ -117,7 +117,7 @@ This routine can be engaged at any given time and is engaged whenever a rising o
 Initially the signals are read.
 If \texttt{Z} is \texttt{high} the index has been reached and the position counter is reset and the calibration bit is set.
 Hereafter the execution of the main loop is continued.
-If \texttt{Z} is low, \texttt{A} and \texttt{B} are inspected to determine which phase is active.
+If \texttt{Z} is \texttt{low}, \texttt{A} and \texttt{B} are inspected to determine which phase is active.
 Table \ref{tab:bin_phase} shows each phase and the combination of \texttt{A} and \texttt{B} in that phase.
 By comparing with the previous phase it is possible to determine the direction of movement and therefore whether the position counter should be incremented or decremented.
 Before returning execution to the main loop the current phase is stored. 
@@ -141,13 +141,13 @@ Before returning execution to the main loop the current phase is stored.
 The joint board should transmit the angular position of the joint and whether calibration has occured since startup.
 The \texttt{RL2IC} encoder used in the joint produces 7200 counts per revolution, requiring 13 bits to represent a full revolution of the joint.
 The calibration status is binary and represents one bit. 
-16 bit is required to transmit this information, since the \texttt{nRFM} payload needs to be an integer number of bytes.
+14 bit is required to transmit this information, but since the \texttt{nRFM} payload needs to be an integer number of bytes 16 bit are transmitted.
 See figure \ref{fig:rfpacket} for a visual representation of the message.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.5\linewidth]{graphics/rf_packet}
-	\caption[RF transmission packet used from the joint board.]{Sructure of a packet used on the RF transmission between the joint boards and the controller board. Bits 0-12 represent the current joint angle and bit 13 represents the state of calibration.}
+	\caption[RF transmission payload used from the joint board.]{Sructure of a payload used on the RF transmission between the joint boards and the controller board. Bits 0-12 represent the current joint angle and bit 13 represents the state of calibration.}
 	\label{fig:rfpacket}
 \end{figure}
 
@@ -155,15 +155,15 @@ When information is to be transmitted the calibration and angle variables needs 
 The act of copying a variable takes several clock cycles and if an interrupt occurs while the variable is being transmitted the data can be corrupted.
 In order to avoid this problem it is necessary to temporarily disable interrupts while copying the original variable into a temporary variable. 
 In effect the resulting code is as seen in listing \ref{code:critical_section_c}.
-Disabling interrupts means that any incoming interrupts will not be processed until interrupts are reenabled, as described in the datasheet of the ATtiny \cite{attiny84}.
+Disabling interrupts means that any incoming interrupts will not be processed until interrupts are reenabled, as described in the datasheet of the \texttt{ATtiny} \cite{attiny84}.
 Interrupts should therefore not be disabled for longer than the shortest expected time between two edges on any single signal.
 
 The \texttt{AVR-GCC} compiler has the option to only compile the code, leaving a human readable assembly file.
-The assembly corresponding to listing \ref{code:critical_section_c} can be seen in listing \ref{code:critical_section_asm}.
+The assembly code corresponding to listing \ref{code:critical_section_c} can be seen in listing \ref{code:critical_section_asm}.
 Each of these instructions are described in the datasheet of the microcontroller where the number of cycles required to execute them is specified: \texttt{rcall} 3 cycles, \texttt{\_CLI} 1 cycle, \texttt{ldd} 2 cycles, \texttt{std} 2 cycles, \texttt{\_SEI}, 1 cycle.
 In total 16 clock cycles are spent executing the required commands.
 At 8MHz this is 2 $\mu$s.
-Since the RL2IC produces 7200 ticks per revolution only 3600 edges exist on a single signal per revolution. 
+Since the \texttt{RL2IC} produces 7200 ticks per revolution only 3600 edges exist on a single signal per revolution. 
 Using these numbers the theoretical maximum angular velocity possible while still maintaining more than 2 $\mu$s between each edge on a signal is $\approx$135Hz, which is clearly above the estimated maximum velocity of $\approx$20Hz.
 
 \begin{listing}[h] 
@@ -193,7 +193,7 @@ Using these numbers the theoretical maximum angular velocity possible while stil
 
 \subsubsection{SPI} % (fold)
 \label{ssub:spi}
-The \texttt{ATtiny} does not have a SPI controller, but it does have a Universal Serial Interface, USI, which is compatible with SPI, when it is used in its three wire mode.
+The \texttt{ATtiny} does not have an SPI controller, but it does have a Universal Serial Interface, USI, which is compatible with SPI, when it is used in its three wire mode.
 In this mode the interface has the pins, Data Out \texttt{DO}, Data In \texttt{DI} and a clock \texttt{USCK}.
 In order to comply with the SPI standard a Slave Select \texttt{SS} pin should be implemented using a general IO pin and custom written software.
 The \texttt{nRFM} also has a non SPI pin, \texttt{CE} that also needs to be controlled from the \texttt{ATtiny}.
@@ -215,7 +215,7 @@ The loop in lines 4 to 11 is run \texttt{n} times to send and receive \texttt{n}
 In line 5 the USI Data Register \texttt{USIDR} is loaded with the byte to be sent and in line 6 the counter overflow flag is cleared.
 Lines 7 to 9 writes 1 to \texttt{USICR} until the counter overflow flag \texttt{USIOIF} is raised.
 The USI clock \texttt{USCK} is toggled each time 1 is written to \texttt{USITC}.
-Data is shifted to \texttt{DO} correctly by the USI by counting the clock edges generated. 
+Data is shifted to \texttt{DO} by the USI by counting the clock edges generated. 
 Data on \texttt{DI} is sampled at falling edges of the \texttt{USCK} and stored in \texttt{USIDR}.
 The counter overflow flag \texttt{USIOIF} will raise when 16 clock edges has been generated and eight bits of data has been sent and received.
 Line 10 copies the received data to the \texttt{input} pointer if there is one.
@@ -257,14 +257,14 @@ Afterwards an \texttt{nRFM} was wired to the MicroZed and the software was writt
 The transmission of data between the \texttt{ATtiny} and the MicroZed was verified by transmitting data from the joint board \texttt{nRFM} to an \texttt{nRFM} in free air connected to the MicroZed.
 The transmission was successful.
 \\~\\
-The same software was used to to test the \texttt{nRFM} wired on the controller board. 
+The same software was used to test the \texttt{nRFM} wired on the controller board. 
 Tests showed that no data was received in this setup.
-Thoroughly inspection of the schematic and PCB revealed no errors. 
+Thorough inspection of the schematic and PCB revealed no errors. 
 Further testing with a \texttt{nRFM} in free air connected to the MicroZed showed that no packets were received when the controller board PCB was in near proximity of the \texttt{nRFM}.
 The problem is due to the large amount of copper in the controller board PCB.
 The error was fixed by desoldering the \texttt{nRFM} and wiring it with longer wires.
 \\~\\
-Further investingating the datasheet of the \texttt{nRFM} reveals that it is recommended to make a cutout in the ground plane for the PCB antenna.
+Further investigating the datasheet of the \texttt{nRFM} revealed that it is recommended to make a cutout in the ground plane for the PCB antenna.
 It is also possible to add an SMA connector instead and use an external antenna for added signal power.
 Both of these require design of a new version of the PCB.
 
@@ -294,7 +294,7 @@ ISR(TIM1_COMPA_vect)
 \label{code:timer_isr}
 \end{listing}
 
-The ISR function associated with these interrupts are shown in \ref{code:timer_isr} together with the declaration of \texttt{timer}.
+The ISR function associated with these interrupts is shown in listing \ref{code:timer_isr} together with the declaration of \texttt{timer}.
 The variable is declared as \texttt{volatile} to tell the compiler that its value can be changed whenever during run-time. 
 It is declared as a \texttt{char}, because this is the smallest datatype available on the \texttt{ATtiny} and it only takes up one byte. 
 In the main loop of the software, the \texttt{timer} variable is used determine if the process of transmitting data should be initiated.
@@ -321,14 +321,14 @@ The two assembly instructions that will be used to access the value of \texttt{t
 
 \subsection{Verification} % (fold)
 \label{sub:verification_joint_board_software}
-
+\thomas{introduction to section}
 \subsubsection{Verification of: Requirement \ref{enum:joint_correct_angles}} % (fold)
 \label{ssub:requirement_enum:correct_angles}
 This requirement specifies that the correct joint angle should be known at all times.
 
 \paragraph{Test}~\\
-This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is a LED.
-A test should be conducted where the joint angle information was sent to the controller board and printed to a serial console.
+This cannot be verified without utilizing the wireless transmission between the joint board and controller as the only other output the jointboard has is an LED.
+A test should be conducted where the joint angle information is sent to the controller board and printed to a serial console.
 
 \paragraph{Conclusion}~\\
 The test was done and by visual inspection the functionality was verified.
@@ -338,18 +338,19 @@ The test was done and by visual inspection the functionality was verified.
 This requirement specifies that the joint angle should be transmitted using the \texttt{nRFM} module.
 
 \paragraph{Test}~\\
-The two \texttt{nRFM}s should be faced towards each other with a short distance between them.
+The two \texttt{nRFM}s should be facing each other with a short distance between them.
 Data should be transmitted from one of them to the other and it should be counted how many packets are received.
 This test should be conducted with the pendulum being held still and being moved to determine if movement affects the transmission.
 
 \paragraph{Conclusion}~\\
 The test was conducted by letting the two \texttt{nRFM}s face each other with a distance of $\approx$10cm.
 A 32 byte payload was sent from the joint board every 1ms. 
-The payload including a id, that was incremented for each packet.
-The joint board was programmed to send 10000 packets before stopping transmitting. 
+The payload includes an ID, which is incremented for each packet.
+The joint board was programmed to send 10000 packets before stopping transmition. 
 
-In the first ten series of test the pendulum was held still.
+In the first series of tests the pendulum was held still.
 The number of received packets can be seen in table \ref{tab:received_still}.
+\thomas{table experimentation, remember to fix text}
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
@@ -376,7 +377,7 @@ The average number of received packets is 7191 which corresponds to $\approx$ 72
 \end{table}
 By looking at the two test results it can be determined that movement of the pendulum has no significant effect on the success rate of transmission.
 
-In order to determine if there was a pattern in how the 28\% of packages were lost the IDs of the packages were plotted.
+In order to determine if there was a pattern in how the 28\% of packages were lost the IDs of the received packages were plotted.
 The ID of a package corresponds to the number of milliseconds passed since program start.
 No pattern was successfully identified by visual inspecting.
 An excerpt of the data is shown in figure \ref{fig:received_packets}.

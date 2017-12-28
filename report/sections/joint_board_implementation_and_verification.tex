@@ -1,15 +1,13 @@
 %!TEX root = ../main.tex
 \subsection{Implementation} % (fold)
 \label{sub:implementation_and_verification}
-This section will elaborate on the implementation of the design created in section \ref{sub:analysis}.
+This section will elaborate on the implementation of the joint design.
 Specifically the methods and equipment used is discussed.
-In addition, the verification of the finished product is presented in appropriate detail.
-This will give the reader an impression of the method used to verify the implementation.
 \subsubsection{Mechanics Implementation} % (fold)
 \label{ssub:mechanics_implementation}
 The joint design created in the previous section was manufactured by the SDU Workshop.
 As the more experienced mechanical technicians at the workshop worked through the design they worked with the authors to improve on the design to make it practically possible to construct.
-The implemented system is shown in the picture of figure \ref{fig:joint_ass_real}
+The implemented system is shown in the picture of figure \ref{fig:joint_ass_real}.
 
 \begin{figure}[h]
 	\centering
@@ -18,31 +16,28 @@ The implemented system is shown in the picture of figure \ref{fig:joint_ass_real
 	\label{fig:joint_ass_real}
 \end{figure}
 
-% subsubsection mechanics_implementation (end)
+\subsubsection{Electrical Implementation} % (fold)
+\label{sub:electrical_implementation}
+\thomas{This needs text}
+
 \subsection{Verification}
 \label{sub:verification_joint_board_}
-\subsubsection{Verification Methodology} % (fold)
-\label{ssub:testing_methodology}
-
-This procedure is created in an effort to allow for an easier debugging procedure of a newly produced controller board, should a developer require the production of a new board.
-A blank version appropriate for printing can be found in appendix \ref{sec:joint_board_verification_procedure}.
-\cmark ~is used to indicate the successful verification of a test while \xmark ~is used to indicate the initial failure of a test.
-All pins, components and nets are typeset using the \texttt{teletype font} and are referenced to the schematics in appendix \ref{app:joint_board_schem}.
+In addition, the verification of the finished product is presented in appropriate detail.
+This will give the reader an impression of the method used to verify the implementation.
+\thomas{fix to introduction standalone}
 
 \subsubsection{Joint Board Verification Procedure} % (fold)
 \label{ssub:joint_board_verification_methodology}
 This procedure is created in an effort to allow for an easier debugging procedure of a newly produced controller board, should a developer require the production of a new board.
-A blank version appropriate for printing can be found in appendix \ref{sec:controller_board_verification_procedure}.
-It should be noted that the version seen below is not identical to the one found in the appendix.
-This is because some of the tests performed below are done to verify that the design is done correctly, rather than ensuring that production has been done correctly.
-\cmark is used to indicate the successful verification of a test while \xmark is used to indicate the initial failure of a test.
-All pins, components and nets are typeset using the \texttt{teletype font} and are referenced to the schematics in appendix \ref{app:controller_board_schem}.
+A blank version appropriate for printing can be found in appendix \ref{sec:joint_board_verification_procedure}.
+\cmark ~is used to indicate the successful verification of a test while \xmark ~is used to indicate the initial failure of a test.
+All pins, components and nets are typeset using the \texttt{teletype font} and are referenced to the schematics in appendix \ref{app:joint_board_schem}.
 \paragraph{Verify Voltage Rails:} % (fold)
  \label{par:verify_voltage_rails}
  \begin{itemize}
  	\item Apply 3.7V to \texttt{VBATT}.
  	\begin{itemize}
- 		\item[\xmark] Verify that current draw is within reasonable limits ($<$75 mA). Note that the PCB requires a short pulse of approximately 0.89A while booting.
+ 		\item[\xmark] Verify that current draw is within reasonable limits ($<$75 mA).
  		\begin{itemize}
  			\item[-] A short circuit seemed to exist on the 5V rail.
  			See next paragraph.
@@ -56,7 +51,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
  			Figure \ref{fig:joint_curr_limit} shows the current spike and the resulting failure of the 5V rail to rise.
  			In an attempt to find the offending component the current limit was raised to $\approx$1A.
  			This allowed the 5V rail to properly boot, leading to the discovery of the required startup current.
- 			According to the datasheet of the SP6641 \cite{sp6641b} it requires a startup current of $\approx$0.65A. 
+ 			According to the datasheet of the \texttt{SP6641} \cite{sp6641b} it requires a startup current of $\approx$0.65A. 
  			The resulting current draw and voltage can be seen in figure \ref{fig:joint_no_curr_limit}.
  		\end{itemize}
  	\end{itemize}
@@ -64,7 +59,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
  
 \begin{figure}[h]
 	\centering
-	%\input{graphics/joint_board_test_fig1.tex}
+	\input{graphics/joint_board_test_fig1.tex}
 	\caption[Voltages and current of 5V converter with current limit]{Voltage of the 5V rail and current draw of the joint board during startup with current limit of $\approx$ 250mA. Note that the left axis shows the output voltage while the right axis shows the current draw.}
 	\label{fig:joint_curr_limit}
 \end{figure}
@@ -118,7 +113,7 @@ All pins, components and nets are typeset using the \texttt{teletype font} and a
 			\item[-] The software was loaded successfully occasionally but would often fail.
 			This was found to be due to missing pull-up on the \texttt{RESET} pin.
 			A pull-up resistor of 3.92k$\Omega$ can be placed on signals \texttt{RESET\_H} and \texttt{5V}.
-			The pull-up resistor cannot be placed on the \texttt{ATtiny} since the 74LCX244 and the \texttt{ATtiny} would otherwise both attempt to drive the \texttt{RESET} net.
+			The pull-up resistor cannot be placed on the \texttt{ATtiny} since the \texttt{74LCX244} and the \texttt{ATtiny} would otherwise both attempt to drive the \texttt{RESET} net.
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
@@ -129,18 +124,18 @@ This requirement states that the pendulum assembly should allow movement only in
 
 \paragraph{Conclusion}~\\
 When the pendulum assembly was mounted on the cart it was found that some movement in the Z plane was possible.
-By actuating the cart it was found that it is actually possible for the joints to collide, which is clearly problematic.
-As descried the authors only have small knowledge in the world of mechanical engineering and it was decided to omit further work on the problem.
-Instead it is proposed that a future developer with more mechanical knowledge should seek to find a solution to the problem 
+By actuating the cart it was found that it is possible for the joints to collide, which is clearly problematic.
+As described the authors only have small knowledge in the world of mechanical engineering and it was decided to omit further work on the problem.
+Instead it is proposed that a future developer with more mechanical knowledge should seek to find a solution to the problem.
 
-\subsub<section{Verification of: Requirement \ref{enum:joint_voltage_rails}} % (fold)
+\subsubsection{Verification of: Requirement \ref{enum:joint_voltage_rails}} % (fold)
 \label{sub:verification_of_requirement_enum:joint_voltage_rails}
 This requirement states that 3.3V and 5V rails should be available for the components in the circuit.
 
 \paragraph{Conclusion}~\\
 The presence of the two voltage rails are verified in the procedure shown in section \ref{par:verify_voltage_level_shifter_functionality}.
 Furthermore the mean value of the two rails were measured over a period of 25ms, yielding 3.27V and 5.07.
-Both mean values are within the maximum values.
+This is within the required values.
 
 \subsubsection{Verification of: Requirement \ref{enum:rotate_freely_joint}} % (fold)
 \label{ssub:verification_of_requirement_enum:rotate_freely_joint}
@@ -201,7 +196,7 @@ Since the original numbers were calculated based on maximum values from the data
 \\~\\
 The battery chosen for this application has 1600mWH of capacity resulting in a theoretical run-time of $\approx$3:45 hours.
 This is clearly not as high as what was desired (10 hours).
-The main reason for this is the unexpectedly large power draw of the encoder and the accompanying RS422 decoder.
-The DS26LS32CM RS422 decoder draws 52mA at 5V.
+The main reason for this is the large power draw of the encoder and the accompanying RS422 decoder.
+The \texttt{DS26LS32CM} RS422 decoder draws 52mA at 5V.
 The Rolin Encoders are available in versions which output TTL signals meaning that the decoder could be removed. 
 Unfortunately, the encoders with this output do not have a unique reference mark and as such it would not be possible to properly calibrate the joint.

@@ -46,8 +46,7 @@ Since control was never done most of the value gained from this exercise was in 
 
 \section{System Analysis}
 Throughout this section an analysis of the system will be done and the overall design requirements of the system determined.
-\thomas{change from all systems to cart mounted systems}
-In common for all of the cited systems is that they consist of a cart capable of moving along a rail with a pendulum mounted to it.
+In common for all of the cart mounted systems cited above is that they consist of a cart capable of moving along a rail with a pendulum mounted to it.
 This project will aim to create a double pendulum system.
 By actuating only the cart, the pendulums will not be directly actuated and the entire system therefore underactuated.
 The connection-point between the cart and the first pendulum and between every consecutive pendulum should be a joint capable of rotating freely.
@@ -62,19 +61,16 @@ The authors have prior knowledge of the use and design of systems with the Micro
 The original intent was to develop and implement a kernel driver which would present the system to the user as a \texttt{tty} interface, however this quickly turned infeasible due to the time constraints of the project and will be left for future projects.
 Further design of the system should still maintain focus on the eventual goal of making the system accessible through Linux.
 \\~\\
-\thomas{make more general, remove emergency condition.}
 Safety around the system is important since the movement of a double pendulum is chaotic and therefore inherently unpredictable.
-A means of disabling power to the motor in case of emergency should be present.  
-Engaging an emergency condition should be possible both manually and automatically.
-The handling of emergency conditions should happen independently of any programming so that faulty programming cannot disable handling.
-End stops should be mounted on the rail to provide a means of generating an emergency condition.
-This is done to avoid damage to the system in case of a run-away cart.
+A means of cutting power to the motor in case of emergency should be present.  
+Cutting power to the motor should be possible both manually and automatically.
+It should happen independently of any programming so that faulty programming cannot interfere with the safety handling.
+End stops should be mounted on the rail in order to avoid damage to the system in case of a run-away cart.
 It is likely that the system should remain caged once finished so as to ensure that no person is in the path of the pendulum during run-time but the requirements to such a safety system are very much dependent on the system around which it should be developed and will be left as a future project to be handled before the pendulum system is given to a user.
 In addition to the above, the system should also be tolerable to some amount of misuse such as blocking of the cart and similar unexpected situations.
 \\~\\
-\thomas{elaborate on finished solutions}
 Since the focus of the authors is electronics and embedded systems design, this will also be the main focus of this project.
-Therefore the design of electronics will be done by the authors. 
+Therefore, rather than buying finished solutions for driving the motors, the design of electronics will be done by the authors. 
 The electronics include a board for motor control and main computation as well as a board for interfacing the encoder in the joints, the specifics of which are discussed throughout the report.
 \\~\\
 Since creating the final version of the software is infeasible given the time frame, another solution is required to validate the functionality of the system.

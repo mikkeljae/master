@@ -16,13 +16,14 @@ The authors invision an ISA (Individual Study Activity) for a mechanical enginee
 % subsubsection corrections (end)
 \subsubsection{Linux Implementation} % (fold)
 \label{ssub:linux_implementation}
-The intent with the system is to make it controllable from linux.
-This can be done using a different methods.
+The intent with the system is to make it controllable from Linux.
+This can be done using different methods.
 A kernel driver could be written such that a user can send commands to and receive data from the system simply by issuing read/write commands on a \texttt{tty} interface using userspace software.
 \\~\\
 Another approach involves setting up parallel processing on the two cores of the MicroZed.
-One core running linux and another maintaining communication with the inverted pendulum system.
+One core running Linux and another maintaining communication with the inverted pendulum system.
 Communication between the two can be done using direct memory access, DMA.
+Using this method the strictly real-time tasks can be done on a bare-metal system.
 % subsubsection linux_implementation (end)
 \subsubsection{Determination of System Parameters} % (fold)
 \label{ssub:determination_of_system_parameters}

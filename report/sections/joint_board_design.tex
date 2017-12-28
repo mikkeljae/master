@@ -3,6 +3,7 @@
 \label{sub:joint_design}
 The design of the pendulum assembly is, as in the analysis, split into an electrical design and a mechanical design.
 The mechanical design consists of a presentation of the designed components while the electrical design gives a more in depth view of the design process.
+\thomas{refactor joint design section}
 
 \subsubsection{Mechanical Design} % (fold)
 \label{ssub:mechanical_design}
@@ -19,7 +20,7 @@ The centre of the part is milled out to allow for two low-friction ball bearings
 is shown in figures \ref{sfig:readside} and \ref{sfig:readside_2}.
 The visible sides of \ref{sfig:magnetside} and \ref{sfig:readside} are designed to mate.
 A cutout is made in \ref{sfig:readside} which is positioned such that it can be placed accurately above the magnetic disc.
-The placement of the reader head by pressing it against a feeler gauge blade positioned between it and the magnetic disc before securing it using two bolts.
+The placement of the reader head is done by pressing it against a feeler gauge blade positioned between it and the magnetic disc before securing it using two bolts.
 This ensures that the reader head is placed parallel with the disc and at the correct distance.
 The axle is milled as part of \ref{sfig:readside}.
 The manufactured version has a bore in the axle to accomodate a bolt which tightens the part to the bearings.
@@ -95,7 +96,7 @@ This datarate is clearly below the 200kbps and it was therefore decided to use n
 
 
 \subsubsection{Generating a 5V Rail}
-As described in the requirements in section \ref{subs:joint_requirements}, a 5V rail is needed on the joint board.
+As described in the requirements specification, a 5V rail is needed on the joint board.
 Generating the 5V rail can be done by boosting the battery voltage up to 5V, as the battery voltage will always be lower than 5V.
 The boost regulator \texttt{SP6641B} \cite{sp6641b} has an input range of 0.9V to 4.5V and a fixed output of 5V.
 The circuitry used in this project will be based on the reference design shown in the datasheet, with the one difference that the \texttt{SHDN} (shutdown) pin has been pulled permanently high.
@@ -114,16 +115,16 @@ Three different solutions appeared after an initial analysis of the task:
 
 The qualities and drawbacks of the three solutions are presented here.
 
-\paragraph{Buck Converter:}
+\paragraph{Buck Converter}~\\
 The voltage from the battery can be converted to 3.3V using a Buck converter.
 A Buck converter is relatively simple and circuitry can easily be designed for the task.
 It is only able to supply an output voltage that is lower than the input voltage.
-Which means that when the battery voltage is lower than 3.3V the converter will stop producing a stable 3.3V output.
-This means that a portion of the battery capacity cannot be used.
+This means that when the battery voltage is lower than 3.3V the converter will stop producing a stable 3.3V output.
+Therefore a portion of the battery capacity cannot be used.
 The \texttt{TPS62220} is a Buck regulator and generally has good specifications for this task. 
 With an input voltage of 3.7V and an output voltage of 3.3V it has an efficiency of approximately 95\% with an output current in the range of 1mA to 20mA \cite{TPS6222}.
 The minimum drop out voltage of the \texttt{TPS62220} is low, because it has a 100\% duty cycle mode.
-In this mode, the the drop out voltage is purely defined by the \texttt{ON} resistance of the internal switch, the DC resistance of the external inductor and the output current.
+In this mode, the drop out voltage is purely defined by the \texttt{ON} resistance of the internal switch, the DC resistance of the external inductor and the output current.
 
 The drop out voltage can be calculated using equation \ref{eq:drop_v_tps62}, \cite{TPS6222}.
 \begin{equation}
@@ -137,19 +138,17 @@ The drop out voltage can be calculated using equation \ref{eq:drop_v_tps62}, \ci
 \end{equation}
 
 Where $I_O$ is the output current, $R_{DS(on),max}$ is the \texttt{ON} resistance of the internal switch and $R_I$ is the DC resistance of the external inductor.
-The inductor resistance used is the value of the \texttt{B82462G4} inductor \cite{B82462G4}, used on the joint board.
+The inductor resistance used is the value of the \texttt{B82462G4} inductor \cite{B82462G4} $R_I=0.9\Omega$.
 This means that it can supply 3.3V output when the input voltage is 3.315V or greater
 
-
-
-\paragraph{Buck-Boost Converter:}
+\paragraph{Buck-Boost Converter}~\\
 The motivation for using a Buck-Boost converter is to allow for full utilization of the battery capacity.
 This requires that the converter can make a seamless transition between the stepping up and stepping down of the input voltage. 
 \texttt{TPS6300} is a Buck-Boost regulator that has these features.
 The external circuitry is simple, but the drawback of this regulator and converter is the efficiency of it.
 With an input voltage of 3.7V and an output voltage of 3.3V it has an efficiency of approximately 75\% with an output current in the range of 1mA to 20mA \cite{TPS6300}.
 
-\paragraph{Linear Regulator:}
+\paragraph{Linear Regulator}~\\
 A linear regulator is a component that can regulate the output voltage by varying an internal resistance.
 Linear regulators have a drop voltage that limit the output voltage. 
 The \texttt{LD3985} has an ultra low drop voltage of 20mV at 50mA output current \cite{LD3985}.
@@ -170,7 +169,7 @@ Using this the mean efficiency can be estimated as shown in equation \ref{eq:eff
 \end{equation}
 
 
-\paragraph{Comparison}
+\paragraph{Comparison}~\\
 The most important parameters of the three solutions discussed are shown in table \ref{tab:vol_gen_joint}.
 
 \begin{table}[h]
@@ -190,9 +189,9 @@ As already discussed the disadvantage of using a Buck converter is that the full
 A discharge test should be conducted to determine the amount of capacity that cannot be utilized.
 
 
-\paragraph{Battery Discharge}
+\paragraph{Battery Discharge}~\\
 At the time of writing, the chosen battery has not yet been procured and the test will therefore be conducted on a similar battery instead.
-The battery under test is a 850 mAH Li-Ion battery with the dimensions 49mm X 29mm X 6mm.
+The battery under test is a 850 mAH Li-Ion battery with the dimensions 49x29x6mm.
 It should be noted that both the capacity and physical dimensions are similar to the chosen battery.
 The discharge curve of the two batteries will not be identical, but will be sufficiently close to to allow for deciding which solution should be used.
 The test was conducted by connecting the battery to an electrical load programmed to discharge with a constant power of 0.3 Watt, while measuring the battery voltage.
@@ -200,20 +199,20 @@ The measured discharge curve is shown in figure \ref{fig:bat_discharge}.
 
 \begin{figure}[h]
 	\centering
-	%\input{graphics/discharge.tex}
+	\input{graphics/discharge.tex}
 	\caption[Discharge curve of Li-Ion battery.]{Voltages measured across a 850 mAH Li-Ion battery while discharging using an electrical load programmed to 0.3 Watt. Horizontal red line represents the 3.3V level.}
 	\label{fig:bat_discharge}
 \end{figure}
 
 It can be observed that the battery voltage only drops below 3.3V for a very short time before the battery is completely discharged.
 
-\paragraph{Conclusion}
+\paragraph{Conclusion}~\\
 The Buck converter solution has the highest efficiency and has a lower drop out voltage than the linear regulator solution.
 The disadvantage of using a Buck converter is that the full battery capacity cannot be utilized, but a test showed that almost all of the capacity can be used.
+\thomas{calculate actual utilizable capacity}
 Therefore it was chosen to use a Buck converter with the \texttt{TPS62220} regulator. 
 The Buck converter circuit used is based on the recommendations in the datasheet of the \texttt{TPS62220}.
 The circuit is shown in figure \ref{fig:tps62220_circuit}.
-
 \begin{figure}[h]
 	\centering
     \includegraphics[width=.8\linewidth]{graphics/tps6220_circuit}
@@ -225,10 +224,10 @@ The circuit is shown in figure \ref{fig:tps62220_circuit}.
 \subsubsection{Choosing a Battery} % (fold)
 \label{ssub:choosing_a_battery}
 It turned out to be rather difficult to procure a LiPo battery.
-Apparently, they are in the habit of burning violently if damaged and for that reason, strict rules are in place concercing the transportation of them.
+Apparently, they are in the habit of burning violently if damaged and for that reason, strict rules are in place concerning the transportation of them.
 It was necessary to find a supplier with an appropriate battery who would also be willing to send them.
 Eventually a danish distributor of Renata batteries was found.
-Renata provides the \texttt{ICP582930PR-01} which is a 430mAH or 1600mWH.
+Renata provides the \texttt{ICP582930PR-01} which has a capacity of 430mAH or 1600mWH.
 This battery is 32mmx29.5mm and therefore easily fits in the alotted space, a cylinder with a diameter of 57mm and a height of 9mm.
 \\~\\
 A lid was produced for the joints which included a mounting spot for both the battery as well as a small switch for turning off the joint when it is not in use.
@@ -237,6 +236,6 @@ A rendering of this lid can be seen in figure \ref{fig:joint_lid}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.4\linewidth]{graphics/joint_lid}
-	\caption[Lid produced for the joints.]{Lid produced for the joints. The protution is used to mount the battery for the joint board.}
+	\caption[Lid produced for the joints.]{Lid produced for the joints. The protrution is used to mount the battery for the joint board.}
 	\label{fig:joint_lid}
 \end{figure}

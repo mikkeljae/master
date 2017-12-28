@@ -394,8 +394,9 @@ VHDL was originally thought as a language to describe and simulate hardware and 
 All of the original features of the language are still present and as such it is possible to create a component which fully exercises whichever component is under development, the unit-under-test or UUT.
 \\~\\
 The test bench written for the cart position counter is comprised of three processes, the \texttt{clk\_proc} which is responsible for generating the driving clock for the component, \texttt{quad\_proce\_ccw} or \texttt{quad\_proce\_cw} for simulating the quadrature signal in either the counter-clockwise or the clockwise direction and finally the \texttt{stim\_proc} which is responsible for exercising any of the input signals.
-\thomas{insert code snippet from testbench}
 \\~\\
+\thomas{insert code snippet from testbench}
+
 The UUT is instantiated as a component in the test bench and Vivado provides tools for investigating the flow of execution.
 An excerpt illustrating the functionality can be seen in figure \ref{fig:testbench}.
 As can be seen \texttt{B\_i} is leading \texttt{A\_i}, resulting in \texttt{D\_i} going \texttt{high}.
