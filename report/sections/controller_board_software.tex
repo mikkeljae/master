@@ -1,7 +1,13 @@
 %!TEX root = ../main.tex
 \section{Controller Software Development} % (fold)
 \label{sub:controller_board_software}
-\mikkel{do me}
+\thomas{done - section introduction}
+Throughout this section the software for the controller board is developed.
+An analysis is made to determine the required functionality of the software.
+An overview of the computing platform and the utilization of it in this project is also given.
+Software is implemented to test the hardware. 
+Finally a verification is done of the controller board software requirements.
+
 \subsection{Analysis} % (fold)
 \label{sub:analysis}
 This section will seek to analyse the requirements for the software that runs on the MicroZed mounted on the controller board.
@@ -73,7 +79,6 @@ Before entering TX-mode a 130$\mu$s settling period is inferred.
 This means that at least two packets are lost during this time.
 The problem can be overcome by lowering the transmission frequency such that the time between packets is above 130$\mu$s.
 %6.25kHz transmission frequency would result in 160$\mu$s delay, enough time to cycle between the modes between each packet.
-
 
 \paragraph{Air Collisions}~\\
 \label{par:air_collisions}
