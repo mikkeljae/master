@@ -5,7 +5,7 @@
 In the system analysis a number of requirements were found relating to the design of the joints.
 These requirements contain both mechanical and electrical aspects.
 The authors' main focus is on power and embedded design and as such the design of the mechanics of the system is limited in comparison to the electrical design.
-The mechanical design was developed with help from mechanical engineer at SDU: Jørgen Maagaard.
+The mechanical design was developed with advice from mechanical engineer at SDU: Jørgen Maagaard.
 
 \subsubsection{Mechanics} % (fold)
 \label{ssub:mechanics}
@@ -42,7 +42,7 @@ Two solutions were considered to solve this problem
   	This is the solution chosen for the joint design.
 \end{itemize}
 ~\\
-As discussed in the State of the Art section the pendulum assembly is viewed as a collection of point-masses connected with massless rods.
+As discussed in the State of the Art analysis the pendulum assembly is viewed as a collection of point-masses connected with massless rods.
 In order to more accurately uphold this assumption the material of the rods should be significantly lighter than the material of the joints while still maintaining sufficient rigidity.
 In general three materials are easily available to the authors for manufacturing:
 \begin{itemize}
@@ -70,8 +70,8 @@ One encoder in particular was recommended to the authors; the Rolin Rotary Magne
 This is a series of encoders which, as the name suggests, utilises magnetic fields in order to determine the angular position of the encoder.
 They consist of a magnetic ring with a number of poles and a PCB sensor.
 The magnetic ring is available in different sizes with different number of poles which, along with the type of PCB sensor decides the resolution of the encoder.
-The specific encoder configuration used in this project allows for 7200 CPR or one count per 0.05$^\circ$.
-The encoder is incremental with an A, B and Z channel where A and B are 90$^\circ$ out of phase and Z is a unique reference mark.
+The specific encoder configuration used in this project, the \texttt{RL2IC} \cite{RLC2IC}, allows for 7200 CPR or one count per 0.05$^\circ$.
+The encoder is incremental with an \texttt{A}, \texttt{B} and \texttt{Z} channel where \texttt{A} and \texttt{B} are 90$^\circ$ out of phase and \texttt{Z} is a unique reference mark.
 Using the reference mark it is possible to maintain absolute knowledge of the angular position of the joint after the initial encounter with the reference mark.
 This is only possible assuming that there is no drift or slippage in the system, a reasonable assumption considering the mechanical setup.
 Communication with the encoder is done using the RS422 standard.
@@ -94,7 +94,7 @@ By minimizing the height of the PCB design, the joint can be made thinner, reduc
 It should also be noted that any connectors should be placed with the expectation that the border of the PCB is not accessible during normal operation.
 \\~\\
 Since the PCB is powered from a battery the design should be optimized to be reasonably power efficient.
-As is explained in section \ref{par:power_delivery} the design has a 3.3V rail and a 5V rail.
+As is explained in the next section, the design has a 3.3V rail and a 5V rail.
 Generally microcontrollers become more power efficient at lower voltages and as such the \texttt{ATtiny} will be driven from the 3.3V rail.
 The authors have immediate access to an AVR programmer which uses 5V signals for the programming.
 The design should be made to accept this voltage when programming.
@@ -102,7 +102,7 @@ This can be done using level-shifting between the two voltage levels.
 \\~\\
 It was chosen to add an LED to the design for debugging purposes.
 Clearly, an LED does require some power and should not be used during normal operation.
-\paragraph{Power Delivery:} % (fold)
+\paragraph{Power Delivery}~\\ % (fold)
 \label{par:power_delivery}
 The required voltage rails on the joint board are dictated by the RF module and the encoder.
 The former requires 3.3V and the latter 5V.
@@ -113,7 +113,7 @@ This requirement essentially narrows the battery choices to LiPo cells as these 
 1S LiPo cells are rated at 3.7V and so some form of convertion is required to reach both the 5V and 3.3V rails.
 In order to correctly dimension the converters it is necessary to determine the power draw from each rail:
 \begin{itemize}
- 	\item \textbf{3.3V:} This rail powers the \texttt{nRFM} which has a maximum supply current of 12.3mA \cite{nRFM} as well as the \texttt{ATTiny}.
+ 	\item \textbf{3.3V:} This rail powers the \texttt{nRFM} which has a maximum supply current of 12.3mA \cite{NFR24L01} as well as the \texttt{ATTiny}.
  	According to the datasheet of the \texttt{ATtiny} it uses approximately 3.6mA at 3.3V when run at 8MHz.   
  	This yields a total of 15.9mA at 3.3V or 52.5mW.
  	Additional digital circuitry placed on this rail is considered negligible in the power budget.
@@ -134,7 +134,7 @@ One rail capable of delivering 100mA at 3.3V$\pm$0.2V.
 
 \subsubsection{Requirement Specification}
 \label{subs:joint_requirements}
-The requirements specified below are tested and verified in section \ref{sub:verification_joint_board_software}.
+The requirements specified below are tested and verified in section \ref{sub:verification_joint_board_}.
 \paragraph{Functional:}
 \begin{enumerate}[resume]
 	\item Pendulum assembly should allow movement only in the X-Y plane. 
@@ -147,9 +147,9 @@ The requirements specified below are tested and verified in section \ref{sub:ver
 	\end{itemize}
 	\item Joint should be able to rotate freely about the mounting axis.
 	\label{enum:rotate_freely_joint}
-	\item Include the \texttt{nRFM} for communication.
+	\item The \texttt{nRFM} should be included for communication.
 	\label{enum:joint_include_nrf}
-	\item Correcly interface the RS-422 interface of the \texttt{RL2IC} encoder.
+	\item the RS-422 interface of the \texttt{RL2IC} encoder should be correctly interfaced.
 	\label{enum:interface_rs422_enc}
 	\item The design should allow programming of the \texttt{ATtiny} using 5V SPI.
 	\label{enum:program_5v_spi}

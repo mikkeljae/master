@@ -1,11 +1,12 @@
 %!TEX root = ../main.tex
 \section{Controller Board Verification Procedure} % (fold)
 \label{sec:controller_board_verification_procedure}
+\thomas{add endstop test}
 This document holds the verification procedure which, when applied succesfully, ensures the correct functionality of the controller board.
 Each step is to be followed in the order they are shown to avoid previous faults to propegate throughout the process.
 A step consists of an action and the expected outcome of that action.
 Any text written with the \texttt{teletype font} refers to signals and pins on the PCB and can be seen on the schematic.
-The most recent schematic can be seen on (a place).
+The most recent schematic can be seen on appendix \ref{app:controller_board_schem}.
 \paragraph{Verify Voltage Rails} % (fold)
  \begin{itemize}
  	\item Apply 24V to \texttt{24V}.
@@ -93,4 +94,7 @@ The most recent schematic can be seen on (a place).
 		\item Verify that 3.3V is present on the corresponding signals on the \texttt{nRFM} module (component U1).
 	\end{itemize}
 \end{itemize}
-% paragraph verify_nrf24l01_module_functionality (end)
+
+\paragraph{Verify Shunt Amplifier Functionality} % (fold)
+\label{par:verify_shunt_amplifier_functionality}
+\thomas{shunt amplifier section should be populated.}

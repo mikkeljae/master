@@ -1,10 +1,11 @@
 %!TEX root = ../main.tex
 \section{System Verification}
 \label{sec:system_verification}
-
+\thomas{Add verification subsection, indent every verification to subsubsection}
+\thomas{write introduction to this section}
 \subsection{Verification of: Requirements \ref{enum:system_consists_double_pendulum} and \ref{enum:cart_actuated_by_motor}} % (fold)
 \label{sub:verification_of_requirement_enum:system_consists_double_pendulum}
-These requirements specify that the system should consists of double pendulum mounted on a moveable cart and that the cart should be actuated by a motor.
+These requirements specify that the system should consist of a double pendulum mounted on a moveable cart and that the cart should be actuated by a motor.
 
 \paragraph{Conclusion}~\\
 The implemented system consists of the designed and implemented pendulum assembly mounted on the rail system inherited from an earlier project.
@@ -17,9 +18,7 @@ Specific requirements for designing and implementing the pendulum assembly are d
 	\label{fig:pic_full_system}
 \end{figure}
 The cart can be actuated by the Maxon motor as they are connected by a belt. 
-This was never tested because of burnt electric components and time constraints, however it was tested that the developed controller board is able to drive the motor.
-
-
+Even though the cart was never moved using the motor due to debugging troubles and time constraints, it was tested that the developed controller board is able to drive the motor.
 
 \subsection{Verification of: Requirement \ref{enum:controlled_by_microzed}} % (fold)
 \label{sub:verification_of_requirement_enum:controlled_by_microzed}
@@ -28,7 +27,8 @@ This requirement states that the pendulum system should be controlled by a Micro
 \paragraph{Conclusion}~\\
 The controller board has been designed to fit the MicroZed and all relevant signals were wired to it as described in section \label{sec:controller_board}.
 \\~\\
-In section \ref{subs:requirement_enum:motor_speed_direction} it was verified that the MicroZed can control motor speed and direction through implemented VHDL modules and the motor driver and H-bridge on the controller board. 
+\thomas{insert correct reference}
+In section \ref{subs:requirement_enum:motor_speed_direction} it was verified that the MicroZed can control motor speed and direction through implemented VHDL modules, the motor driver and the H-bridge on the controller board. 
 \\~\\
 In section \ref{ssub:requrement_enum:motor_current_} it was found that it is not possible to determine the motor current using a shunt resistor and the \texttt{INA286}. 
 Thus it is not possible to measure the motor current using the ADC on the MicroZed.
@@ -47,7 +47,7 @@ In section \ref{ssub:verification_of_requirement_enum:correct_cart_position} it 
 In section \ref{ssub:requirement_enum:correct_angles} it is verified by visual inspection that the joint angles are correctly measured on the joint board.
 \\
 To further verify that the measurement is correct a test should be conducted where the joint angle data are stored and plotted.  
-In a single pendulum setup, the joint should manually be moved to $\pi$ radian position and released, while collecting joint angle data.
+In a single pendulum setup, the joint should manually be moved $\frac{\pi}{2}$ radians from the equilibrium position and released, while collecting joint angle data.
 
 \paragraph{Conclusion}~\\
 The test described above was conducted while transmitting data at 1kHz, with the two \texttt{nRFM}s pointing at each other.
@@ -56,15 +56,15 @@ A full rotation is equal to 7200 ticks.
 As expected the waveform is a damped sinusoidal.
 \begin{figure}[h]
 	\centering
-	%\input{graphics/joint_angle_measured_full.tex}
+	\input{graphics/joint_angle_measured_full.tex}
 	\caption[Excerpt of joint angle data]{Excerpt of joint angle data. A full rotation is equal to 7200 ticks.}
 	\label{fig:joint_angle_measured_full}
 \end{figure}
 One period is shown in figure \ref{fig:joint_angle_measured_zoom}.
-It can be seen that some angles are missing, which is as expected based on the tests described in section \ref{ssub:requirement_enum:joint_transmit}, where it was described that 28\% of data packets are lost.
+It can be seen that some angles are missing, which is as expected based on the tests described in section \ref{ssub:requirement_enum:joint_transmit}, where it was concluded that 28\% of data packets are lost.
 \begin{figure}[h]
 	\centering
-	%\input{graphics/joint_angle_measured_zoom.tex}
+	\input{graphics/joint_angle_measured_zoom.tex}
 	\caption[One period joint angle data]{One period joint angle data. A full rotation is equal to 7200 ticks.}
 	\label{fig:joint_angle_measured_zoom}
 \end{figure}
@@ -78,8 +78,9 @@ The full test was only realised on one of the joint boards, as only one board wa
 This requirement specifies that any software developed for the pendulum system should be real-time.
 
 \paragraph{Conclusion}~\\
-In section \ref{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior} it is described that due to time constraints  real-time behaviour of the controller board software was not realised.
+In section \ref{ssub:verification_of_requirement_of_requirement_enum:real_time_behavior} it is described that due to time constraints real-time behaviour of the controller board software was not realised.
 \\~\\
+\thomas{rewrite to mention no completed system instead}
 In section \ref{ssub:requirement_enum_joint_real_time} it is tested and verified that the joint board software is real-time.
 
 
@@ -88,18 +89,18 @@ In section \ref{ssub:requirement_enum_joint_real_time} it is tested and verified
 This requirement states that the system should be easily accessible to users.
 
 \paragraph{Conclusion}~\\
-Throughout the design of the system the accessibility has been a focus.
+Throughout the design of the system, accessibility has been a focus.
 Section \ref{ssub:requirement_enum:pcb_debugging} describes how the PCB has been desgined with debugging in mind.
 Verification procedures have been developed for the joint and controller boards and is included in the report as appendix \ref{sec:joint_board_verification_procedure} and \ref{sec:controller_board_verification_procedure}.
 \\~\\
-The usability of the controller board should be verified by using students as test object. 
+The usability of the controller board should be verified by using students as test subjects once the system is finished. 
 
 \subsection{Verification of: Requirement \ref{enum:system_should_not_break_during_operation}} % (fold)
 \label{sub:verification_of_requirement_enum:system_should_not_break_during_operation}
 This requirement specifies that the system should not break during operation by users.
 
 \paragraph{Conclusion}~\\
-The design of the controller board electronics is done with the requirement that the components should be able to handle stall current of the motor.
+The design of the controller board electronics is done with the requirement that the components should be able to handle the stall current of the motor.
 \\
 Section \ref{ssub:requirement_enum:any_trigger_em} verifies that the implemented endstops can cut off power to the H-bridge effectively stopping the motor.
 
@@ -108,7 +109,7 @@ Section \ref{ssub:requirement_enum:any_trigger_em} verifies that the implemented
 According to this requirement the system safety should not rely on the programming of the system.
 
 \paragraph{Conclusion}~\\
-Signals from endstops and emergency botton cuts off power to the H-bridge through digital electronics.
+Signals from endstops and emergency button cuts off power to the H-bridge through digital electronics.
 The functionality is verified in section \ref{ssub:requirement_enum:any_trigger_em}.
 
 \subsection{Verification of: Requirement \ref{enum:software_top_down_bottom_up}} % (fold)

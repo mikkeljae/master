@@ -10,15 +10,15 @@ Firstly, it is desirable to determine what requirements exist for the trace widt
 \begin{figure}
 	\begin{subfigure}[b]{\textwidth}
 	\centering
-	\includegraphics[width=0.8\textwidth]{graphics/top_side_pcb}
+	\includegraphics[width=\textwidth]{graphics/top_side_pcb}
 	\caption{Top side PCB view of controller board.}
 	\label{fig:top_side_pcb_view}
 	\end{subfigure}\\
 
 	\begin{subfigure}[b]{\textwidth}
 	\centering
-	\includegraphics[width=0.8\textwidth,angle=180]{graphics/bottom_side_pcb}
-	\caption{Bottom side PCB view of controller board.gull}
+	\includegraphics[width=\textwidth,angle=180]{graphics/bottom_side_pcb}
+	\caption{Bottom side PCB view of controller board.}
 	\label{fig:botton_side_pcb_view}
 	\end{subfigure}
 	\caption{Top and bottom view of the controller board.}
@@ -28,7 +28,7 @@ Firstly, it is desirable to determine what requirements exist for the trace widt
 \subsubsection{Copper Thickness}
 Part of the board is designed to house the H-Bridge that drives the motor.
 The H-bridge is designed to carry up to 80A, well above what can reasonably be carried at standard PCB copper thickness.
-This section seeks to estimate the required copper thickness to allow for the design current.
+This section seeks to estimate the required copper thickness to allow for the stall current.
 Allowing a current through a conductor will produce a temperature rise due to the power dissipated in the conductor.
 The current-carrying capacity (CCC) of a conductor is unlimited, so far as the current is not destructive due to the temperature rise permissable in the design.
 Essentially, the acceptable temperature rise is limited by the maximum operating temperature of the PCB material.
@@ -36,7 +36,7 @@ This specification is known as the temperature index.
 The PCB material most commonly used is FR-4 which has a temperature index of 130\degree \cite{fr4}.
 At an ambient temperature of 20\degree this would imply a permissable conductor temperature rise of 110\degree.
 In all practical situations, this is unreasonably high.
-The material will discolor and degrade over time with the excessive heating and cooling of the board while also increasing the apparent ambient temperature of other components on the PCB, lowering the efficiency of the circuit.
+The material will discolor and degrade over time with the excessive heating and cooling of the board while also increasing the apparent ambient temperature of other components on the PCB, lowering the lifespan of the circuit.
 \\~\\
 In actual designs, a much more conservative temperature rise of 10\degree is often used, 15\degree is acceptable and 20\degree is considered high.
 This was discussed with Jesper Nielsen, a technician at SDU who has experience in designing high power PCBs and it was decided to accept 15\degree increase. 
@@ -64,6 +64,7 @@ This distinction is based on the expected amount of current carried by that trac
 	\item \textbf{Signal:} This is the type with the lowest expected current and is used throughout digital circuitry and low power analog signals.
 	Signal traces are by far the most abundant on the circuit and due to the very low currents the trace width should be as small as possible.
 	The manufacturer is capable of creating traces at 8 mil or higher at the desired copper thickness and as such the trace width for this type is 8 mil.
+	1 mil is one thousandth of an inch and is approximately 0.0254mm.
 	\item \textbf{Power:} This type is generally used for supply rails.
 	The trace width for this type is 20mil. Accepting 15\degree temperature increase will allow up to $\approx$1.5A of current.
 	This is sufficient for supplying any of the IC's and other components connected to this trace type.
@@ -80,10 +81,10 @@ The two parts have seperate ground planes in order to protect the digital circui
 A ground plane, even though the resistance through it is low, will have a significant voltage drop across it if currents of sufficient magnitude are passed through it.
 For the same reason it is desirable to keep the current path as short as possible on the power side of the board.
 Figure \ref{fig:power_layout} depicts a 3D view and 2D view of the power part of the board.
-As can be seen, the MOSFET's are bend such that a heatsink can be mounted on top.
+As can be seen, the MOSFETs are bend such that a heatsink can be mounted on top.
 The upper pair is the left half-bridge and the lower pair is the right half-bridge.
 The outtake for the motor is positioned directly above and below the two half-bridges and a 3M bolt is mounted to allow for a robust connection.
-A large pad is made where the bolt is mounted as close as possible to the MOSFET's to allow for unrestricted flow of current.
+A large pad is made where the bolt is mounted as close as possible to the MOSFETs to allow for unrestricted flow of current.
 The pad between the motor outtakes is the connection from source of the low-side of the half-bridges to the shunt resistor used for current measurements.
 Since all current must pass through the shunt resistor, it is crucial that the flow of current is as unrestricted as possible.
 \\~\\
@@ -114,7 +115,7 @@ These wires are soldered directly to the MOSFET pins and connected to the digita
 \end{figure}
 ~\\
 As mentioned previously it was chosen to use a 4-layer board.
-This was done for two reasons: It gives more copper for the main power rails on the power side of the board and it allows more space for routing signals on the digital part of the board.
+This was done for two reasons: It gives more copper for the main power rail on the power side of the board and it allows more space for routing signals on the digital part of the board.
 While the component density is not very high, the number of signals routed to headers does impose some difficulties routing on just two layers.
 On the digital side, a pour is made on each layer to fill the unused part of the layer with copper.
 Going from top to bottom the layers are as such: ground, ground, 5V, ground.
