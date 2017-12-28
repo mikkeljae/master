@@ -7,7 +7,6 @@ A step consists of an action and the expected outcome of that action.
 Any text written with the \texttt{teletype font} refers to signals and pins on the PCB and can be seen on the schematic.
 The most recent schematic can be seen on (a place).
 \paragraph{Verify Voltage Rails} % (fold)
- \label{par:verify_voltage_rails}
  \begin{itemize}
  	\item Apply 24V to \texttt{24V}.
  	\item Toggle power button to ON.
@@ -18,7 +17,6 @@ The most recent schematic can be seen on (a place).
  \end{itemize}
 
 \paragraph{Simulate No Emergency} % (fold)
-\label{par:simulate_no_emergency}
 \begin{itemize}
 	\item Apply 5V to \texttt{EM\_END1} and \texttt{EM\_END2}.
 	\begin{itemize}
@@ -36,7 +34,6 @@ The most recent schematic can be seen on (a place).
 \end{itemize}
 % paragraph simulate_no_emergency (end)
 \paragraph{Simulate Emergency} % (fold)
-\label{par:simulate_no_emergency}
 \begin{itemize}
 	\item Set signals \texttt{EM\_END1}, \texttt{EM\_END2} and \texttt{EM\_MCU} to 0V.
 	\item Ensure \texttt{EM\_BTN} is set to 5V.
@@ -47,7 +44,6 @@ The most recent schematic can be seen on (a place).
 \end{itemize}
 % paragraph simulate_no_emergency (end)
 \paragraph{Verify Relay Circuitry Functionality} % (fold)
-\label{par:verify_relay_circuitry}
 \begin{itemize}
 	\item Following the previous step, make \texttt{EM\_DIS} high.
 	\item Apply 0V to \texttt{INRUSH}.
@@ -74,7 +70,6 @@ The most recent schematic can be seen on (a place).
 \end{itemize}
 % paragraph verify_relay_circuitry (end)
 \paragraph{Verify Motor Driver Functionality} % (fold)
-\label{par:verify_motor_driver_functionality}
 \begin{itemize}
 	\item Apply 5V to \texttt{DIS}.
 	\item Apply 3.3V PWM to signals \texttt{PWMA} and \texttt{PWMB}.
@@ -92,7 +87,6 @@ The most recent schematic can be seen on (a place).
 \end{itemize}
 % paragraph verify_motor_driver_functionality (end)
 \paragraph{Verify nRF24L01 Module functionality} % (fold)
-\label{par:verify_nrf24l01_module_functionality}
 \begin{itemize}
 	\item Apply 3.3V to signals \texttt{RF\_MISO}, \texttt{RF\_MOSI}, \texttt{RF\_SCK}, \texttt{RF\_CSN} and \texttt{RF\_CE}.
 	\begin{itemize}
@@ -100,9 +94,3 @@ The most recent schematic can be seen on (a place).
 	\end{itemize}
 \end{itemize}
 % paragraph verify_nrf24l01_module_functionality (end)
-
-\paragraph{Verify Shunt Amplifier Functionality} % (fold)
-\label{par:verify_shunt_amplifier_functionality}
-
-% paragraph verify_shunt_amplifier_functionality (end)
-% section controller_board_verification_procedure (end)
