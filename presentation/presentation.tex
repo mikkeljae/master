@@ -9,15 +9,21 @@
 \usepackage{picture}
 \usepackage{dcolumn}
 \usepackage{textpos}
- 
+\usepackage{graphicx}
+
+\setbeamercolor{structure}{fg=grey}
+\usetheme[sectionpage=progressbar, progressbar=frametitle]{metropolis}
+
+\definecolor{prettyBlue}{HTML}{2196F3}
+\setbeamercolor{progress bar}{fg=prettyBlue, bg=gray}
+
 %Information to be included in the title page:
 \title{Embedded Software Design}
 \author{Thomas S. Christensen}
 \institute{University of Southern Denmark}
 \date{Jan, 2017} 
  
-\setbeamercolor{structure}{fg=grey}
-\usetheme{metropolis}
+
 \addtobeamertemplate{frametitle}{}{%
 \begin{textblock*}{100mm}(\textwidth,-1cm)
 \includegraphics[height=1cm,width=1cm,keepaspectratio]{logopolito}
@@ -103,36 +109,5 @@ Bussen har en pull up modstand til forsyningen, kommunikationen initialiseres ve
 Herefter vil sensoren køre et handshake ved at trække bussen ned i 80 us lade den være høj i 80 us hvorefter dataen sendes.
 Hver data pakke består af 40 bit.
 som vi kan se her forneden så er 0 lig en kort puls, dvs 25 ish us en lang puls er 1, 70 us ish.}
-
-\begin{frame}
-	\frametitle{DHT11 Driver}
-	\centering
-	\includegraphics[height=.9\textheight]{graphics/dht11driver.eps}
-\end{frame}
-
-\begin{frame}
-	\frametitle{DHT11 Driver - Output}
-	\centering
-	\includegraphics[width=1\textwidth]{graphics/temp.png}
-\end{frame}
-
-\begin{frame}
-	\section{Temperature Scaling}
-	\frametitle{Temperature Scaling}
-	\includegraphics[width=\linewidth]{graphics/tempscale.eps}
-\end{frame}
-
-\begin{frame}
-	\section{PWM Generation}
-	\frametitle{PWM Generation}
-	\begin{columns}
-		\begin{column}{.49\linewidth}
-			\includegraphics[width=\linewidth]{graphics/pwmgenerator.eps}
-		\end{column}
-		\begin{column}{.49\linewidth}
-			\includegraphics[width=\linewidth]{graphics/centeraligned.eps}
-		\end{column}
-	\end{columns}
-\end{frame}
 
 \end{document}
