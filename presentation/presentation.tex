@@ -10,6 +10,7 @@
 \usepackage{dcolumn}
 \usepackage{textpos}
 \usepackage{graphicx}
+\usepackage{subcaption}
 
 \setbeamercolor{structure}{fg=grey}
 \usetheme[sectionpage=progressbar, progressbar=frametitle]{metropolis}
@@ -36,17 +37,62 @@
 \maketitle
 \end{frame}
 
-\begin{frame}[t]\frametitle{title}
-    
+\begin{frame}[c]\frametitle{Agenda}
+
+\begin{itemize}
+	\item HEY
+	\item HEY
+	\item HEY
+	\item Questions?
+\end{itemize}
+
+
+\end{frame}
+
+
+\section{Introduction}
+
+\begin{frame}[c]\frametitle{System Overview}
+
 \centering
 \includegraphics[scale=1]{graphics/system_overview}
 \end{frame}
 
-\begin{frame}{First Frame}
-Hello, world!
-\pause
-Hello, world!
+\begin{frame}[c]\frametitle{Implemented System}
+\centering
+\includegraphics[width=0.9\textwidth]{graphics/full_system_finish}
+\end{frame}
 
+
+\section{Analysis}
+
+
+\begin{frame}[c]\frametitle{Requirement Specification}
+
+\textbf{Functional:}
+\begin{enumerate}
+	\item System should consists of a double pendulum mounted on a moveable cart.
+	\item Cart should be actuated by the Maxon 148867. 
+	\item The pendulum system should be controlled by a MicroZed.
+	\item \alert{Position of the cart and joint angles should be measured.}
+\end{enumerate}
+
+\end{frame}
+
+\section{Design}
+
+\begin{frame}{Mechanical Design}
+	\begin{figure}
+	\centering
+	\begin{subfigure}{.5\textwidth}
+	  \centering
+	  \includegraphics[width=.9\linewidth]{graphics/joint_read_side}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+	  \centering
+	  \includegraphics[width=.9\linewidth]{graphics/joint_mag_assembly}
+	\end{subfigure}
+	\end{figure}
 \end{frame}
 
 \begin{frame}[standout]
