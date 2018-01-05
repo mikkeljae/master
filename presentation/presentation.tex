@@ -11,6 +11,8 @@
 \usepackage{textpos}
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
 
 \setbeamercolor{structure}{fg=grey}
 \usetheme[sectionpage=progressbar, progressbar=frametitle]{metropolis}
@@ -115,11 +117,57 @@
 %\end{frame}
 
 
-
-\begin{frame}{First Frame}
-Hello, world!
+\begin{frame}[c]{Test Columns}
+\begin{columns}
+\column{.5\linewidth}
+\textbf{Solutions:}   
+\begin{itemize}
+			\item Buck converter
+			\item Buck-Boost converter
+			\item Linear regulator
+\end{itemize}
+\column{.5\linewidth}
+\textbf{Parameters:}
+\begin{itemize}
+			\item Efficiency
+			\item Drop out voltage
+			\item []
+\end{itemize}
+\end{columns}
 \end{frame}
 
+\begin{frame}[c]\frametitle{Buck Converter}
+	\begin{equation}
+		V_{drop} = I_{O} \cdot (R_{DS(on)}+R_I)
+		\label{eq:drop_v_tps62}
+	\end{equation}
+
+	\begin{equation}
+		V_{drop} = 0.02 \cdot (0.062+0.09) = 14 [mV]
+		\label{eq:drop_v_tps62_2}
+	\end{equation}
+
+	\begin{equation}
+		\eta \approx 95\%
+	\end{equation}
+\end{frame}
+
+\begin{frame}[c]\frametitle{Comparison}
+	\begin{table}[h]
+		\begin{tabular}{l|c|c|c}
+			  ~				& \textbf{Buck} 	& \textbf{Buck-Boost}& \textbf{Linear}\tabularnewline 
+			 Efficiency  	& 95\% 	& 75\%		& 89\%	\\
+			 Drop out [mV]	& 14  	& N/A		& 20	\\
+		\end{tabular}
+	\end{table}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Battery Characteristics}
+    \begin{figure}[h]
+		\centering
+		\input{graphics/discharge.tex}
+	\end{figure}
+\end{frame}
 
 
 \begin{frame}[standout]
