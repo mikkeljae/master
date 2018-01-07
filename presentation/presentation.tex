@@ -65,8 +65,22 @@
 
 \section{Analysis}
 
-\begin{frame}[t]\frametitle{Analysis}
-    Something here?!
+\begin{frame}[c]\frametitle{Analysis}
+	\begin{columns}
+		\begin{column}[c]{.5\textwidth}
+			\begin{itemize}[<+- | alert@+>]
+				\item Underactuated Systems.
+				\item Pendulum Systems.
+				\item Double Pendulum System.
+			\end{itemize}
+		\end{column}
+		\begin{column}[c]{.5\textwidth}
+			\includegraphics<2>[width=\linewidth]{graphics/workflow}
+			\includegraphics<3>[width=\linewidth]{graphics/workflow}
+			\includegraphics<4>[width=\linewidth]{graphics/workflow}
+			\includegraphics<5>[width=\linewidth]{graphics/workflow}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[c]\frametitle{Requirement Specification}
@@ -124,21 +138,6 @@
     \vfill
 \end{frame}
 
-\begin{frame}{Software Design}
-	\begin{figure}
-	\centering
-	  \includegraphics[width=.25\linewidth]{graphics/joint_software_diagram}
-	\end{figure}
-\end{frame}
-
-
-%\begin{frame}{Software Design}
-%	\begin{figure}
-%	\centering
-%	  \includegraphics[width=.55\linewidth]{graphics/joint_interrupt}
-%	\end{figure}
-%\end{frame}
-
 \begin{frame}[c]{Test Columns}
 \begin{columns}
 \column{.5\linewidth}
@@ -195,6 +194,13 @@
 	\begin{figure}
 	\centering
 	\includegraphics[width=.7\linewidth]{graphics/joint_assembly}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Software Design}
+	\begin{figure}
+	\centering
+	  \includegraphics[width=.25\linewidth]{graphics/joint_software_diagram}
 	\end{figure}
 \end{frame}
 
