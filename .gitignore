@@ -8,6 +8,7 @@
 *.dvi
 *.bcf
 *.xml
+*.nav
 main.pdf
 *.fdb_latexmk
 *.fls
