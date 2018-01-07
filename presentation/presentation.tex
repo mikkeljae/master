@@ -76,7 +76,7 @@
 	\item System should consists of a double pendulum mounted on a moveable cart.
 	\item Cart should be actuated by the Maxon 148867. 
 	\item The pendulum system should be controlled by a MicroZed.
-	\item \alert{Position of the cart and joint angles should be measured.}
+	\item \alert<2>{Position of the cart and joint angles should be measured.}
 \end{enumerate}
 
 \end{frame}
@@ -124,20 +124,7 @@
     \vfill
 \end{frame}
 
-\begin{frame}{Software Design}
-	\begin{figure}
-	\centering
-	  \includegraphics[width=.25\linewidth]{graphics/joint_software_diagram}
-	\end{figure}
-\end{frame}
 
-
-%\begin{frame}{Software Design}
-%	\begin{figure}
-%	\centering
-%	  \includegraphics[width=.55\linewidth]{graphics/joint_interrupt}
-%	\end{figure}
-%\end{frame}
 
 \begin{frame}[c]{Test Columns}
 \begin{columns}
@@ -197,6 +184,91 @@
 	\includegraphics[width=.7\linewidth]{graphics/joint_assembly}
 	\end{figure}
 \end{frame}
+
+\begin{frame}{Software Design}
+	\begin{figure}
+	\centering
+	  \includegraphics[width=.25\linewidth]{graphics/joint_software_diagram}
+	\end{figure}
+\end{frame}
+
+
+%\begin{frame}{Software Design}
+%	\begin{figure}
+%	\centering
+%	  \includegraphics[width=.55\linewidth]{graphics/joint_interrupt}
+%	\end{figure}
+%\end{frame}
+
+
+
+\section{Implementation}
+
+\begin{frame}[c]\frametitle{Implementation of Joint Board PCB}
+\begin{figure}
+	\centering
+	\begin{subfigure}{.5\textwidth}
+	  \centering
+	  \includegraphics[width=.9\linewidth]{graphics/joint_board_pic}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+	  \centering
+	  \includegraphics[width=.9\linewidth]{graphics/joint_board_pop_pic}
+	\end{subfigure}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]\frametitle{Implementation of Full System}
+	\begin{figure}
+		\centering
+		\includegraphics[width=.9\linewidth]{graphics/full_system_finish_high}
+	\end{figure}
+\end{frame}
+
+\section{Verification}
+
+
+
+\begin{frame}[c]\frametitle{TEST - SINGLE PENDULUM}
+   	\begin{figure}
+		\centering
+		\includegraphics[width=.7\linewidth]{graphics/joint_assembly.eps}
+	\end{figure} 
+\end{frame}
+
+
+\begin{frame}[c]\frametitle{.....}
+    \begin{figure}[h]
+		\centering
+		%\input{graphics/joint_angle_measured_full.tex}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[c]\frametitle{.....}
+    \begin{figure}[h]
+		\centering
+		\input{graphics/joint_angle_measured_zoom.tex}
+	\end{figure}
+\end{frame}
+
+
+%\begin{frame}[c]\frametitle{title}
+%\begin{table}[h]
+%\centering
+%\resizebox{\textwidth}{!}{
+%\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+%\hline
+%\textbf{\#} & \textbf{1} 	& \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{Avg} \\ \hline
+%\textbf{S} & 7046 & 7245 & 7272 & 7241 & 7232 & 7212 & 7160 & 7217 & 7241 & 7221 & 7208\\ \hline
+%\textbf{M} & 7148 & 7215 & 7208 & 7173 & 7221 & 7165 & 7138 & 7187 & 7274 & 7186 & 7191\\ \hline
+%\end{tabular}}
+%\end{table}
+%\end{frame}
+
+
+
+
 
 \begin{frame}[standout]
   Questions?
