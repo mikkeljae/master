@@ -1,4 +1,5 @@
 #latex
+*.snm
 *.lof
 *.aux
 *.log
