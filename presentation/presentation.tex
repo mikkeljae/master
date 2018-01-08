@@ -85,7 +85,16 @@
 		\end{column}
 	\end{columns}
 \end{frame}
-\note{Thomas: Analysis, Design}
+\note{Thomas: We would like to start by presenting the workflow that we have used in our project.
+The rest of the presentation is thought as a small excerpt of this workflow.
+It is worth noting that even though this seems very linear it is very much an iterative process where we go back an forth on the different steps when necessary.
+We have thought of this project as a product development where we started out with an analysis.
+Analysis:
+Initially we have to analyse the problem, find similar systems and study how they are implemented.
+When the analysis is done, we should have a bunch of requirements which we can then do the design for.
+Design:
+The design includes choosing components, doing various calculations, doing PCB layout and so on.}
+
 \note{Mikkel: Implementation, Verification, Conclusion}
 \section{Analysis}
 
@@ -108,7 +117,18 @@
 		\end{column}
 	\end{columns}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+So, let us start out with the analysis of our system. What is our system, exactly? We were tasked with creating a platform for teaching underactuated systems.
+An underactuated system is a system which has more degrees of freedom than it has actuators, or motors.
+In the case of this robotic gripper it is made so that a motor will clamp the two fingers together. 
+Because each finger is made up of several joints it will bend around whatever shape is between the fingers as shown here.
+This is reasonably clever because one gripper can be used for a variety of objects.
+
+Another example of an underactuated system is the segway.
+Or, as the point here says, pendulum systems. The Segway is an inverted pendulum which will always attempt to stay upright.
+When she pushes the handle forward it will speed up.
+
+Another example of a pendulum system is the double pendulum. Here we mount one pendulum in series with another. This creates a system which will have chaotic behaviour when actuated.}
 
 \begin{frame}[c]\frametitle{System Overview}
 \centering
@@ -133,7 +153,15 @@
 \end{enumerate}
 
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+The requirements found in the analysis were many and we wont bore you with every requirement.
+But ehere is a few of them.
+First of all, the system should consist of a double pendulum mounted on a moveable cart.
+Second, the cart should be in some way actuated by the maxon 146867, which is an electrical motor.
+Third, the system should be controlled by the microzed development platform.
+This is a board which is powered by the xilinx Zynq 7000 series SoC.
+And fourth. The position of both the cart and the joint angles should be measured somehow.
+We are going to present some of the work that has gone into realising this final requirement }
 
 
 \section{Design}
@@ -151,7 +179,11 @@
 	\end{subfigure}
 	\end{figure}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+First of all, we needed to create the joint that is connecting the pendulums. This was designed in autodesk inventor.
+As you can see the joint is made up of two parts. The one here on the left has an axle and a cutout for mounting the encoder.
+On the right we have a part which has two bearings that are press-fit into a bore for the axle.
+The ring you see around here is a magnetic ring with 72 poles. as the joint rotates the encoder on the left side uses the hall effect to determine the position of the joint.}
 
 \begin{frame}[c]\frametitle{Electrical Design}
 	\begin{itemize}
@@ -245,7 +277,9 @@
 	\includegraphics[width=.7\linewidth]{graphics/joint_assembly}
 	\end{figure}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+Finally, after having done the design above as well as a number of other things such as the wireless communication module, the microcontroller, what size connector to use, the rest of the power delivery and so on, this is what we wound up with.
+A PCB which is mounted in the part of the joint with the axle.}
 
 \begin{frame}[c]\frametitle{Designed Pendulum Assembly}
 	\begin{figure}
@@ -253,7 +287,11 @@
 	\includegraphics[width=.32\linewidth]{graphics/pendulum_assembly}
 	\end{figure}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+This joint is then mounted in a double pendulum as we can see here.
+We 3D printed a mounting mechanism, glued a carbon rod into this mounting mechanism and used it to connect the joints.
+It is worth noting that while we did make a double pendulum, we also designed the system so that a theoretically infinite number of joints can be mounted in series.
+In practice though eventually the downward pull from the joints}
 
 \section{Implementation}
 
@@ -295,7 +333,21 @@
 		\item[4.] \alert{Position of the cart and joint angles should be measured.}
 	\end{enumerate}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+Now we have reached the verification of the requirement that we started out investigating.
+As you may recall we wanted to make sure that it is possible to measure the position of the cart and joint angles.}
+
+\begin{frame}[c]\frametitle{Designed Pendulum Assembly}
+	\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/encoder_data_throughput}
+	\end{figure}
+\end{frame}
+\note{Thomas:
+We thought it might be interesting to see the route that the position data takes before we can read it.
+First the encoder generates a regular quadrature signal which is transmitted using RS422, this is a standard which uses differential signals so it is necessary to convert to regular TTL signals in order for the microcontroller to read them.
+The microcontroller then decodes the encoder signal and transmits the resulting position via SPI to the wireless communication module here, the NRF module which transfers wirelessly to another module mounted near the microzed and is then again transmitted via SPI to the microzed.
+The data can then be recorded using UART, but this is beyond our design.}
 
 \begin{frame}[c]\frametitle{Test of Single Pendulum}
     \begin{figure}[h]
@@ -303,7 +355,9 @@
 		\includegraphics[width=.5\linewidth]{graphics/single_pendulum}
 	\end{figure}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+In order to actually verify this we do a test where we mount just a single pendulum.
+We lift the pendulum and release it and, using the encoder we record every data point until the pendulum is static.}
 
 \begin{frame}[c]\frametitle{Test of Single Pendulum}
     \begin{figure}[h]
@@ -311,7 +365,8 @@
 		\input{graphics/joint_angle_measured_full_sine.tex}
 	\end{figure}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+This is the final part of the recorded data. As we can see, the pendulum swings quite regularly and slowly halts to a stop.}
 
 \begin{frame}[c]\frametitle{Test of Single Pendulum}
     \begin{figure}[h]
@@ -319,7 +374,9 @@
 		\input{graphics/joint_angle_measured_zoom.tex}
 	\end{figure}
 \end{frame}
-\note{Thomas}
+\note{Thomas:
+If we zoom closer to some of the data we can see a quite regular spread of the data points.
+Except, as you can see, some parts are missing. It turns out that approximately 22\% of the positions are lost in the wireless transmission.}
 
 \begin{frame}[c]\frametitle{Test of Double Pendulum}
     \begin{figure}[h]
