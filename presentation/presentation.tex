@@ -13,6 +13,19 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{minted}
+\setminted{
+	framesep=2mm,
+	bgcolor=black!5,
+	fontsize=\footnotesize,
+	linenos,
+	obeytabs,
+	tabsize=4,
+	mathescape = true,
+	escapeinside=@@
+}
+
 
 \setbeamercolor{structure}{fg=grey}
 \usetheme[sectionpage=progressbar, progressbar=frametitle]{metropolis}
@@ -208,7 +221,7 @@
 \begin{frame}[t]\frametitle{Battery Characteristics}
     \begin{figure}[h]
 		\centering
-		\input{graphics/discharge.tex}
+		%\input{graphics/discharge.tex}
 	\end{figure}
 \end{frame}
 
@@ -216,6 +229,13 @@
 	\begin{figure}
 	\centering
 	\includegraphics[width=.7\linewidth]{graphics/joint_assembly}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[c]\frametitle{Designed Pendulum Assembly}
+	\begin{figure}
+	\centering
+	\includegraphics[width=.32\linewidth]{graphics/pendulum_assembly}
 	\end{figure}
 \end{frame}
 
@@ -258,6 +278,14 @@
 	\end{figure}
 \end{frame}
 
+\begin{frame}[c]\frametitle{Implementation Pendulum Assembly}
+	\begin{figure}
+		\centering
+		\includegraphics[width=.4\linewidth]{graphics/joint_ass_real}
+	\end{figure}
+\end{frame}
+
+
 \section{Verification}
 
 
@@ -273,7 +301,7 @@
 \begin{frame}[c]\frametitle{.....}
     \begin{figure}[h]
 		\centering
-		\input{graphics/joint_angle_measured_full.tex}
+		%\input{graphics/joint_angle_measured_full.tex}
 	\end{figure}
 \end{frame}
 
@@ -281,7 +309,7 @@
 \begin{frame}[c]\frametitle{.....}
     \begin{figure}[h]
 		\centering
-		\input{graphics/joint_angle_measured_zoom.tex}
+		%\input{graphics/joint_angle_measured_zoom.tex}
 	\end{figure}
 \end{frame}
 
