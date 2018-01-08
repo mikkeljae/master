@@ -50,7 +50,13 @@
 \begin{frame}[t]\frametitle{~}
 \maketitle
 \end{frame}
-\note{Mikkel: HEJ!}
+\note{Mikkel:
+Hej og velkommen på dansk. Glade for at se så mange mennesker. Vi vil fortælle ca. 30 minutter om vores projekt på engelsk.
+Derefter sarter vores individuelle eksamen, som vil være lukket for tilhørere.
+Efter det hele er oversået vil vi gerne invitere jer alle på et stykke kage og et glas boblevand.
+Hi and Welcome to our master thesis exam. We will do a presentation about our project for the next half hour and then the exam will begin and you will be asked to leave.
+After the exam is finished we would to invite you all to join our celebration.
+Thank you all for coming. }
 
 \begin{frame}[c]\frametitle{Introduction}
 \includegraphics[width=\textwidth]{graphics/workflow}
@@ -114,13 +120,17 @@
 \centering
 \includegraphics[scale=1]{graphics/system_overview}
 \end{frame}
-\note{Mikkel}
+\note{Here we see a full overview of the system.
+We see the pendulum assembly attached to a cart.
+The cart can be actuated by the motor through the use of the belt.
+A controllerboard is used to control the motor and it is powered by a power supply.
+There is a small PCB in the joint called the joint board, which transmits data to the controllerboard..}
 
 \begin{frame}[c]\frametitle{Implemented System}
 \centering
 \includegraphics[width=0.9\textwidth]{graphics/full_system_finish}
 \end{frame}
-\note{Mikkel}
+\note{Here is the implemented full systems. The rail and belt are seen here. also the motor and the pendulum assembly is easy to spot}
 
 \begin{frame}[c]\frametitle{Requirement Specification}
 
@@ -154,16 +164,26 @@
 \note{Thomas}
 
 \begin{frame}[c]\frametitle{Electrical Design}
+\textbf{Joint Board:}
 	\begin{itemize}
     	\item Encoder
+    	\pause
     	\item Wireless Communication
+    	\pause
     	\item Microcontroller
+    	\pause
     	\item Power Delivery
     \end{itemize}    
 \end{frame}
-\note{Mikkel}
+\note{
+Encoder - wiring, RS422 conversion IC
+Wireless communication - nrf24 module
+Microcontroller - ATtiny84
+Power delivery -  3.3 v for nrf and ATtiny and 5v for encoder 
+}
 
 \begin{frame}[c]\frametitle{Electrical Design}
+\textbf{Joint Board:}
 	\begin{itemize}
     	\item Encoder
     	\item Wireless Communication
@@ -181,7 +201,7 @@
     \scalebox{2}{$$3.0V\;\rightarrow\;4.2V \quad\Rightarrow\quad 3.3V$$}
     \vfill
 \end{frame}
-\note{Mikkel}
+\note{Classic electronics problem. Battery into stable voltage}
 
 \begin{frame}[c]\frametitle{Power Delivery}
 \begin{columns}
@@ -201,24 +221,35 @@
 \end{itemize}
 \end{columns}
 \end{frame}
-\note{Mikkel}
+\note{
+Buck converter is a Switch mode power supply that uses switching to produce a lower output voltage than input voltage.
+Buck-Boost converter is also a Switch mode power supply and has the ability to generate voltages higher and lower than its input voltage.
+A linear regulator varies an internal resistance to yield a steady output voltage that is lower than the input voltage.
+
+Two parameters to judge upon:
+Efficiency - how much energy is lost in the conversion
+Drop out voltage - the voltage that the input voltage needs to be higher than the output voltage
+}
 
 \begin{frame}[c]\frametitle{Buck Converter}
+	\begin{equation}
+		\eta \approx 95\%
+	\end{equation}
+\pause
 	\begin{equation}
 		V_{drop} = I_{O} \cdot (R_{DS(on)}+R_I)
 		\label{eq:drop_v_tps62}
 	\end{equation}
-
+\pause
 	\begin{equation}
 		V_{drop} = 0.02 \cdot (0.062+0.09) = 14 [mV]
 		\label{eq:drop_v_tps62_2}
 	\end{equation}
-
-	\begin{equation}
-		\eta \approx 95\%
-	\end{equation}
 \end{frame}
-\note{Mikkel}
+\note{Drop out voltage in a buck converter is only dependent on the output current and resistance of the output path, which is the resistance ON resistance of the MOSFET and the inductor
+
+The efficiency is found in the datasheet to be 95 percent
+}
 
 \begin{frame}[c]\frametitle{Comparison}
 	\begin{table}[h]
@@ -229,7 +260,8 @@
 		\end{tabular}
 	\end{table}
 \end{frame}
-\note{Mikkel}
+\note{Using a buck converter seems to be the best choice. But if it is chosen an amount of the battery capacity cannot be utilized.
+}
 
 \begin{frame}[t]\frametitle{Battery Characteristics}
     \begin{figure}[h]
@@ -237,7 +269,9 @@
 		\input{graphics/discharge.tex}
 	\end{figure}
 \end{frame}
-\note{Mikkel}
+\note{It can be seen that the majority of the battery capacity can be utilized. Calculations showed that approximately 99 percent can be utilized.
+
+Thus it was concluded that using a buck converter was the best option.}
 
 \begin{frame}[c]\frametitle{Designed PCB}
 	\begin{figure}
@@ -270,7 +304,12 @@
 	\end{subfigure}
 	\end{figure}
 \end{frame}
-\note{Mikkel}
+\note{The PCB design was sent to China and the PCB shown in the left picture was delivered.
+The components was soldered on the PCB using soldering paste, a pick and place machine and a reflow oven.
+The result is shown on the right picture.
+As it can be seen several fixes was needed to achieve the full functionality.
+There are room for improvements and a version 2 of the PCB.
+}
 
 \begin{frame}[c]\frametitle{Implementation of Full System}
 	\begin{figure}
@@ -327,7 +366,7 @@
 		\includegraphics[width=.75\linewidth]{graphics/double_pendulum}
 	\end{figure}
 \end{frame}
-\note{Mikkel}
+\note{Another test was conducted where the double pendulum assembly was attached to the cart. The angles of the first joint were measured while letting it move freely after dropping it.}
 
 \begin{frame}[c]\frametitle{Test of Double Pendulum}
     \begin{figure}[h]
@@ -335,7 +374,7 @@
 		\input{graphics/joint_angle_measured_full_chaos.tex}
 	\end{figure}
 \end{frame}
-\note{Mikkel}
+\note{The received data is shown here. It can be seen that the systems has chaotic behaviour - just as expected.}
 
 \begin{frame}[c]\frametitle{Test of Double Pendulum}
     \begin{figure}[h]
@@ -343,19 +382,8 @@
 		\input{graphics/joint_angle_measured_full_chaos_zoom.tex}
 	\end{figure}
 \end{frame}
-\note{Mikkel}
-%\begin{frame}[c]\frametitle{title}
-%\begin{table}[h]
-%\centering
-%\resizebox{\textwidth}{!}{
-%\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
-%\hline
-%\textbf{\#} & \textbf{1} 	& \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{Avg} \\ \hline
-%\textbf{S} & 7046 & 7245 & 7272 & 7241 & 7232 & 7212 & 7160 & 7217 & 7241 & 7221 & 7208\\ \hline
-%\textbf{M} & 7148 & 7215 & 7208 & 7173 & 7221 & 7165 & 7138 & 7187 & 7274 & 7186 & 7191\\ \hline
-%\end{tabular}}
-%\end{table}
-%\end{frame}
+\note{Zooming in on the data it is seen that movements are periodic in some way, but impossible to predict.}
+
 
 \section{Conclusion}
 
