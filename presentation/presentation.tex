@@ -38,16 +38,64 @@
 \maketitle
 \end{frame}
 
-\begin{frame}[c]\frametitle{Agenda}
-\setbeamertemplate{section in toc}[sections numbered]
-\tableofcontents[hideallsubsections]
+\begin{frame}[c]\frametitle{Introduction}
+\includegraphics[width=\textwidth]{graphics/workflow}
+\vfill
+	\begin{columns}
+		\begin{column}[c]{.5\textwidth}
+			\begin{itemize}
+				\item \alert<1>{Analysis}
+				\item \alert<2>{Design}
+			\end{itemize}
+		\end{column}
+		\begin{column}[c]{.5\textwidth}
+			\begin{itemize}
+				\item \alert<3>{Implementation}
+				\item \alert<4>{Verification}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\hrule
+	\vspace{0.4cm}
+	
+	\begin{columns}
+		\begin{column}[c]{.5\textwidth}
+			\begin{itemize}
+				\item<5> \alert<5>{Conclusion}
+			\end{itemize}
+		\end{column}
+		\begin{column}[c]{.5\textwidth}
+			\begin{itemize}
+				\item[~]
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
+\section{Analysis}
 
-\section{Introduction}
+\begin{frame}[c]\frametitle{Analysis\\ A Platform for Teaching Underactuated Systems}
+	\begin{columns}
+		\begin{column}[c]{.5\textwidth}
+			\begin{itemize}[<+- | alert@+>]
+				\item What is an underactuated system?
+				\item Pendulum systems.
+				\item Double pendulum system.
+			\end{itemize}
+		\end{column}
+		\begin{column}[c]{.5\textwidth}
+			\centering
+			\includegraphics<1>[width=\linewidth]{graphics/robo_underactuated}\\
+			\vspace{1cm}
+			\includegraphics<1>[width=.50\linewidth]{graphics/robo_underactuated_picture}
+			\includegraphics<2>[width=\linewidth]{graphics/segway}
+			\includegraphics<3>[width=\linewidth]{graphics/joint_assembly.eps}
+		\end{column}
+	\end{columns}
+\end{frame}
 
 \begin{frame}[c]\frametitle{System Overview}
-
 \centering
 \includegraphics[scale=1]{graphics/system_overview}
 \end{frame}
@@ -55,32 +103,6 @@
 \begin{frame}[c]\frametitle{Implemented System}
 \centering
 \includegraphics[width=0.9\textwidth]{graphics/full_system_finish}
-\end{frame}
-
-\begin{frame}[c]\frametitle{Workflow}
-\centering
-\includegraphics[width=\textwidth]{graphics/workflow}    
-\end{frame}
-
-
-\section{Analysis}
-
-\begin{frame}[c]\frametitle{Analysis}
-	\begin{columns}
-		\begin{column}[c]{.5\textwidth}
-			\begin{itemize}[<+- | alert@+>]
-				\item Underactuated Systems.
-				\item Pendulum Systems.
-				\item Double Pendulum System.
-			\end{itemize}
-		\end{column}
-		\begin{column}[c]{.5\textwidth}
-			\includegraphics<2>[width=\linewidth]{graphics/workflow}
-			\includegraphics<3>[width=\linewidth]{graphics/workflow}
-			\includegraphics<4>[width=\linewidth]{graphics/workflow}
-			\includegraphics<5>[width=\linewidth]{graphics/workflow}
-		\end{column}
-	\end{columns}
 \end{frame}
 
 \begin{frame}[c]\frametitle{Requirement Specification}
@@ -138,11 +160,6 @@
     \vfill
 \end{frame}
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 2be3f4bd95ce8a1910a0432073857bd82f81ed4a
 \begin{frame}[c]{Test Columns}
 \begin{columns}
 \column{.5\linewidth}
@@ -282,6 +299,12 @@
 %\end{table}
 %\end{frame}
 
+\section{Conclusion}
+
+\begin{frame}[t]\frametitle{Conclusion}
+	\centering
+	\includegraphics[scale=1.1]{graphics/system_overview}
+\end{frame}
 
 \begin{frame}[standout]
   Questions?

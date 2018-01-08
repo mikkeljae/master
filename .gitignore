@@ -1,4 +1,5 @@
 #latex
+*.snm
 *.lof
 *.aux
 *.log
@@ -8,6 +9,7 @@
 *.dvi
 *.bcf
 *.xml
+*.nav
 main.pdf
 *.fdb_latexmk
 *.fls
