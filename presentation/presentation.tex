@@ -119,7 +119,7 @@ The design includes choosing components, doing various calculations, doing PCB l
 			\vspace{1cm}
 			\includegraphics<1>[width=.50\linewidth]{graphics/robo_underactuated_picture}
 			\includegraphics<2>[width=\linewidth]{graphics/segway}
-			\includegraphics<3>[width=\linewidth]{graphics/joint_assembly.eps}
+			\includegraphics<3>[height=.8\textheight]{graphics/joint_assembly_double_pendulum}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -157,7 +157,7 @@ There is a small PCB in the joint called the joint board, which transmits data t
 \textbf{Functional:}
 \begin{enumerate}
 	\item System should consists of a double pendulum mounted on a moveable cart.\pause
-	\item Cart should be actuated by the Maxon 148867. \pause
+	\item Cart should be actuated by the Maxon Motor. \pause
 	\item The pendulum system should be controlled by a MicroZed.\pause
 	\item \alert{Position of the cart and joint angles should be measured.}
 \end{enumerate}
@@ -198,13 +198,13 @@ The ring you see around here is a magnetic ring with 72 poles. as the joint rota
 \begin{frame}[c]\frametitle{Electrical Design}
 \textbf{Joint Board:}
 	\begin{itemize}
-    	\item Encoder
+    	\item Encoder.
     	\pause
-    	\item Wireless Communication
+    	\item Wireless Communication.
     	\pause
-    	\item Microcontroller
+    	\item Microcontroller.
     	\pause
-    	\item Power Delivery
+    	\item Power Delivery.
     \end{itemize}    
 \end{frame}
 \note{
@@ -217,10 +217,10 @@ Power delivery -  3.3 v for nrf and ATtiny and 5v for encoder
 \begin{frame}[c]\frametitle{Electrical Design}
 \textbf{Joint Board:}
 	\begin{itemize}
-    	\item Encoder
-    	\item Wireless Communication
-    	\item Microcontroller
-    	\item \alert{Power Delivery}
+    	\item Encoder.
+    	\item Wireless Communication.
+    	\item Microcontroller.
+    	\item \alert{Power Delivery}.
     \end{itemize}    
 \end{frame}
 \note{Mikkel}
@@ -230,7 +230,7 @@ Power delivery -  3.3 v for nrf and ATtiny and 5v for encoder
 	\vfill
     \includegraphics[width=.35\linewidth]{graphics/lipo}\\
     \vfill
-    \scalebox{2}{$$3.0V\;\rightarrow\;4.2V \quad\Rightarrow\quad 3.3V$$}
+    \scalebox{2}{$$4.2V\;\rightarrow\;3.0V \quad\Rightarrow\quad 3.3V$$}
     \vfill
 \end{frame}
 \note{Classic electronics problem. Battery into stable voltage}
@@ -240,15 +240,19 @@ Power delivery -  3.3 v for nrf and ATtiny and 5v for encoder
 \column{.5\linewidth}
 \textbf{Solutions:}   
 \begin{itemize}
-			\item Buck converter
-			\item Buck-Boost converter
-			\item Linear regulator
+			\item Buck converter.
+			\pause
+			\item Buck-Boost converter.
+			\pause
+			\item Linear regulator.
+			\pause
 \end{itemize}
 \column{.5\linewidth}
 \textbf{Parameters:}
 \begin{itemize}
-			\item Efficiency
-			\item Drop out voltage
+			\item Efficiency.
+			\pause
+			\item Drop out voltage.
 			\item []
 \end{itemize}
 \end{columns}
@@ -381,6 +385,10 @@ As you may recall we wanted to make sure that it is possible to measure the posi
 	\centering
 	\includegraphics[width=\linewidth]{graphics/encoder_data_throughput}
 	\end{figure}
+	\begin{figure}
+	\centering
+	\includegraphics<2>[width=\linewidth]{graphics/latency_diagram}
+	\end{figure}
 \end{frame}
 \note{Thomas:
 We thought it might be interesting to see the route that the position data takes before we can read it.
@@ -448,6 +456,40 @@ Except, as you can see, some parts are missing. It turns out that approximately 
 	\centering
 	\includegraphics[scale=1.1]{graphics/system_overview}
 \end{frame}
+
+\note{
+	Now we have done a presentation of a small fraction of the overall project, we would like to finish off by giving an overview of the remaining work done in the project
+
+		-controller board electronics
+			-safety circuit
+				-endstop
+				-relay
+				-emergency button
+			-motor driver circuit
+				-h bridge
+				-capacitors
+				-motor driver and bootstrapping
+			-power delivery
+				-12v
+				-5v
+				-3.3v
+		-Software
+			-joint software, done.
+				-interrupts on encoder signals
+				-decodes signals to absolute position of joint
+				-transmits SPI to NRF module
+				-functions in real time
+			-controller board software
+				-for verification of functionality only.
+
+	We would like to welcome further improvement on the platform as it is not yet finished.
+	Our solution for:
+		-Joint connections are wobbly and a mechanical engineer could likely do a better job.
+		-Wireless transmissions may be spotty due to copper
+
+	Thank you for your time!
+	Any questions?
+}
 
 \begin{frame}[standout]
   Questions?
