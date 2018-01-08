@@ -1,5 +1,5 @@
 clc;clear;close all;
-to_tikz = 1;
+to_tikz = 0;
 
 data = csvread('error_free/test1',3,1);
 
