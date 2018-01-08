@@ -50,6 +50,7 @@
 \begin{frame}[t]\frametitle{~}
 \maketitle
 \end{frame}
+\note{Mikkel: HEJ!}
 
 \begin{frame}[c]\frametitle{Introduction}
 \includegraphics[width=\textwidth]{graphics/workflow}
@@ -71,7 +72,6 @@
 	\vspace{0.5cm}
 	\hrule
 	\vspace{0.4cm}
-	
 	\begin{columns}
 		\begin{column}[c]{.5\textwidth}
 			\begin{itemize}
@@ -85,10 +85,11 @@
 		\end{column}
 	\end{columns}
 \end{frame}
-
+\note{Thomas: Analysis, Design}
+\note{Mikkel: Implementation, Verification, Conclusion}
 \section{Analysis}
 
-\begin{frame}[c]\frametitle{Analysis\\ A Platform for Teaching Underactuated Systems}
+\begin{frame}[c]\frametitle{Analysis - Teaching Underactuated Systems}
 	\begin{columns}
 		\begin{column}[c]{.5\textwidth}
 			\begin{itemize}[<+- | alert@+>]
@@ -107,28 +108,33 @@
 		\end{column}
 	\end{columns}
 \end{frame}
+\note{Thomas}
 
 \begin{frame}[c]\frametitle{System Overview}
 \centering
 \includegraphics[scale=1]{graphics/system_overview}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Implemented System}
 \centering
 \includegraphics[width=0.9\textwidth]{graphics/full_system_finish}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Requirement Specification}
 
 \textbf{Functional:}
 \begin{enumerate}
-	\item System should consists of a double pendulum mounted on a moveable cart.
-	\item Cart should be actuated by the Maxon 148867. 
-	\item The pendulum system should be controlled by a MicroZed.
-	\item \alert<2>{Position of the cart and joint angles should be measured.}
+	\item System should consists of a double pendulum mounted on a moveable cart.\pause
+	\item Cart should be actuated by the Maxon 148867. \pause
+	\item The pendulum system should be controlled by a MicroZed.\pause
+	\item \alert{Position of the cart and joint angles should be measured.}
 \end{enumerate}
 
 \end{frame}
+\note{Thomas}
+
 
 \section{Design}
 
@@ -145,6 +151,7 @@
 	\end{subfigure}
 	\end{figure}
 \end{frame}
+\note{Thomas}
 
 \begin{frame}[c]\frametitle{Electrical Design}
 	\begin{itemize}
@@ -154,6 +161,7 @@
     	\item Power Delivery
     \end{itemize}    
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Electrical Design}
 	\begin{itemize}
@@ -163,6 +171,7 @@
     	\item \alert{Power Delivery}
     \end{itemize}    
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Power Delivery}
 	\centering
@@ -172,8 +181,9 @@
     \scalebox{2}{$$3.0V\;\rightarrow\;4.2V \quad\Rightarrow\quad 3.3V$$}
     \vfill
 \end{frame}
+\note{Mikkel}
 
-\begin{frame}[c]{Test Columns}
+\begin{frame}[c]\frametitle{Power Delivery}
 \begin{columns}
 \column{.5\linewidth}
 \textbf{Solutions:}   
@@ -191,6 +201,7 @@
 \end{itemize}
 \end{columns}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Buck Converter}
 	\begin{equation}
@@ -207,6 +218,7 @@
 		\eta \approx 95\%
 	\end{equation}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Comparison}
 	\begin{table}[h]
@@ -217,13 +229,15 @@
 		\end{tabular}
 	\end{table}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[t]\frametitle{Battery Characteristics}
     \begin{figure}[h]
 		\centering
-		%\input{graphics/discharge.tex}
+		\input{graphics/discharge.tex}
 	\end{figure}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Designed PCB}
 	\begin{figure}
@@ -231,6 +245,7 @@
 	\includegraphics[width=.7\linewidth]{graphics/joint_assembly}
 	\end{figure}
 \end{frame}
+\note{Thomas}
 
 \begin{frame}[c]\frametitle{Designed Pendulum Assembly}
 	\begin{figure}
@@ -238,22 +253,7 @@
 	\includegraphics[width=.32\linewidth]{graphics/pendulum_assembly}
 	\end{figure}
 \end{frame}
-
-\begin{frame}{Software Design}
-	\begin{figure}
-	\centering
-	  \includegraphics[width=.25\linewidth]{graphics/joint_software_diagram}
-	\end{figure}
-\end{frame}
-
-%\begin{frame}{Software Design}
-%	\begin{figure}
-%	\centering
-%	  \includegraphics[width=.55\linewidth]{graphics/joint_interrupt}
-%	\end{figure}
-%\end{frame}
-
-
+\note{Thomas}
 
 \section{Implementation}
 
@@ -270,6 +270,7 @@
 	\end{subfigure}
 	\end{figure}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Implementation of Full System}
 	\begin{figure}
@@ -277,6 +278,7 @@
 		\includegraphics[width=.9\linewidth]{graphics/full_system_finish_high}
 	\end{figure}
 \end{frame}
+\note{Mikkel}
 
 \begin{frame}[c]\frametitle{Implementation Pendulum Assembly}
 	\begin{figure}
@@ -284,61 +286,64 @@
 		\includegraphics[width=.4\linewidth]{graphics/joint_ass_real}
 	\end{figure}
 \end{frame}
-
+\note{Mikkel}
 
 \section{Verification}
 
-
-
-\begin{frame}[c]\frametitle{TEST - SINGLE PENDULUM}
-   	\begin{figure}
-		\centering
-		\includegraphics[width=.7\linewidth]{graphics/joint_assembly.eps}
-	\end{figure} 
+\begin{frame}[c]\frametitle{Verification of Requirement}
+	\begin{enumerate}
+		\item[4.] \alert{Position of the cart and joint angles should be measured.}
+	\end{enumerate}
 \end{frame}
+\note{Thomas}
 
-\begin{frame}[c]\frametitle{.....}
+\begin{frame}[c]\frametitle{Test of Single Pendulum}
     \begin{figure}[h]
 		\centering
 		\includegraphics[width=.5\linewidth]{graphics/single_pendulum}
 	\end{figure}
 \end{frame}
+\note{Thomas}
 
-\begin{frame}[c]\frametitle{.....}
+\begin{frame}[c]\frametitle{Test of Single Pendulum}
     \begin{figure}[h]
 		\centering
 		\input{graphics/joint_angle_measured_full_sine.tex}
 	\end{figure}
 \end{frame}
+\note{Thomas}
 
-\begin{frame}[c]\frametitle{.....}
+\begin{frame}[c]\frametitle{Test of Single Pendulum}
     \begin{figure}[h]
 		\centering
 		\input{graphics/joint_angle_measured_zoom.tex}
 	\end{figure}
 \end{frame}
+\note{Thomas}
 
-\begin{frame}[c]\frametitle{.....}
+\begin{frame}[c]\frametitle{Test of Double Pendulum}
     \begin{figure}[h]
 		\centering
 		\includegraphics[width=.75\linewidth]{graphics/double_pendulum}
 	\end{figure}
 \end{frame}
+\note{Mikkel}
 
-\begin{frame}[c]\frametitle{.....}
+\begin{frame}[c]\frametitle{Test of Double Pendulum}
     \begin{figure}[h]
 		\centering
 		\input{graphics/joint_angle_measured_full_chaos.tex}
 	\end{figure}
 \end{frame}
+\note{Mikkel}
 
-\begin{frame}[c]\frametitle{.....}
+\begin{frame}[c]\frametitle{Test of Double Pendulum}
     \begin{figure}[h]
 		\centering
 		\input{graphics/joint_angle_measured_full_chaos_zoom.tex}
 	\end{figure}
 \end{frame}
-
+\note{Mikkel}
 %\begin{frame}[c]\frametitle{title}
 %\begin{table}[h]
 %\centering
