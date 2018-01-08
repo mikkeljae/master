@@ -1,5 +1,5 @@
 clc;clear;close all;
-to_tikz = 1;
+to_tikz = 0;
 
 data = csvread('error_free/test1',3,1);
 
@@ -14,8 +14,8 @@ scatter(data(:,1),data(:,2),'.');
 xlabel('Time [us]')
 ylabel('Angle [ticks]')
 title('Joint Angle Transmission')
-  xlim([6e4 10e4])
-  ylim([4000 5200])
+%  xlim([6e4 10e4])
+%  ylim([4000 5200])
  if to_tikz == 1
     matlab2tikz('joint_angle_measured_full.tex');
  end
